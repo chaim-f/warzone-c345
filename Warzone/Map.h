@@ -6,7 +6,8 @@ class Map
 {
 	list <Continent> continentList;
 	list <Territory> territoryList;
-	bool isTerritoryBelongToAContinent();
+	bool isNumberOfNodesEdgesValid();
+	bool isTerritoryBelongsToAContinent();
 	bool isTerritoryHasAdjacencies();
 public:
 	void validate();
