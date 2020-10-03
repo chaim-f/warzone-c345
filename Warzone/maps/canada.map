@@ -8,6 +8,7 @@ map canada_map.gif
 crd canada.cards
 
 [continents]
+;the first number is the number of the country (they do have to be in order) the second two numbers are the x and y co-ordinates of the circle that will be put on that country
 Atlantic_Provinces 3 blue
 Ontario_and_Quebec 4 cyan
 Western_Provinces-South 3 green

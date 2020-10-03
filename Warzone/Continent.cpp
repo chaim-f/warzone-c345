@@ -22,3 +22,8 @@ int Continent::getContinentIndex()
 {
 	return continentIndex;
 }
+
+std::ostream& operator<<(std::ostream& strm, const Continent c)
+{
+	return strm << "Continent(" << c.continentIndex << ", " << c.continentName << ", " << c.continentBunos << ")\n";
+}
