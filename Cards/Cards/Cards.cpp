@@ -4,86 +4,79 @@
 #include <algorithm>
 #include <random>
 #include <string>
-
-std::string CardsAllow[5] = { "bomb", "reinforcement", "blockade", "airlift", "diplomacy" };//see how to make this a pointer***
-int amountAllow[5] = { 2,2,2,2,2 };//not set yet
+//to do add the orderlist implementation to lines 79-104 then remove this comment.
+std::string const CardsAllow[5] = { "bomb", "reinforcement", "blockade", "airlift", "diplomacy" };//strings allowed for Card types 
+int const defaultAmountAllow[5] = { 3,3,3,3,3 };//the default number for amount of each card to be created
 
 //Card functions-------------------------------------------------------------------------------------------------------------
 Card::Card(std::string cardID)//currently creates any type of card without looking at limit of cards allowed
 {
-	cardType = new std::string();
-	bool correct = false;
-	for (std::string* p = &CardsAllow[0]; p != &CardsAllow[5]; ++p) {
-		if ((p->compare(cardID)) == 0) { correct = true; }
+	cardType = new std::string();//allocates memory
+	bool correct = false;//sets the bool value that determins if the CardID is a correct string.
+	for (int i = 0; i < 5;i++) {//loops through the strings allowed for Card types
+		std::string p = CardsAllow[i]; 
+		if ((p.compare(cardID)) == 0) { correct = true; }//if the string is allowed changes the boolean to true
 	}
 	if (correct)
 	{
-		*cardType = cardID;
+		*cardType = cardID;//as the card type is correct it sets the card type to the CardID string
 	}
 	else {
-		std::cout << "incorrect card type it need to be lowercase so using the default contructor\n";
-		Card();
+		std::cout << "incorrect card type it need to be lowercase so randomly allocating\n";
+		srand((unsigned)time(NULL));//seeds the rand function based on the time
+		int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
+		*cardType = CardsAllow[temp];//set the card type to the random allowable string 
 	}
 }
 
 Card::Card()//currently creates any type of card without looking at limit of cards allowed
 {
 	cardType = new std::string();
-	srand((unsigned)time(NULL));
-	int temp = (int)rand() % 5;
-	*cardType = CardsAllow[temp];
+	srand((unsigned)time(NULL));//seeds the rand function based on the time
+	int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
+	*cardType = CardsAllow[temp];//set the card type to the random allowable string 
 }
 
-Card::~Card()
+Card::~Card()//destructor 
 {
 	delete cardType;
 }
 
-Card& Card::operator=(const Card &orig) {
+Card& Card::operator=(const Card &orig) {//overloads the equals sign for the Card class
 	if (&orig != this) {
 		delete cardType;
 		cardType = new std::string(*orig.cardType);
 	}
 	return *this;
 }
-Card::Card(const Card& orig) {
+Card::Card(const Card& orig) {//copy constructor
 	cardType = new std::string(*orig.cardType);
 }
 
-std::string Card::getCardType()
+std::string Card::getCardType()//getter
 {
 	return *cardType;
 }
-void Card::setCardType(std::string s)
+void Card::setCardType(std::string s)//setter
 {
-	*cardType = s;
-}
-void Card::play(std::string cardType)//to do fill it in such that it fills the order list*********************************************
-{
-	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
-	{
-		std::cout << "played a bomb card\n";
+	cardType = new std::string();
+	bool correct = false;
+	for (int i = 0; i < 5; i++) {//loops through the strings allowed for Card types
+		std::string p = CardsAllow[i];
+		if ((p.compare(s)) == 0) { correct = true; }//if the string is allowed changes the boolean to true
 	}
-	else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
+	if (correct)
 	{
-		std::cout << "played a reinforcement card\n";
+		*cardType = s;
 	}
-	else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
-	{
-		std::cout << "played a blockade card\n";
+	else {
+		std::cout << "incorrect card type, ignoring the change the  type "<<s<<" is not a valid type \n";
 	}
-	else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
-	{
-		std::cout << "played a airlift card\n";
-	}
-	else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
-	{
-		std::cout << "played a diplomacy card\n";
-	}
-	else { std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n"; }
+	
 }
 
-void Card::play()//to do fill it in such that it fills the order list*********************************************
+
+void Card::play()//to do fill it in such that it fills the order list
 {
 	std::string cardType = getCardType();
 	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
@@ -115,73 +108,101 @@ void Card::toString()
 }
 
 //Deck functions-------------------------------------------------------------------------------
-Deck::Deck()
+Deck::Deck()//default constructor
 {
-	int totalCards = amountAllow[0] + amountAllow[1] + amountAllow[2] + amountAllow[3] + amountAllow[4];
-	int actualAmount[5];
-	bool Allowed = false;
-	std::string tempString;
 	for (int i = 0; i < 5; i++) {
-		actualAmount[i] = amountAllow[i];
+		amountAllow[i] = defaultAmountAllow[i];
 	}
-	//Populating the cards in the deck
-	for (int i = 0; i < totalCards; i++) {
-		Card* tempCard = new Card();
-		while (!Allowed) {
-			srand((unsigned)time(NULL));
-			int temp = (int)rand() % 5;
-			tempString = CardsAllow[temp];
-			if (amountAllow[temp] > 0) {
-				amountAllow[temp]--;
-				Allowed = true;
-			}
-		}
+	std::string tempString;
+	Card* tempCard;
+	for (int i = 0; i < amountAllow[0]; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[0];
 		tempCard->setCardType(tempString);
 		deckCards.push_back(tempCard);
-		Allowed = false;
+	}
+	for (int i = 0; i < amountAllow[1]; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[1];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < amountAllow[2]; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[2];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < amountAllow[3]; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[3];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < amountAllow[4]; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[4];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
 	}
 }
 
-Deck::Deck(int nbomb = 2, int nreinforcement = 2, int nblockade = 2, int nairlift = 2, int ndiplomacy = 2)
+Deck::Deck(int nbomb = 3, int nreinforcement = 3, int nblockade = 3, int nairlift = 3, int ndiplomacy = 3)//constructor
 {
-	int totalCards = nbomb + nreinforcement + nblockade + nairlift + ndiplomacy;
-	amountAllow[0] = nbomb;
-	amountAllow[1] = nreinforcement;
-	amountAllow[2] = nblockade;
-	amountAllow[3] = nairlift;
-	amountAllow[4] = ndiplomacy;
-	int actualAmount[5];
-	bool Allowed = false;
+	if (nbomb<0) { nbomb = defaultAmountAllow[0]; }
+	 amountAllow[0] = nbomb; 
+	if (nreinforcement<0) { nreinforcement = defaultAmountAllow[1]; }
+	amountAllow[1] = nreinforcement; 
+	if (nblockade<0) { nblockade = defaultAmountAllow[2]; }
+	amountAllow[2] = nblockade; 
+	if (nairlift<0) { nairlift = defaultAmountAllow[3]; }
+	amountAllow[3] = nairlift; 
+	if (ndiplomacy <0) { ndiplomacy = defaultAmountAllow[4]; }
+	amountAllow[4] = ndiplomacy; 
+
 	std::string tempString;
-	for (int i = 0; i < 5; i++) {
-		actualAmount[i] = amountAllow[i];
-	}
+	Card* tempCard = new Card();
 	//Populating the cards in the deck
-	for (int i = 0; i < totalCards; i++) {
-		Card* tempCard = new Card();
-		while (!Allowed) {
-			srand((unsigned)time(NULL));
-			int temp = (int)rand() % 5;
-			tempString = CardsAllow[temp];
-			if (amountAllow[temp] > 0) {
-				amountAllow[temp]--;
-				Allowed = true;
-			}
-		}
+	for (int i = 0; i < nbomb; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[0];
 		tempCard->setCardType(tempString);
 		deckCards.push_back(tempCard);
-		Allowed = false;
+	}
+	for (int i = 0; i < nreinforcement; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[1];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < nblockade; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[2];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < nairlift; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[3];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
+	}
+	for (int i = 0; i < ndiplomacy; i++) {
+		tempCard = new Card();
+		tempString = CardsAllow[4];
+		tempCard->setCardType(tempString);
+		deckCards.push_back(tempCard);
 	}
 }
 
-Deck::~Deck()
+Deck::~Deck()//destructor
 {
 	for (auto&& x : deckCards) {
 		delete x;
 	}
 }
 
-Deck& Deck::operator=(const Deck &orig) {
+Deck& Deck::operator=(const Deck &orig) {//overloading the equals operator
 	if (&orig != this) {
 		for (auto&& x : deckCards) {
 			delete x;
@@ -194,20 +215,17 @@ Deck& Deck::operator=(const Deck &orig) {
 }
 
 
-Deck::Deck(const Deck& orig) {
+Deck::Deck(const Deck& orig) {//copy constructor
 	for (auto && x : orig.deckCards) {
 		deckCards.push_back(new Card(*x));
 	}
 }
 
-void Deck::Draw(Hand& handID)
+void Deck::Draw(Hand& handID)//draws a random card
 {
-	//to do remove random card from deck add to hand of player calling function
 	int currentDeckSize = deckCards.size();
 	srand((unsigned)time(NULL));
 	int temp = (int)rand() % currentDeckSize;
-	/*Card* tempCard = new Card(*deckCards.at(temp));
-	handID.addCard(tempCard);*/
 	handID.addCard(deckCards.at(temp));
 	deckCards.erase(deckCards.begin() + temp);
 }
@@ -217,7 +235,7 @@ void Deck::returnCard(Card* cardId)//currently allows returns of cards from else
 	deckCards.push_back(cardId);
 }
 
-void Deck::printDeck()
+void Deck::printDeck()//prints how many of each type the deck contains
 {
 	std::cout << "the deck contains the following cards:\n";
 	int cardInHand[5] = { 0 };
@@ -250,18 +268,18 @@ void Deck::printDeck()
 }
 
 //Hand functions-------------------------------------------------------------------------------
-Hand::Hand()
+Hand::Hand()//default constructor
 {
 	//do nothing hand starts empty
 }
 
-Hand::~Hand()
+Hand::~Hand()//destructor
 {
 	for (auto&& x : handCards) {
 		delete x;
 	}
 }
-Hand& Hand::operator=(const Hand &orig)
+Hand& Hand::operator=(const Hand &orig)//overloads the equals operator
 {
 	if (&orig != this) {
 		for (auto&& x : handCards) {
@@ -274,23 +292,23 @@ Hand& Hand::operator=(const Hand &orig)
 	return *this;
 }
 
-Hand::Hand(const Hand& orig)
+Hand::Hand(const Hand& orig)//copy constructor
 {
 	for (auto && x : orig.handCards) {
 		handCards.push_back(new Card(*x));
 	}
 }
 
-void Hand::addCard(Card* cardID)
+void Hand::addCard(Card* cardID)//adds a card to the hands card vector
 {
 	handCards.push_back(cardID);
 }
 
-void Hand::removeCard(Card* cardID)
+void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 {
 	int temp = 0;
 	for (auto&& x : handCards) {
-		if (x== cardID) {  break; }
+		if (x == cardID) { break; }
 		temp++;
 	}
 	handCards.erase(handCards.begin() + temp);
@@ -300,16 +318,19 @@ void Hand::play(std::string cardType, Deck& deckId)
 {
 	if (isInHand(cardType))//check if the type card is in hand  
 	{
-		Card* tempCardP=nullptr;
+		Card* tempCardP = nullptr;
 		for (auto&& x : handCards) {
 			if (x->getCardType().compare(cardType) == 0) { tempCardP = x; break; }
 		}
-		if(tempCardP != nullptr)tempCardP->play();
-		deckId.returnCard(tempCardP);
-		removeCard(tempCardP);
+		if (tempCardP != nullptr) {
+			tempCardP->play();
+			deckId.returnCard(tempCardP);
+			removeCard(tempCardP);
+		}
 	}
-
-
+	else {
+		std::cout << cardType<<" is not in this hand to play\n";
+	}
 }
 bool Hand::isInHand(std::string cardType)
 {
@@ -319,7 +340,7 @@ bool Hand::isInHand(std::string cardType)
 	return false;
 }
 
-void Hand::printHand()
+void Hand::printHand()//prints the type of cards in the hand
 {
 	std::cout << "the hand contains the following cards:\n";
 	int cardInHand[5] = { 0 };
@@ -352,7 +373,7 @@ void Hand::printHand()
 }
 
 void printCommands() {
-	std::cout<<"\nList of commands:\n";
+	std::cout << "\nList of commands:\n";
 	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\n";
 	std::cout << "\nFor Hand: \naddCard(Card* cardID): adds card to hand,\nremoveCard(Card* cardID): removes card from Hand,\nplay(string cardType, Deck deck): plays card type and returns played card to deck,\nisInHand(string cardType): check if card type is in hand returns a boolean value,\n;printHand() prints the contents of the hand\n";
 }

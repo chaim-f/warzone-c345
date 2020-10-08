@@ -7,18 +7,17 @@ class Hand;
 class Card
 {
 private:
-	std::string* cardType;
+	std::string* cardType;//holds the card type acceptable inputs is "bomb", "reinforcement", "blockade", "airlift", "diplomacy" any other input will result in a random card being generated
 public:
-	Card(std::string cardID);
-	Card();
-	~Card();
-	Card& operator=(const Card &orig);
-	Card(const Card& orig);
-	std::string getCardType();
-	void setCardType(std::string cardType);
-	void play(std::string cardType);
-	void play();
-	void toString();
+	Card(std::string cardID);//constructer with the type as an input, if type is wrong randomly choses 
+	Card();//default constructor
+	~Card();//destructor
+	Card& operator=(const Card &orig);//overloading the equals 
+	Card(const Card& orig);//copy constructor
+	std::string getCardType();//cardType getter 
+	void setCardType(std::string cardType);//cardType setter
+	void play();// adds order of card type to the order list based on the cardType
+	void toString();//returns string of card type
 };
 
 
@@ -26,32 +25,33 @@ public:
 class Deck
 {
 public:
-	Deck();
-	Deck(int nbomb, int nreinforcement, int nblockade, int nairlift, int ndiplomacy);
-	~Deck();
-	Deck& operator=(const Deck &orig);
-	Deck(const Deck& orig);
-	void Draw(Hand& handID);
-	void returnCard(Card* cardId);
-	void printDeck();
+	Deck();//default constructor
+	Deck(int nbomb, int nreinforcement, int nblockade, int nairlift, int ndiplomacy);//constructor
+	~Deck();//destructor
+	Deck& operator=(const Deck &orig);//overloading the equals operator
+	Deck(const Deck& orig);//copy constructor
+	void Draw(Hand& handID);//draws a random card
+	void returnCard(Card* cardId);//adds a card to the vector
+	void printDeck();//prints the card types in the deck
+	int amountAllow[5];//contains the amount of each card type if the default constructor is called other cards can be added manually
 private:
-	std::vector <Card*> deckCards;
+	std::vector <Card*> deckCards;//vector of cards in the deck
 };
 
 class Hand
 {
 public:
-	Hand();
-	~Hand();
-	Hand& operator=(const Hand &orig);
-	Hand(const Hand& orig);
-	void addCard(Card* cardID);
-	void removeCard(Card* cardID);
-	void play(std::string cardType, Deck& deck);
-	bool isInHand(std::string cardType);
-	void printHand();
+	Hand();//default constructor
+	~Hand();//destructor
+	Hand& operator=(const Hand &orig);//overloading the equals operator
+	Hand(const Hand& orig);//copy constructor
+	void addCard(Card* cardID);//adds a card to the hand
+	void removeCard(Card* cardID);//removes card from the hand
+	void play(std::string cardType, Deck& deck);//plays a card (adds to deck, removes from hand, and adds order to the order list)
+	bool isInHand(std::string cardType);//check if the type of card is in the hand
+	void printHand();//prints the card types in the hand
 private:
-	std::vector <Card*> handCards;
+	std::vector <Card*> handCards;//vector of cards in the hand
 };
 
-void printCommands();
+void printCommands();//prints useable commands
