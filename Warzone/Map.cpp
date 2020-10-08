@@ -1,68 +1,51 @@
 #include "Map.h"
 
-/*
-The Map class can be used to represent any map graph configuration.
-The Map class includes a validate() method that makes the following checks:
-1) the map is a connected graph,
-2) continents are connected subgraphs and
-3) each country belongs to one and only one continent.
-*/
-
-bool Map::isTerritoryBelongToAContinent()
+Map* Map::createMap(int t)
 {
-	// TODO
-	return true;
-}
-
-// returns 0 if one territory has no adjacencies, otherwise return 1
-bool Map::isTerritoryHasAdjacencies()
-{
-	// loop through all the territories
-	// increment the counter if a territory has adjacencies
-	list<Territory>::iterator it;
-	int counter = 0;
-	for (it = territoryList.begin(); it != territoryList.end(); it++)
+	Map* map = new Map;
+	map->numTerritories = t;
+	map->adjacencyListArray = new AdjacencyList[t];
+	for (int i = 0; i < t; i++)
 	{
-		if (it->adjacenciesString != "") {
-			counter++;
+		map->adjacencyListArray[i].head = NULL;
+	}
+	return map;
+}
+
+void Map::addEgde(Map* map, Territory t)
+{
+	int source = t.source;
+	int dest = t.destination;
+	Node* node{};
+	node = node->newNode(dest);;
+	node->next = map->adjacencyListArray[source].head;
+	map->adjacencyListArray[source].head = node;
+
+	node = node->newNode(source);
+	node->next = map->adjacencyListArray[dest].head;
+	map->adjacencyListArray[dest].head = node;
+}
+
+void Map::printMap(Map* m)
+{
+	for (int i = 0; i < m->numTerritories; i++) {
+		Node* root = adjacencyListArray[i].head;
+		cout << "Adjacency list of vertex " << i << ": (";
+		
+		while (root != NULL) {
+			cout << root->data << ",";
+			root = root->next;
 		}
-		if (it->adjacenciesString == "[]") {
-			counter--;
-		}
-	}
-	// for a valid map, usually all territories has adjacencies
-	// if counter is less than the size of territories that's means one (or more) territor(ies)y does(do) not have adjacencies
-	if (counter < territoryList.size())
-	{
-		return false;
-	}
-	return true;
-}
+		cout << ")" << endl;
 
-void Map::validate()
-{
-	// TODO
-	// using territoryList and continentList
-	// validate if a territory has borders/adjacencies
-	// validate if a territory belongs to a continent
-	string isValidMap;
-	if (isTerritoryHasAdjacencies() && isTerritoryBelongToAContinent()) {
-		isValidMap = "Map is valid";
 	}
-	else {
-		isValidMap = "Map is invalid";
-	}
-	cout << isValidMap;
 }
 
 
-Map::Map(list<Territory> territories)
+Node* Node::newNode(int data)
 {
-	territoryList = territories;
-}
-
-Map::Map(list<Territory> territories, list<Continent> continents)
-{
-	territoryList = territories;
-	continentList = continents;
+	Node* nodePtr = new Node;
+	nodePtr->data = data;
+	nodePtr->next = NULL;
+	return nodePtr;
 }
