@@ -1,6 +1,6 @@
-using namespace std;
 #include <list>
 #include <iostream>
+#include <vector>
 using namespace std;
 class Territory; // forward declaration
 class Continent;
@@ -20,22 +20,41 @@ public:
 class Map
 {
 	AdjacencyList* adjacencyListArray;
-	int numTerritories;
+	int numVertices;
+	vector<Continent> continentsVec;
+	vector<Territory> territoriesVec;
 public:
 	Map* createMap(int);
-	void addEgde(Map* map, Territory territory);
-	void printMap(Map*);
+	void addEgde(Map* map, Territory t);
+	void addEgde(Map* map, Continent c);
+	void printMap(Map* m, string type);
+	friend vector<Continent> getContinents(Map* m);
+	friend void printContinents(Map* map);
+	friend void printTerritories(Map* map);
 };
 
 class Continent
 {
 	string continentName;
-	int continentIndex = 0;
 	int continentBunos = 0;
+	int source;
+	int destination;
 public:
-	Continent() {};
-	Continent(int index, string name) : continentIndex(index), continentName(name) {}
-	Continent(int index, string name, int bunos) : continentIndex(index), continentName(name), continentBunos(bunos) {}
+	Continent() {
+		source = 0;
+		destination = 0;
+	};
+	Continent(int src, int dest, string name, int bunos) {
+		source = src;
+		destination = dest;
+		continentName = name;
+		continentBunos = bunos;
+	}
+	friend int getSource(Continent c);
+	friend int getDestination(Continent d);
+	friend ostream& operator<<(ostream& strm, const Continent c) {
+		return strm << "Continent(" << c.source << ", " << c.destination << ", " << c.continentName << ", " << c.continentBunos << ")";
+	}
 };
 
 class Territory {
@@ -57,5 +76,8 @@ public:
 		continent = c;
 	}
 	friend class Map;
+	friend ostream& operator<<(ostream& strm, const Territory t) {
+		return strm << "Territory(" << t.source << ", " << t.destination << ", " << t.continent << ")";
+	}
 };
 
