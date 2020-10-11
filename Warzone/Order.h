@@ -1,12 +1,21 @@
 using namespace std;
+#include <vector>
+#include <iostream>
 #include <list>
 
-class Order {
 
-public:
+class Order {
+    
+    string name;
+
+public:    
     Order();
     bool validate();
     bool execute();
+    void setName(string n);
+    string getName();
+    friend std::ostream& operator<<(std::ostream&, const Order);
+    bool operator== (Order o1);
 
 };
 
@@ -17,6 +26,7 @@ class Deploy : public Order {
 
 public:
     Deploy();
+   
 };
 class Advance : public Order {
   
@@ -55,11 +65,14 @@ public:
     
     Orderlist();
 
-    void move(Order order);
+    void move(Order insertOrder, Order destinationOrder);
 
-    Order Delete(Order order);
+    Order remove(Order order);
 
     void add(Order order);
+
+    friend std::ostream& operator<<(std::ostream&, const Orderlist);
+
 
 };
 
