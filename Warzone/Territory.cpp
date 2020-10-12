@@ -1,71 +1,19 @@
 #include "Territory.h"
-#include<sstream>
 
-// convert adjacencies which of type list<int> to easily readable string
-void Territory::setListAdjacencies()
+Territory::Territory(int src, int dest)
 {
-	stringstream ss;
-	string adjacencies;
-	list <int> ::iterator it;
-	string str;
-	for (it = territoryAdjacencies.begin(); it != territoryAdjacencies.end(); ++it) {
-		ss << *it << ",";
-	}
-	ss >> adjacencies;
-	Territory::setStringAdjacencies(adjacencies.substr(0, adjacencies.length() - 1));
+	source = src;
+	destination = dest;
 }
 
-list<int> Territory::getListAdjacencies()
+Territory::Territory(int src, int dest, Continent c)
 {
-	return territoryAdjacencies;
+	source = src;
+	destination = dest;
+	continent = c;
 }
 
-string Territory::getTerritoryName()
+ostream& operator<<(ostream& strm, const Territory t)
 {
-	return territoryName;
+	return strm << "Territory(" << t.source << ", " << t.destination << ", " << t.continent << ")";
 }
-
-int Territory::getTerritoryIndex()
-{
-	return territoryIndex;
-}
-
-int Territory::getTerritoryContinentIndex()
-{
-	return territoryContinent.getContinentIndex();
-}
-
-void Territory::setStringAdjacencies(string s)
-{
-	adjacenciesString = "[" + s + "]";
-}
-
-Territory::Territory(int index, string name)
-{
-	territoryIndex = index;
-	territoryName = name;
-}
-
-Territory::Territory(int index, string name, Continent continent)
-{
-	territoryIndex = index;
-	territoryName = name;
-	territoryContinent = continent;
-}
-
-Territory::Territory(int index, string name, Continent continent, list<int> adjacencies)
-{
-	territoryIndex = index;
-	territoryName = name;
-	territoryContinent = continent;
-	territoryContinentIndex = continent.getContinentIndex();
-	territoryAdjacencies = adjacencies;
-	Territory::setListAdjacencies();
-}
-
-// just like toString() in java
-std::ostream& operator<<(std::ostream& strm, const Territory t)
-{
-	return strm << "Territory(" << t.territoryIndex << ", " << t.territoryName << ", " << t.territoryContinentIndex << ", " << t.adjacenciesString << ")\n";
-}
-

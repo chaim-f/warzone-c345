@@ -1,68 +1,115 @@
 #include "Map.h"
+#include <vector>
+#include <list>
 
-/*
-The Map class can be used to represent any map graph configuration.
-The Map class includes a validate() method that makes the following checks:
-1) the map is a connected graph,
-2) continents are connected subgraphs and
-3) each country belongs to one and only one continent.
-*/
+using namespace std;
+bool visited[100000];
+
+void Map::DFS(int root, bool visitedArr[])
+{
+	visitedArr[root] = true;
+	list<int>::iterator it;
+	for (it = adjList[root].begin(); it != adjList[root].end(); ++it) {
+		if (!visitedArr[*it]) {
+			DFS(*it, visitedArr);
+		}
+	}
+}
+
+void Map::displayAdjacencyList()
+{
+	cout << "Adjacency List" << endl;
+	for (int v = 0; v < numVertices; v++)
+	{
+		cout << v << " : ";
+		list<int>::iterator i;
+		for (i = adjList[v].begin(); i != adjList[v].end(); ++i)
+		{
+			cout << *i << " ";
+		}
+		cout << endl;
+	}
+}
+
+void Map::addEdge(Territory t)
+{
+	adjList[t.source].push_back(t.destination);
+	adjList[t.destination].push_back(t.source);
+	territoriesVec.push_back(t);
+}
+
+void Map::addEdge(Continent c)
+{
+	adjList[c.source].push_back(c.destination);
+	adjList[c.destination].push_back(c.source);
+	continentsVec.push_back(c);
+}
+
+bool Map::isConnectedGraph()
+{
+	for (int i = 0; i < numVertices; i++) {
+		visited[i] = false;
+	}
+	DFS(0, visited);
+	int count = 0;
+	for (int i = 0; i < numVertices; i++) {
+		if (visited[i] == true) {
+			count++;
+		}
+	}
+	return numVertices == count;
+}
 
 bool Map::isTerritoryBelongToAContinent()
 {
-	// TODO
-	return true;
-}
-
-// returns 0 if one territory has no adjacencies, otherwise return 1
-bool Map::isTerritoryHasAdjacencies()
-{
-	// loop through all the territories
-	// increment the counter if a territory has adjacencies
-	list<Territory>::iterator it;
-	int counter = 0;
-	for (it = territoryList.begin(); it != territoryList.end(); it++)
-	{
-		if (it->adjacenciesString != "") {
-			counter++;
-		}
-		if (it->adjacenciesString == "[]") {
-			counter--;
+	bool cond = true;
+	if (territoriesVec.size() > 0) {
+		for (size_t i = 0; i < territoriesVec.size(); ++i) {
+			if (territoriesVec[i].continent.getSource() == -1) {
+				cond = false;
+				break;
+			}
 		}
 	}
-	// for a valid map, usually all territories has adjacencies
-	// if counter is less than the size of territories that's means one (or more) territor(ies)y does(do) not have adjacencies
-	if (counter < territoryList.size())
-	{
-		return false;
+	else {
+		cond = false;
 	}
-	return true;
+	return cond;
 }
 
 void Map::validate()
 {
-	// TODO
-	// using territoryList and continentList
-	// validate if a territory has borders/adjacencies
-	// validate if a territory belongs to a continent
-	string isValidMap;
-	if (isTerritoryHasAdjacencies() && isTerritoryBelongToAContinent()) {
-		isValidMap = "Map is valid";
+	if (isConnectedGraph() && isTerritoryBelongToAContinent()) {
+		cout << "Graph is connected!" << endl;
+		cout << "All territories belong to a continent!" << endl;
 	}
 	else {
-		isValidMap = "Map is invalid";
+		if (!isConnectedGraph()) {
+			cout << "Graph is NOT connected!" << endl;
+		}
+		else {
+			cout << "Graph is connected!" << endl;
+		}
+		if (!isTerritoryBelongToAContinent()) {
+			cout << "One or more territory do(es) NOT belong to a continent!" << endl;
+		}
+		else {
+			cout << "All territories belong to a continent!" << endl;
+		}
 	}
-	cout << isValidMap;
 }
 
-
-Map::Map(list<Territory> territories)
+int getSource(Continent c)
 {
-	territoryList = territories;
+	return c.source;
 }
 
-Map::Map(list<Territory> territories, list<Continent> continents)
+int getDestination(Continent d)
 {
-	territoryList = territories;
-	continentList = continents;
+	return d.destination;
+}
+
+int Continent::getSource()
+{
+	return source;
 }
