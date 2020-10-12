@@ -62,14 +62,17 @@ bool Map::isConnectedGraph()
 
 bool Map::isTerritoryBelongToAContinent()
 {
-	bool cond = false;
+	bool cond = true;
 	if (territoriesVec.size() > 0) {
 		for (size_t i = 0; i < territoriesVec.size(); ++i) {
-			if (territoriesVec[i].continent.getSource() != -1) {
-				cond = true;
+			if (territoriesVec[i].continent.getSource() == -1) {
+				cond = false;
 				break;
 			}
 		}
+	}
+	else {
+		cond = false;
 	}
 	return cond;
 }
