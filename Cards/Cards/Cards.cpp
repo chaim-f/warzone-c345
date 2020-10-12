@@ -1,4 +1,4 @@
-#include "Cards.h"
+#include "Card.h"
 #include <time.h>
 #include <iostream>
 #include <algorithm>
@@ -8,33 +8,48 @@
 std::string const CardsAllow[5] = { "bomb", "reinforcement", "blockade", "airlift", "diplomacy" };//strings allowed for Card types 
 int const defaultAmountAllow[5] = { 3,3,3,3,3 };//the default number for amount of each card to be created
 
-//Card functions-------------------------------------------------------------------------------------------------------------
+												//Card functions-------------------------------------------------------------------------------------------------------------
 Card::Card(std::string cardID)//currently creates any type of card without looking at limit of cards allowed
 {
-	cardType = new std::string();//allocates memory
-	bool correct = false;//sets the bool value that determins if the CardID is a correct string.
-	for (int i = 0; i < 5;i++) {//loops through the strings allowed for Card types
-		std::string p = CardsAllow[i]; 
-		if ((p.compare(cardID)) == 0) { correct = true; }//if the string is allowed changes the boolean to true
-	}
-	if (correct)
+	try
 	{
-		*cardType = cardID;//as the card type is correct it sets the card type to the CardID string
+		cardType = new std::string();//allocates memory
+		bool correct = false;//sets the bool value that determins if the CardID is a correct string.
+		for (int i = 0; i < 5; i++) {//loops through the strings allowed for Card types
+			std::string p = CardsAllow[i];
+			if ((p.compare(cardID)) == 0) { correct = true; }//if the string is allowed changes the boolean to true
+		}
+		if (correct)
+		{
+			*cardType = cardID;//as the card type is correct it sets the card type to the CardID string
+		}
+		else {
+			std::cout << "incorrect card type it need to be lowercase so randomly allocating\n";
+			srand((unsigned)time(NULL));//seeds the rand function based on the time
+			int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
+			*cardType = CardsAllow[temp];//set the card type to the random allowable string 
+		}
 	}
-	else {
-		std::cout << "incorrect card type it need to be lowercase so randomly allocating\n";
-		srand((unsigned)time(NULL));//seeds the rand function based on the time
-		int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
-		*cardType = CardsAllow[temp];//set the card type to the random allowable string 
+	catch (std::bad_alloc&)
+	{
+		std::cerr << "\nError allocating memory in Cards non default constructor";
 	}
+	
 }
 
 Card::Card()//currently creates any type of card without looking at limit of cards allowed
 {
-	cardType = new std::string();
-	srand((unsigned)time(NULL));//seeds the rand function based on the time
-	int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
-	*cardType = CardsAllow[temp];//set the card type to the random allowable string 
+	try
+	{
+		cardType = new std::string();
+		srand((unsigned)time(NULL));//seeds the rand function based on the time
+		int temp = (int)rand() % 5;//takes the random values and takes the mod5 so it returns values between 0 and 4
+		*cardType = CardsAllow[temp];//set the card type to the random allowable string 
+	}
+	catch (std::bad_alloc&)
+	{
+		std::cerr << "\nError allocating memory in Cards non default constructor";
+	}
 }
 
 Card::~Card()//destructor 
@@ -45,7 +60,7 @@ Card::~Card()//destructor
 Card& Card::operator=(const Card &orig) {//overloads the equals sign for the Card class
 	if (&orig != this) {
 		delete cardType;
-		cardType = new std::string(*orig.cardType);
+		cardType = new std::string(*orig.cardType);	
 	}
 	return *this;
 }
@@ -70,11 +85,9 @@ void Card::setCardType(std::string s)//setter
 		*cardType = s;
 	}
 	else {
-		std::cout << "incorrect card type, ignoring the change the  type "<<s<<" is not a valid type \n";
+		std::cout << "incorrect card type, ignoring the change the  type " << s << " is not a valid type \n";
 	}
-	
 }
-
 
 void Card::play()//to do fill it in such that it fills the order list
 {
@@ -102,7 +115,7 @@ void Card::play()//to do fill it in such that it fills the order list
 	else { std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n"; }
 }
 
-void Card::toString()
+void Card::printCard()
 {
 	std::cout << "the card type is: " << getCardType() << "\n";
 }
@@ -150,15 +163,15 @@ Deck::Deck()//default constructor
 Deck::Deck(int nbomb = 3, int nreinforcement = 3, int nblockade = 3, int nairlift = 3, int ndiplomacy = 3)//constructor
 {
 	if (nbomb<0) { nbomb = defaultAmountAllow[0]; }
-	 amountAllow[0] = nbomb; 
+	amountAllow[0] = nbomb;
 	if (nreinforcement<0) { nreinforcement = defaultAmountAllow[1]; }
-	amountAllow[1] = nreinforcement; 
+	amountAllow[1] = nreinforcement;
 	if (nblockade<0) { nblockade = defaultAmountAllow[2]; }
-	amountAllow[2] = nblockade; 
+	amountAllow[2] = nblockade;
 	if (nairlift<0) { nairlift = defaultAmountAllow[3]; }
-	amountAllow[3] = nairlift; 
+	amountAllow[3] = nairlift;
 	if (ndiplomacy <0) { ndiplomacy = defaultAmountAllow[4]; }
-	amountAllow[4] = ndiplomacy; 
+	amountAllow[4] = ndiplomacy;
 
 	std::string tempString;
 	Card* tempCard = new Card();
@@ -266,6 +279,20 @@ void Deck::printDeck()//prints how many of each type the deck contains
 		std::cout << CardsAllow[i] << ": " << cardInHand[i] << "\n";
 	}
 }
+void Deck::addCard()//adds a random card to the Deck
+{
+	std::string tempString;
+	Card* tempCard;
+	tempCard = new Card();
+	deckCards.push_back(tempCard);
+}
+void Deck::addCard(std::string cardID)//adds a specific card to the Deck
+{
+	std::string tempString;
+	Card* tempCard;
+	tempCard = new Card(cardID);
+	deckCards.push_back(tempCard);
+}
 
 //Hand functions-------------------------------------------------------------------------------
 Hand::Hand()//default constructor
@@ -329,7 +356,7 @@ void Hand::play(std::string cardType, Deck& deckId)
 		}
 	}
 	else {
-		std::cout << cardType<<" is not in this hand to play\n";
+		std::cout << cardType << " is not in this hand to play\n";
 	}
 }
 bool Hand::isInHand(std::string cardType)
@@ -374,6 +401,6 @@ void Hand::printHand()//prints the type of cards in the hand
 
 void printCommands() {
 	std::cout << "\nList of commands:\n";
-	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\n";
+	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\naddCard(): adds a random card to the Deck\naddCard(string cardID);//adds the specified card type to the Deck\n";
 	std::cout << "\nFor Hand: \naddCard(Card* cardID): adds card to hand,\nremoveCard(Card* cardID): removes card from Hand,\nplay(string cardType, Deck deck): plays card type and returns played card to deck,\nisInHand(string cardType): check if card type is in hand returns a boolean value,\n;printHand() prints the contents of the hand\n";
 }
