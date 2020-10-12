@@ -6,59 +6,64 @@
 using namespace std;
 
 int main() {
-	int numContinents = 3;
+	Map m1(3);
+	m1.addEdge(Territory(0, 1, Continent(0, 1, "Continent A", 2)));
+	m1.addEdge(Territory(0, 2, Continent(0, 2, "Continent B", 1)));
+	m1.addEdge(Territory(1, 2, Continent(1, 2, "Continent C", 3)));
+	m1.displayAdjacencyList();
+	m1.validate();
 
-	Map* map2{};
-	map2 = map2->createMap(numContinents);
-	map2->addEgde(map2, Continent(0, 1, "Continent A", 2));
-	map2->addEgde(map2, Continent(0, 2, "Continent B", 1));
-	map2->addEgde(map2, Continent(1, 2, "Continent C", 3));
-	printContinents(map2);
-	map2->printMap(map2, "Continent ");
+	cout << endl;
 
-	int numTerritories = 5;
-	Map* map{};
-	map = map->createMap(numTerritories);
-	srand(time(NULL));
-	vector<Territory> territories = {
-		Territory(0, 1, getContinents(map2)[rand() % numContinents]),
-		Territory(0, 4, getContinents(map2)[rand() % numContinents]),
-		Territory(1, 2, getContinents(map2)[rand() % numContinents]),
-		Territory(1, 3, getContinents(map2)[rand() % numContinents]),
-		Territory(1, 4, getContinents(map2)[rand() % numContinents]),
-		Territory(2, 3, getContinents(map2)[rand() % numContinents]),
-		Territory(3, 4, getContinents(map2)[rand() % numContinents])
-	};
-	for (size_t i = 0; i < territories.size(); ++i) {
-		map->addEgde(map, territories[i]);
-	}
+	Map m2(5);
+	m2.addEdge(Territory(0, 1, Continent(0, 1, "Continent A", 2)));
+	m2.addEdge(Territory(0, 2, Continent(0, 1, "Continent A", 2)));
+	m2.addEdge(Territory(3, 4, Continent(0, 1, "Continent A", 2)));
+	m2.displayAdjacencyList();
+	m2.validate();
 
-	printTerritories(map);
-	map->printMap(map, "Territory ");
+	cout << endl;
+
+	Map m3(6);
+	m3.addEdge(Territory(0, 4));
+	m3.addEdge(Territory(0, 3));
+	m3.addEdge(Territory(1, 2));
+	m3.addEdge(Territory(1, 4));
+	m3.addEdge(Territory(1, 5));
+	m3.addEdge(Territory(2, 3));
+	m3.addEdge(Territory(2, 5));
+	m3.addEdge(Territory(5, 3));
+	m3.addEdge(Territory(5, 4));
+	m3.displayAdjacencyList();
+	m3.validate();
 	return 0;
 }
+
 /*
-*******Sample output******
+Adjacency List
+0 : 1 2
+1 : 0 2
+2 : 0 1
+Map is VALID!
 
-Continent(0, 1, Continent A, 2)
-Continent(0, 2, Continent B, 1)
-Continent(1, 2, Continent C, 3)
+Adjacency List
+0 : 1 2
+1 : 0
+2 : 0
+3 : 4
+4 : 3
+Map is INVALID!
+Graph is not connected!
+All territories belong to a continent!
 
-Adjacency list of Continent 0: (2,1,)
-Adjacency list of Continent 1: (2,0,)
-Adjacency list of Continent 2: (1,0,)
-
-Territory(0, 1, Continent(1, 2, Continent C, 3))
-Territory(0, 4, Continent(1, 2, Continent C, 3))
-Territory(1, 2, Continent(0, 2, Continent B, 1))
-Territory(1, 3, Continent(0, 1, Continent A, 2))
-Territory(1, 4, Continent(1, 2, Continent C, 3))
-Territory(2, 3, Continent(1, 2, Continent C, 3))
-Territory(3, 4, Continent(1, 2, Continent C, 3))
-
-Adjacency list of Territory 0: (4,1,)
-Adjacency list of Territory 1: (4,3,2,0,)
-Adjacency list of Territory 2: (3,1,)
-Adjacency list of Territory 3: (4,2,1,)
-Adjacency list of Territory 4: (3,1,0,)
+Adjacency List
+0 : 4 3
+1 : 2 4 5
+2 : 1 3 5
+3 : 0 2 5
+4 : 0 1 5
+5 : 1 2 3 4
+Map is INVALID!
+Graph is connected!
+One or more territory do(es) not belong to a continent!
 */

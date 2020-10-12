@@ -5,32 +5,26 @@ using namespace std;
 class Territory; // forward declaration
 class Continent;
 
-class Node {
-public:
-	int data;
-	Node* newNode(int);
-	Node* next;
-};
-
-class AdjacencyList {
-public:
-	Node* head;
-};
-
 class Map
 {
-	AdjacencyList* adjacencyListArray;
 	int numVertices;
-	vector<Continent> continentsVec;
 	vector<Territory> territoriesVec;
+	list<int> *adjList;
+	void DFS(int v, bool visitedArr[]);
 public:
-	Map* createMap(int);
-	void addEgde(Map* map, Territory t);
-	void addEgde(Map* map, Continent c);
-	void printMap(Map* m, string type);
-	friend vector<Continent> getContinents(Map* m);
-	friend void printContinents(Map* map);
-	friend void printTerritories(Map* map);
+	Map(int vertices)
+	{
+		this->numVertices = vertices;
+		adjList = new list<int>[vertices];
+	}
+	~Map() {
+		delete [] adjList; 
+	}
+	void addEdge(Territory t);
+	void displayAdjacencyList();
+	bool isConnected();
+	bool isTerritoryBelongToAContinent();
+	void validate();
 };
 
 class Continent
@@ -41,8 +35,8 @@ class Continent
 	int destination;
 public:
 	Continent() {
-		source = 0;
-		destination = 0;
+		source = -1; // if not set
+		destination = -1;
 	};
 	Continent(int src, int dest, string name, int bunos) {
 		source = src;
@@ -50,6 +44,7 @@ public:
 		continentName = name;
 		continentBunos = bunos;
 	}
+	int getSource();
 	friend int getSource(Continent c);
 	friend int getDestination(Continent d);
 	friend ostream& operator<<(ostream& strm, const Continent c) {

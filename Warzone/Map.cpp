@@ -1,92 +1,90 @@
 #include "Map.h"
+#include <vector>
+#include <list>
 
-Map* Map::createMap(int t)
+using namespace std;
+bool visited[100000];
+
+void Map::DFS(int root, bool visitedArr[])
 {
-	Map* map = new Map;
-	map->numVertices = t;
-	map->adjacencyListArray = new AdjacencyList[t];
-	for (int i = 0; i < t; i++)
-	{
-		map->adjacencyListArray[i].head = NULL;
+	visitedArr[root] = true;
+	list<int>::iterator it;
+	for (it = adjList[root].begin(); it != adjList[root].end(); ++it) {
+		if (!visitedArr[*it]) {
+			DFS(*it, visitedArr);
+		}
 	}
-	return map;
 }
 
-void Map::addEgde(Map* map, Territory t)
+void Map::displayAdjacencyList()
 {
-	int source = t.source;
-	int dest = t.destination;
-	Node* node{};
-	node = node->newNode(dest);;
-	node->next = map->adjacencyListArray[source].head;
-	map->adjacencyListArray[source].head = node;
+	cout << "Adjacency List" << endl;
+	for (int v = 0; v < numVertices; v++)
+	{
+		cout << v << " : ";
+		list<int>::iterator i;
+		for (i = adjList[v].begin(); i != adjList[v].end(); ++i)
+		{
+			cout << *i << " ";
+		}
+		cout << endl;
+	}
+}
 
-	node = node->newNode(source);
-	node->next = map->adjacencyListArray[dest].head;
-	map->adjacencyListArray[dest].head = node;
-
+void Map::addEdge(Territory t)
+{
+	adjList[t.source].push_back(t.destination);
+	adjList[t.destination].push_back(t.source);
 	territoriesVec.push_back(t);
 }
 
-void Map::addEgde(Map* map, Continent c)
+bool Map::isConnected()
 {
-	int source = getSource(c);
-	int dest = getDestination(c);
-	Node* node{};
-	node = node->newNode(dest);;
-	node->next = map->adjacencyListArray[source].head;
-	map->adjacencyListArray[source].head = node;
-
-	node = node->newNode(source);
-	node->next = map->adjacencyListArray[dest].head;
-	map->adjacencyListArray[dest].head = node;
-
-	// storing continent
-	continentsVec.push_back(c);
-}
-
-void Map::printMap(Map* m, string type)
-{
-	for (int i = 0; i < m->numVertices; i++) {
-		Node* root = adjacencyListArray[i].head;
-		cout << "Adjacency list of " << type << i << ": (";
-		
-		while (root != NULL) {
-			cout << root->data << ",";
-			root = root->next;
+	for (int i = 0; i < numVertices; i++) {
+		visited[i] = false;
+	}
+	DFS(0, visited);
+	int count = 0;
+	for (int i = 0; i < numVertices; i++) {
+		if (visited[i] == true) {
+			count++;
 		}
-		cout << ")" << endl;
 	}
-	cout << endl;
+	return numVertices == count;
 }
 
-Node* Node::newNode(int data)
+bool Map::isTerritoryBelongToAContinent()
 {
-	Node* nodePtr = new Node;
-	nodePtr->data = data;
-	nodePtr->next = NULL;
-	return nodePtr;
-}
-
-vector<Continent> getContinents(Map* m)
-{
-	return m->continentsVec;
-}
-
-void printContinents(Map* map)
-{
-	for (size_t i = 0; i < map->continentsVec.size(); ++i) {
-		cout << map->continentsVec[i] << endl;
+	bool cond = true;
+	for (size_t i = 0; i < territoriesVec.size(); ++i) {
+		if (territoriesVec[i].continent.getSource() == -1) {
+			cond = false;
+			break;
+		}
 	}
-	cout << endl;
+	return cond;
 }
 
-void printTerritories(Map* map)
+void Map::validate()
 {
-	for (size_t i = 0; i < map->territoriesVec.size(); ++i) {
-		cout << map->territoriesVec[i] << endl;
+	if (isConnected() && isTerritoryBelongToAContinent()) {
+		cout << "Map is VALID!" << endl;
 	}
-	cout << endl;
+	else {
+		cout << "Map is INVALID!" << endl;
+		if (!isConnected()) {
+			cout << "Graph is not connected!" << endl;
+		}
+		else {
+			cout << "Graph is connected!" << endl;
+		}
+		if (!isTerritoryBelongToAContinent()) {
+			cout << "One or more territory do(es) not belong to a continent!" << endl;
+		}
+		else {
+			cout << "All territories belong to a continent!" << endl;
+		}
+	}
 }
 
 int getSource(Continent c)
@@ -97,4 +95,9 @@ int getSource(Continent c)
 int getDestination(Continent d)
 {
 	return d.destination;
+}
+
+int Continent::getSource()
+{
+	return source;
 }
