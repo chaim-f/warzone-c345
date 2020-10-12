@@ -38,7 +38,14 @@ void Map::addEdge(Territory t)
 	territoriesVec.push_back(t);
 }
 
-bool Map::isConnected()
+void Map::addEdge(Continent c)
+{
+	adjList[c.source].push_back(c.destination);
+	adjList[c.destination].push_back(c.source);
+	continentsVec.push_back(c);
+}
+
+bool Map::isConnectedGraph()
 {
 	for (int i = 0; i < numVertices; i++) {
 		visited[i] = false;
@@ -55,11 +62,13 @@ bool Map::isConnected()
 
 bool Map::isTerritoryBelongToAContinent()
 {
-	bool cond = true;
-	for (size_t i = 0; i < territoriesVec.size(); ++i) {
-		if (territoriesVec[i].continent.getSource() == -1) {
-			cond = false;
-			break;
+	bool cond = false;
+	if (territoriesVec.size() > 0) {
+		for (size_t i = 0; i < territoriesVec.size(); ++i) {
+			if (territoriesVec[i].continent.getSource() != -1) {
+				cond = true;
+				break;
+			}
 		}
 	}
 	return cond;
@@ -67,19 +76,19 @@ bool Map::isTerritoryBelongToAContinent()
 
 void Map::validate()
 {
-	if (isConnected() && isTerritoryBelongToAContinent()) {
-		cout << "Map is VALID!" << endl;
+	if (isConnectedGraph() && isTerritoryBelongToAContinent()) {
+		cout << "Graph is connected!" << endl;
+		cout << "All territories belong to a continent!" << endl;
 	}
 	else {
-		cout << "Map is INVALID!" << endl;
-		if (!isConnected()) {
-			cout << "Graph is not connected!" << endl;
+		if (!isConnectedGraph()) {
+			cout << "Graph is NOT connected!" << endl;
 		}
 		else {
 			cout << "Graph is connected!" << endl;
 		}
 		if (!isTerritoryBelongToAContinent()) {
-			cout << "One or more territory do(es) not belong to a continent!" << endl;
+			cout << "One or more territory do(es) NOT belong to a continent!" << endl;
 		}
 		else {
 			cout << "All territories belong to a continent!" << endl;

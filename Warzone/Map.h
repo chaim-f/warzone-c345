@@ -9,6 +9,7 @@ class Map
 {
 	int numVertices;
 	vector<Territory> territoriesVec;
+	vector<Continent> continentsVec;
 	list<int> *adjList;
 	void DFS(int v, bool visitedArr[]);
 public:
@@ -21,8 +22,9 @@ public:
 		delete [] adjList; 
 	}
 	void addEdge(Territory t);
+	void addEdge(Continent c);
 	void displayAdjacencyList();
-	bool isConnected();
+	bool isConnectedGraph();
 	bool isTerritoryBelongToAContinent();
 	void validate();
 };
@@ -45,6 +47,7 @@ public:
 		continentBunos = bunos;
 	}
 	int getSource();
+	friend class Map;
 	friend int getSource(Continent c);
 	friend int getDestination(Continent d);
 	friend ostream& operator<<(ostream& strm, const Continent c) {
