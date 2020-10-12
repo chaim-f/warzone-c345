@@ -1,3 +1,4 @@
+#pragma once
 #include "Continent.h"
 using namespace std;
 
