@@ -10,11 +10,11 @@
 #include <list>
 #include "territory.h"
 #include "map.h"
-#include "orders.h"
+#include "Order.h"
 #include "player.h"
 using namespace std;
 
-/*
+
 
 int main()
 {
@@ -73,7 +73,7 @@ int main()
 	//List player's list of territories to attack
 	p1->toAttack();
 
-	//Add orders
+	//Add Order
 
 	//Test operator overloading
 	cout << *p3;
@@ -101,7 +101,7 @@ int main()
 	
 }
 
-*/
+
 
 /*
 void clear() {
