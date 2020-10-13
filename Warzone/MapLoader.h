@@ -20,5 +20,6 @@ public:
 	void storeTerritoriesWithBorders();
 	vector<Continent> getContinents();
 	vector<Territory> getTerritories();
+	vector<Territory> getTerritoriesWithBorders();
 	Continent getTerritoryContinentObject(int index);
 };

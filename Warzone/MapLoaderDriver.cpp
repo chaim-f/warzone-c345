@@ -13,4 +13,11 @@ int main() {
 	canadaMap.storeContinents();
 	canadaMap.storeTerritories();
 	canadaMap.storeTerritoriesWithBorders();
+	Map canadaCreatedMap = Map(canadaMap.getTerritoriesWithBorders().size());
+
+	for (size_t i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
+		canadaCreatedMap.addEdge(canadaMap.getTerritoriesWithBorders()[i]);
+	}
+
+	canadaCreatedMap.validate();
 }

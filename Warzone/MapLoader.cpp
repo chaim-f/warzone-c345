@@ -161,8 +161,8 @@ void MapLoader::storeTerritoriesWithBorders() {
 		// ios::app is the open mode "append" meaning
 		// new data will be written to the end of the file.
 		out.open(this->fileName, ios::app);
-		string str = "[end]\n";
-		out << str;
+		string str = "[end]";
+		out << str << "\n";
 		out.close();
 
 		cout << "extracting countries/territories with borders from " << this->fileName << " map...START!" << endl;
@@ -196,11 +196,9 @@ void MapLoader::storeTerritoriesWithBorders() {
 			int j = 0;
 			for (size_t i = bordersStart + 1; i < bordersEnd-1; ++i) {
 				j++;
-				vector<string> str = split(vec[i], ' ');
-				for (int k = 1; k < str.size(); k++) {
-					//cout << str[k] << " ";
-					cout << stoi(str[0]) << stoi(str[k]) << territoryVec[j - 1].getTerritoryName() << territoryVec[j - 1].getTerritoryContinent();
-					//territoryBordersVec.push_back(Territory(stoi(str[0]), stoi(str[k]), territoryVec[j-1].getTerritoryName(), territoryVec[j-1].getTerritoryContinent()));
+				vector<string> subStr = split(vec[i], ' ');
+				for (int k = 1; k < subStr.size(); k++) {
+					territoryBordersVec.push_back(Territory(stoi(subStr[0]), stoi(subStr[k]), territoryVec[j-1].getTerritoryName(), territoryVec[j-1].getTerritoryContinent()));
 				}
 			}
 			for (int i = 0; i < territoryBordersVec.size(); i++) {
@@ -220,6 +218,10 @@ vector<Continent> MapLoader::getContinents() {
 
 vector<Territory> MapLoader::getTerritories() {
 	return territoryVec;
+}
+
+vector<Territory> MapLoader::getTerritoriesWithBorders() {
+	return territoryBordersVec;
 }
 
 

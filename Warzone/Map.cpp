@@ -47,10 +47,18 @@ void Map::addEdge(Continent c)
 
 bool Map::isConnectedGraph()
 {
-	for (int i = 0; i < numVertices; i++) {
+	// if vertex does not start at 0
+	bool isIndexStartAt1 = true;
+	for (size_t i = 0; i < territoriesVec.size(); ++i) {
+		if (territoriesVec[i].source == 0 || territoriesVec[i].destination == 0) {
+			isIndexStartAt1 = false;
+			break;
+		}
+	}
+	for (int i = isIndexStartAt1 ? 1 : 0; i < numVertices; i++) {
 		visited[i] = false;
 	}
-	DFS(0, visited);
+	DFS(isIndexStartAt1 ? 1 : 0, visited);
 	int count = 0;
 	for (int i = 0; i < numVertices; i++) {
 		if (visited[i] == true) {
