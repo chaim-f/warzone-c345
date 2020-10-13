@@ -48,7 +48,6 @@ int main() {
 	m3.validate();
 	return 0;
 }
-
 /*
 Adjacency List
 0 : 1 2

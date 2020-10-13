@@ -1,6 +1,8 @@
 /*COMP 345 A1
   Team 21
 */
+
+#pragma once
 using namespace std;
 #include <iostream>
 #include <list>
