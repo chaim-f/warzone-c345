@@ -34,6 +34,7 @@ void Map::displayAdjacencyList()
 void Map::addEdge(Territory t)
 {
 	adjList[t.source].push_back(t.destination);
+	adjList[t.destination].push_back(t.source);
 	territoriesVec.push_back(t);
 }
 
