@@ -8,15 +8,16 @@
 
 #include <cstdlib>
 #include <list>
-#include "territory.h"
-#include "map.h"
+#include "Territory.h"
+#include "Continent.h"
+#include "Map.h"
 #include "Order.h"
-#include "player.h"
+#include "Player.h"
 #include "Cards.h"
 using namespace std;
 
-/*
 
+/*
 int main()
 {
 
@@ -41,8 +42,13 @@ int main()
 
 	Territory* target1 = nullptr;
 
+	Order* myOrder;
+
+	myOrder = new Order();
+
+
 	try {
-		t1 = new Territory(1, "Territory A");
+		t1 = new Territory(1, 56);
 		
 	}
 	catch (bad_alloc&) {
@@ -50,14 +56,14 @@ int main()
 	}
 	
 	try {
-		t2 = new Territory(2, "Territory B");
+		t2 = new Territory(2, 100);
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to territory." << endl;
 	}
 	
 	try {
-		target1 = new Territory(1, "Territory X");
+		target1 = new Territory(1, 200);
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to territory." << endl;

@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <random>
 #include <string>
+
+#include "Order.h"
+
 //to do add the orderlist implementation to lines 79-104 then remove this comment.
 std::string const CardsAllow[5] = { "bomb", "reinforcement", "blockade", "airlift", "diplomacy" };//strings allowed for Card types 
 int const defaultAmountAllow[5] = { 3,3,3,3,3 };//the default number for amount of each card to be created
@@ -91,7 +94,15 @@ void Card::setCardType(std::string s)//setter
 
 void Card::play()//to do fill it in such that it fills the order list
 {
+	
+	
+	
 	std::string cardType = getCardType();
+	Order myOrder;
+
+	//myOrder = new Order();
+
+
 	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
 	{
 		std::cout << "played a bomb card\n";
@@ -341,7 +352,7 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 	handCards.erase(handCards.begin() + temp);
 }
 
-void Hand::play(std::string cardType, Deck& deckId)
+std::string Hand::play(std::string cardType, Deck& deckId)
 {
 	if (isInHand(cardType))//check if the type card is in hand  
 	{
@@ -358,6 +369,8 @@ void Hand::play(std::string cardType, Deck& deckId)
 	else {
 		std::cout << cardType << " is not in this hand to play\n";
 	}
+
+	return cardType;
 }
 bool Hand::isInHand(std::string cardType)
 {

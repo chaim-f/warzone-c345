@@ -141,19 +141,22 @@
   <ItemGroup>
     <ClInclude Include="Continent.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Territory.h" />
-	<ClInclude Include="Order.h" />
-	<ClInclude Include="Cards.h" />
+    <ClInclude Include="Order.h" />
+    <ClInclude Include="Cards.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Continent.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapDriver.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerDriver.cpp" />
     <ClCompile Include="Territory.cpp" />
-	<ClCompile Include="Order.cpp" />
-	<ClCompile Include="OrderDriver.cpp" />
-	<ClCompile Include="Cards.cpp" />
-	<ClCompile Include="CardDriver.cpp" />
+    <ClCompile Include="Order.cpp" />
+    <ClCompile Include="OrderDriver.cpp" />
+    <ClCompile Include="Cards.cpp" />
+    <ClCompile Include="CardDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="map\canada_map.gif" />

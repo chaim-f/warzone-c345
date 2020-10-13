@@ -58,7 +58,7 @@ Player::Player(const char * pid) {
 
 	//Allocate memory to territories list.
 	try {
-		handOfCards = new list<Card>;
+		handOfCards = new Hand();
 		cout << "Player hand of cards dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -98,12 +98,9 @@ Player::Player(const Player& anotherPlayer) {
 
 	}
 	
-	//Copy cards
-	for (ptrCards = anotherPlayer.handOfCards->begin(); ptrCards != anotherPlayer.handOfCards->end(); ++ptrCards) {
-		handOfCards->push_back(*ptrCards);
+	//Copy cards ( just need to copy the reference to the hand of cards)
+	handOfCards = (anotherPlayer.handOfCards);
 
-
-	}
 
 	//Copy Order
 	for (ptrOrder = anotherPlayer.myOrder->begin(); ptrOrder != anotherPlayer.myOrder->end(); ++ptrOrder) {
@@ -205,9 +202,9 @@ void Player::addTargetTerritory(Territory aTerrytory) {
 	return;
 }
 
-void Player::addcardToHandOfCards(Card card) {
+void Player::addcardToHandOfCards(Card * card) {
 
-	handOfCards->push_back(card);
+	//handOfCards->addCard(card);
 	return;
 }
 

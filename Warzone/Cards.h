@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "Order.h"
 
 class Hand;
 class Deck;
@@ -52,7 +53,7 @@ public:
 	Hand(const Hand& orig);//copy constructor
 	void addCard(Card* cardID);//adds a card to the hand
 	void removeCard(Card* cardID);//removes card from the hand
-	void play(std::string cardType, Deck& deck);//plays a card (adds to deck, removes from hand, and adds order to the order list)
+	std::string play(std::string cardType, Deck& deck);//plays a card (adds to deck, removes from hand, and adds order to the order list)
 	bool isInHand(std::string cardType);//check if the type of card is in the hand
 	void printHand();//prints the card types in the hand
 private:

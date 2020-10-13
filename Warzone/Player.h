@@ -6,6 +6,7 @@
 /**********************************************************************/
 
 #pragma once
+
 #include "Territory.h"
 #include "Map.h"
 #include "Order.h"
@@ -49,7 +50,7 @@ public:
 	list<Order>* listPlayerOrder();
 
 	//Add card to hand of cards
-	void addcardToHandOfCards(Card card);
+	void addcardToHandOfCards(Card * card);
 
 	//Adds a terrytory to the player's territories
 	void addMyTerritory(Territory aTerrytory);
@@ -82,8 +83,8 @@ private:
 	//List of Order
 	list<Order> * myOrder;
 	
-	list<Card > * handOfCards;
-
+	//list<Card > * handOfCards;
+	Hand		  *handOfCards;
 	const char * playerID;
 	Player * thisPlayerRef = nullptr;
 
