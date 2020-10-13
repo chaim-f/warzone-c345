@@ -4,6 +4,7 @@
 #include <sstream>      
 #include <iostream>
 #include <vector>
+#include "Territory.h"
 
 //Internal/private function implemented at the end of the file
 vector<string> split(string str, char delimiter);
@@ -84,7 +85,7 @@ void MapLoader::storeContinents() {
 				continentVec.push_back(Continent(j, str.substr(0, str.find(" ")), stoi(str.substr(str.find(" ") + 1))));
 			}
 			for (int i = 0; i < continentVec.size(); i++) {
-				cout << continentVec[i];
+				cout << continentVec[i] << endl;;
 			}
 			cout << "extracting continents from " << this->fileName << " map... DONE!" << endl;
 		}
@@ -136,7 +137,7 @@ void MapLoader::storeTerritories() {
 				//cout << territoryVec[j-1].getTerritoryIndex() << " " << territoryVec[j-1].getTerritoryName() << " " << territoryVec[j-1].getTerritoryContinentIndex() << " " << endl;
 			}
 			for (int i = 0; i < territoryVec.size(); i++) {
-				cout << territoryVec[i];
+				cout << territoryVec[i] << endl;
 			}
 			cout << "extracting countries/territories from " << this->fileName << " map... DONE!" << endl;
 		}

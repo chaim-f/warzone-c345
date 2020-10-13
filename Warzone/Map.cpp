@@ -1,81 +1,115 @@
 #include "Map.h"
-#include <sstream>
+#include <vector>
+#include <list>
 
-// check if minimum number of nodes is attain or not
-// e.g. if you have 5 nodes, you must have at least 5 edges
-// e.g. Territory t1 = Territory(1, "Territory A", c1, { }); returns 0 edges
-// e.g. Territory t4 = Territory(4, "Territory D", c2, { 2,3,5 }); returns 3 edges
-bool Map::isNumberOfNodesEdgesValid() {
-	list<Territory>::iterator it;
-	int counter = 0;
-	for (it = territoryList.begin(); it != territoryList.end(); it++)
-	{
-		cout << it->getTerritoryName() << " makes " << it->getListAdjacencies().size() << " edges" << endl;
-		if (it->getListAdjacencies().size() < 1) {
-			break;
-			return false;
+using namespace std;
+bool visited[100000];
+
+void Map::DFS(int root, bool visitedArr[])
+{
+	visitedArr[root] = true;
+	list<int>::iterator it;
+	for (it = adjList[root].begin(); it != adjList[root].end(); ++it) {
+		if (!visitedArr[*it]) {
+			DFS(*it, visitedArr);
 		}
 	}
-	return true;
 }
 
-// check if a territory belongs to a continent
-bool Map::isTerritoryBelongsToAContinent()
+void Map::displayAdjacencyList()
 {
-	// loop through all the territories
-	list<Territory>::iterator it;
-	int counter = 0;
-	for (it = territoryList.begin(); it != territoryList.end(); it++)
+	cout << "Adjacency List" << endl;
+	for (int v = 0; v < numVertices; v++)
 	{
-		if (it->getTerritoryContinentIndex() > 0) { // in domination map continent number always start at index 1
-			counter++;
+		cout << v << " : ";
+		list<int>::iterator i;
+		for (i = adjList[v].begin(); i != adjList[v].end(); ++i)
+		{
+			cout << *i << " ";
 		}
+		cout << endl;
 	}
-	// all territories/countries of a valid map belong to a continent
-	return counter < territoryList.size() ? false : true;
 }
 
-// returns 0 if one territory has no adjacencies, otherwise return 1
-bool Map::isTerritoryHasAdjacencies()
+void Map::addEdge(Territory t)
 {
-	// loop through all the territories
-	// increment the counter if a territory has adjacencies
-	list<Territory>::iterator it;
-	int counter = 0;
-	for (it = territoryList.begin(); it != territoryList.end(); it++)
-	{
-		if (it->adjacenciesString != "") {
-			counter++;
-		}
-		if (it->adjacenciesString == "[]") {
-			counter--;
+	adjList[t.source].push_back(t.destination);
+	adjList[t.destination].push_back(t.source);
+	territoriesVec.push_back(t);
+}
+
+void Map::addEdge(Continent c)
+{
+	adjList[c.source].push_back(c.destination);
+	adjList[c.destination].push_back(c.source);
+	continentsVec.push_back(c);
+}
+
+bool Map::isConnectedGraph()
+{
+	for (int i = 0; i < numVertices; i++) {
+		visited[i] = false;
+	}
+	DFS(0, visited);
+	int count = 0;
+	for (int i = 0; i < numVertices; i++) {
+		if (visited[i] == true) {
+			count++;
 		}
 	}
-	// for a valid map, usually all territories has adjacencies
-	// if counter is less than the size of territories that's means one (or more) territor(ies)y does(do) not have adjacencies
-	return counter < territoryList.size() ? false : true;
+	return numVertices == count;
+}
+
+bool Map::isTerritoryBelongToAContinent()
+{
+	bool cond = true;
+	if (territoriesVec.size() > 0) {
+		for (size_t i = 0; i < territoriesVec.size(); ++i) {
+			if (territoriesVec[i].continent.getSource() == -1) {
+				cond = false;
+				break;
+			}
+		}
+	}
+	else {
+		cond = false;
+	}
+	return cond;
 }
 
 void Map::validate()
 {
-	string isValidMap;
-	if (isTerritoryHasAdjacencies() && isTerritoryBelongsToAContinent() && isNumberOfNodesEdgesValid()) {
-		isValidMap = "*** Map is valid! ***";
+	if (isConnectedGraph() && isTerritoryBelongToAContinent()) {
+		cout << "Graph is connected!" << endl;
+		cout << "All territories belong to a continent!" << endl;
 	}
 	else {
-		isValidMap = "*** Map is invalid! ***";
+		if (!isConnectedGraph()) {
+			cout << "Graph is NOT connected!" << endl;
+		}
+		else {
+			cout << "Graph is connected!" << endl;
+		}
+		if (!isTerritoryBelongToAContinent()) {
+			cout << "One or more territory do(es) NOT belong to a continent!" << endl;
+		}
+		else {
+			cout << "All territories belong to a continent!" << endl;
+		}
 	}
-	cout << isValidMap;
 }
 
-
-Map::Map(list<Territory> territories)
+int getSource(Continent c)
 {
-	territoryList = territories;
+	return c.source;
 }
 
-Map::Map(list<Territory> territories, list<Continent> continents)
+int getDestination(Continent d)
 {
-	territoryList = territories;
-	continentList = continents;
+	return d.destination;
+}
+
+int Continent::getSource()
+{
+	return source;
 }
