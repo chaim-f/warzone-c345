@@ -194,7 +194,7 @@ void MapLoader::storeTerritoriesWithBorders() {
 			// store territory objects
 
 			int j = 0;
-			for (size_t i = bordersStart + 1; i < bordersEnd-1; ++i) {
+			for (size_t i = bordersStart + 1; i < bordersEnd; ++i) {
 				j++;
 				vector<string> subStr = split(vec[i], ' ');
 				for (int k = 1; k < subStr.size(); k++) {

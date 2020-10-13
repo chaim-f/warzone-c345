@@ -19,7 +19,7 @@ void Map::DFS(int root, bool visitedArr[])
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;
-	for (int v = 1; v < numVertices; v++)
+	for (int v = 0; v < numVertices; v++)
 	{
 		cout << v << " : ";
 		list<int>::iterator i;
@@ -31,10 +31,12 @@ void Map::displayAdjacencyList()
 	}
 }
 
-void Map::addEdge(Territory t)
+void Map::addEdge(Territory t, bool isDiredted)
 {
 	adjList[t.source].push_back(t.destination);
-	adjList[t.destination].push_back(t.source);
+	if (isDiredted) {
+		adjList[t.destination].push_back(t.source);
+	}
 	territoriesVec.push_back(t);
 }
 
@@ -47,7 +49,7 @@ void Map::addEdge(Continent c)
 
 bool Map::isConnectedGraph()
 {
-	// if vertex does not start at 0
+	// to accomodate if Territory (int src, int dest) src or dest does not start at 0
 	bool isIndexStartAt1 = true;
 	for (size_t i = 0; i < territoriesVec.size(); ++i) {
 		if (territoriesVec[i].source == 0 || territoriesVec[i].destination == 0) {
@@ -55,17 +57,27 @@ bool Map::isConnectedGraph()
 			break;
 		}
 	}
-	for (int i = isIndexStartAt1 ? 1 : 0; i < numVertices; i++) {
+	int j = isIndexStartAt1 ? 1 : 0;
+	for (int i = j; i < numVertices; i++) {
 		visited[i] = false;
 	}
-	DFS(isIndexStartAt1 ? 1 : 0, visited);
-	int count = 0;
-	for (int i = 0; i < numVertices; i++) {
-		if (visited[i] == true) {
-			count++;
+	DFS(j, visited);
+	for (int i = j; i < numVertices; i++) {
+		if (visited[i] == false) {
+			return false;
 		}
 	}
-	return numVertices == count;
+	Map* map = getTranspose();
+	for (int i = j; i < numVertices; i++) {
+		visited[i] = false;
+	}
+	map->DFS(j, visited);
+	for (int i = j; i < numVertices; i++) {
+		if (visited[i] == false) {
+			return false;
+		}
+	}
+	return true;
 }
 
 bool Map::isTerritoryBelongToAContinent()
@@ -105,6 +117,20 @@ void Map::validate()
 			cout << "All territories belong to a continent!" << endl;
 		}
 	}
+}
+
+Map* Map::getTranspose()
+{
+	Map* m = new Map(numVertices);
+	for (int v = 0; v < numVertices; v++)
+	{
+		std::list<int>::iterator i;
+		for (i = adjList[v].begin(); i != adjList[v].end(); ++i)
+		{
+			m->adjList[*i].push_back(v);
+		}
+	}
+	return m;
 }
 
 int getSource(Continent c)

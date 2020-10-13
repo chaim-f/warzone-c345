@@ -22,10 +22,11 @@ public:
 	~Map() {
 		delete[] adjList;
 	}
-	void addEdge(Territory t);
+	void addEdge(Territory t, bool isDirected);
 	void addEdge(Continent c);
 	void displayAdjacencyList();
 	bool isConnectedGraph();
 	bool isTerritoryBelongToAContinent();
 	void validate();
+	Map* getTranspose();
 };
