@@ -9,8 +9,5 @@ int main() {
 	MapLoader canadaMap = MapLoader();
 	canadaMap.setFileName(canadaMapFile);
 	canadaMap.storeContinents();
-	// canadaMap.createTerritories();
-	// canadaMap.createContinents();
-	// canadaMap.getTerritories();
-
+	canadaMap.storeTerritories();
 }

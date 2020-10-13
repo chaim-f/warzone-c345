@@ -66,6 +66,6 @@ Territory::Territory(int index, string name, Continent continent, list<int> adja
 // just like toString() in java
 std::ostream& operator<<(std::ostream& strm, const Territory t)
 {
-	return strm << "Territory(" << t.territoryIndex << ", " << t.territoryName << ", " << t.territoryContinentIndex << ", " << t.adjacenciesString << ")\n";
+	return strm << "Territory(" << t.territoryIndex << ", " << t.territoryName << ", " << t.territoryContinent << "\n";
 }
 
