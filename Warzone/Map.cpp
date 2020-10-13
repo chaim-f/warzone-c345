@@ -19,7 +19,7 @@ void Map::DFS(int root, bool visitedArr[])
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;
-	for (int v = 0; v < numVertices; v++)
+	for (int v = 1; v < numVertices; v++)
 	{
 		cout << v << " : ";
 		list<int>::iterator i;

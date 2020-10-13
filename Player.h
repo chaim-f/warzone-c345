@@ -56,6 +56,8 @@ public:
 	void addMyTerritory(Territory aTerrytory);
 
 
+	void deleteTerritory(int src, int dst);
+
 	//Adds a terrytory to the player's target territories
 	void addTargetTerritory(Territory aTerrytory);
 
