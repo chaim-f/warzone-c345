@@ -11,7 +11,7 @@ class Map
 	int numVertices;
 	vector<Territory> territoriesVec;
 	vector<Continent> continentsVec;
-	list<int> *adjList;
+	list<int>* adjList;
 	void DFS(int v, bool visitedArr[]);
 public:
 	Map(int vertices)
@@ -20,7 +20,7 @@ public:
 		adjList = new list<int>[vertices];
 	}
 	~Map() {
-		delete [] adjList; 
+		delete[] adjList;
 	}
 	void addEdge(Territory t);
 	void addEdge(Continent c);
@@ -29,6 +29,3 @@ public:
 	bool isTerritoryBelongToAContinent();
 	void validate();
 };
-
-
-

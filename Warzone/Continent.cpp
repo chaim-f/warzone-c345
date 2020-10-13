@@ -7,7 +7,14 @@ Continent::Continent(int src, int dest, string name, int bunos) {
 	continentBunos = bunos;
 }
 
-ostream& operator<<(ostream& strm, const Continent c) 
+Continent::Continent(int src, string name, int bunos)
 {
-	return strm << "Continent(" << c.source << ", " << c.destination << ", " << c.continentName << ", " << c.continentBunos << ")";
+	source = src;
+	continentName = name;
+	continentBunos = bunos;
+}
+
+ostream& operator<<(ostream& strm, const Continent c)
+{
+	return strm << "Continent(" << c.source << ", " << c.continentName << ", " << c.continentBunos << ")";
 }

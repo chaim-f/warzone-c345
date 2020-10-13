@@ -13,7 +13,14 @@ Territory::Territory(int src, int dest, Continent c)
 	continent = c;
 }
 
+Territory::Territory(int src, string name, Continent c)
+{
+	source = src;
+	territoryName = name;
+	continent = c;
+}
+
 ostream& operator<<(ostream& strm, const Territory t)
 {
-	return strm << "Territory(" << t.source << ", " << t.destination << ", " << t.continent << ")";
+	return strm << "Territory(" << t.source << ", " << t.continent << ")";
 }
