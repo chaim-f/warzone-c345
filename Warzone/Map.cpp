@@ -19,7 +19,7 @@ void Map::DFS(int root, bool visitedArr[])
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;
-	for (int v = 0; v < numVertices; v++)
+	for (int v = 1; v < numVertices; v++)
 	{
 		cout << v << " : ";
 		list<int>::iterator i;
@@ -34,7 +34,6 @@ void Map::displayAdjacencyList()
 void Map::addEdge(Territory t)
 {
 	adjList[t.source].push_back(t.destination);
-	adjList[t.destination].push_back(t.source);
 	territoriesVec.push_back(t);
 }
 
