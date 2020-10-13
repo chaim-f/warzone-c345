@@ -67,7 +67,7 @@ bool Map::isConnectedGraph()
 			return false;
 		}
 	}
-	Map* map = getTranspose();
+	Map* map = getReverseGraph();
 	for (int i = j; i < numVertices; i++) {
 		visited[i] = false;
 	}
@@ -119,7 +119,7 @@ void Map::validate()
 	}
 }
 
-Map* Map::getTranspose()
+Map* Map::getReverseGraph()
 {
 	Map* m = new Map(numVertices);
 	for (int v = 0; v < numVertices; v++)

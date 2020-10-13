@@ -28,5 +28,5 @@ public:
 	bool isConnectedGraph();
 	bool isTerritoryBelongToAContinent();
 	void validate();
-	Map* getTranspose();
+	Map* getReverseGraph();
 };

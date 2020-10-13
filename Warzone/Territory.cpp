@@ -38,5 +38,10 @@ string Territory::getTerritoryName() {
 
 ostream& operator<<(ostream& strm, const Territory t)
 {
-	return strm << "Territory(" << t.source << ", " << t.destination << ", " << t.territoryName << ", "<< t.continent << ")";
+	if (t.destination > 0 || t.destination >= 1) {
+		return strm << "Territory(" << t.source << ", " << t.destination << ", " << t.territoryName << ", " << t.continent << ")";
+	}
+	else {
+		return strm << "Territory(" << t.source << ", " << t.territoryName << ", " << t.continent << ")";
+	}
 }
