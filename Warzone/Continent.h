@@ -1,7 +1,4 @@
-
 #pragma once
-
-
 #include <string>
 #include <ostream>
 using namespace std;
@@ -18,6 +15,7 @@ public:
 		destination = -1;
 	};
 	Continent(int src, int dest, string name, int bunos);
+	Continent(int src, string name, int bunos);
 	int getSource();
 	friend class Map;
 	friend int getSource(Continent c);
