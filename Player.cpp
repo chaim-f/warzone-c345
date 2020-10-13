@@ -8,7 +8,9 @@
 #include "Player.h"
 #include <list>
 #include "Territory.h"
+#include "Cards.h"
 #include <sstream>
+#include "Order.h"
 
 Player::Player(const char * pid) {
 
@@ -16,15 +18,16 @@ Player::Player(const char * pid) {
 
 	/*
 	targetTerritories = nullptr;
-	myOrders = nullptr;
+	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
 	*/
 
-	//Allocate memory to orders list.
+	//Allocate memory to Order list.
 	try {
-		myOrders = new list<Orders>;
-		cout << "myOrders list dynamically created.\n" << endl;
+		myOrder = new list<Order>();
+		
+		cout << "myOrder list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -55,7 +58,7 @@ Player::Player(const char * pid) {
 
 	//Allocate memory to territories list.
 	try {
-		handOfCards = new list<Cards>;
+		handOfCards = new Hand();
 		cout << "Player hand of cards dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -70,15 +73,15 @@ Player::Player(const Player& anotherPlayer) {
 
 	playerID = anotherPlayer.playerID;
 	targetTerritories = nullptr;
-	myOrders = nullptr;
+	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
 	
 
 	list<Territory>::iterator ptrTarget;
 	list<Territory>::iterator ptrTerritory;
-	list<Orders>::iterator ptrOrders;
-	list<Cards>::iterator ptrCards;
+	list<Order>::iterator ptrOrder;
+	list<Card>::iterator ptrCards;
 	
 
 	//Copy target territories
@@ -95,16 +98,13 @@ Player::Player(const Player& anotherPlayer) {
 
 	}
 	
-	//Copy cards
-	for (ptrCards = anotherPlayer.handOfCards->begin(); ptrCards != anotherPlayer.handOfCards->end(); ++ptrCards) {
-		handOfCards->push_back(*ptrCards);
+	//Copy cards ( just need to copy the reference to the hand of cards)
+	handOfCards = (anotherPlayer.handOfCards);
 
 
-	}
-
-	//Copy orders
-	for (ptrOrders = anotherPlayer.myOrders->begin(); ptrOrders != anotherPlayer.myOrders->end(); ++ptrOrders) {
-		myOrders->push_back(*ptrOrders);
+	//Copy Order
+	for (ptrOrder = anotherPlayer.myOrder->begin(); ptrOrder != anotherPlayer.myOrder->end(); ++ptrOrder) {
+		myOrder->push_back(*ptrOrder);
 
 
 	}
@@ -151,9 +151,9 @@ list<Territory > * Player::toDefend() {
 
 	return myTerritories;
 }
-void Player::issueOrders(Orders o) {
+void Player::issueOrder(Order o) {
 
-	myOrders->push_back(o);
+	myOrder->push_back(o);
 
 	return;
 }
@@ -164,22 +164,22 @@ void Player::executeOrder() {
 	return;
 }
 
-list<Orders> * Player::listPlayerOrders() {
-	list<Orders>::iterator ptr;
+list<Order> * Player::listPlayerOrder() {
+	list<Order>::iterator ptr;
 	int i = 0;
-	std::cout << "My list of orders: \n";
-	for (ptr = myOrders->begin(); ptr != myOrders->end(); ++ptr) {
+	std::cout << "My list of Order: \n";
+	for (ptr = myOrder->begin(); ptr != myOrder->end(); ++ptr) {
 		std::cout << "\n\t" << *ptr << "\n";
 		
 	}
 	std::cout << std::endl;
 
-	return myOrders;
+	return myOrder;
 }
 
-void Player::addOrders(Orders order) {
+void Player::addOrder(Order order) {
 
-	myOrders->push_back(order);
+	myOrder->push_back(order);
 	return;
 }
 
@@ -195,6 +195,13 @@ void Player::addMyTerritory(Territory aTerrytory) {
 	return;
 }
 
+
+void Player::deleteTerritory(int src, int dst) {
+	//Removing a territory
+
+	std::cout << "Deleteing territory " << src << ", " << dst << "\n";
+}
+
 void Player::addTargetTerritory(Territory aTerrytory) {
 
 	//Add territory at the end of myTerritories
@@ -202,9 +209,9 @@ void Player::addTargetTerritory(Territory aTerrytory) {
 	return;
 }
 
-void Player::addcardToHandOfCards(Cards card) {
+void Player::addcardToHandOfCards(Card * card) {
 
-	handOfCards->push_back(card);
+	//handOfCards->addCard(card);
 	return;
 }
 
@@ -250,10 +257,10 @@ void Player::destroyPlayerObject() {
 	cout << "Cleaning player " << this->playerID << " from heap before ending program.\n" << endl;
 	
 	delete handOfCards;
-	delete myOrders;
+	delete myOrder;
 	delete myTerritories;
 	delete targetTerritories;
-	myOrders = NULL;
+	myOrder = NULL;
 	myTerritories = NULL;
 	targetTerritories = NULL;
 	handOfCards = NULL;

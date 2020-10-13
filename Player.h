@@ -6,9 +6,10 @@
 /**********************************************************************/
 
 #pragma once
+
 #include "Territory.h"
 #include "Map.h"
-#include "Orders.h"
+#include "Order.h"
 #include <list>
 #include "Cards.h"
 #include <sstream>
@@ -29,8 +30,8 @@ public:
 	//Returns a list of territories to defend
 	list<Territory> * toDefend();
 
-	//Creates an object containing this player's list of orders
-	void issueOrders(Orders o);
+	//Creates an object containing this player's list of Order
+	void issueOrder(Order o);
 
 	/*TODO
 		- add copy constructor
@@ -39,21 +40,23 @@ public:
 		
 	*/
 
-	//Executes player orders
+	//Executes player Order
 	void executeOrder();
 
-	//Add orders to list of orders
-	void addOrders(Orders order);
+	//Add Order to list of Order
+	void addOrder(Order order);
 
-	//List plyer orders
-	list<Orders>* listPlayerOrders();
+	//List plyer Order
+	list<Order>* listPlayerOrder();
 
 	//Add card to hand of cards
-	void addcardToHandOfCards(Cards card);
+	void addcardToHandOfCards(Card * card);
 
 	//Adds a terrytory to the player's territories
 	void addMyTerritory(Territory aTerrytory);
 
+
+	void deleteTerritory(int src, int dst);
 
 	//Adds a terrytory to the player's target territories
 	void addTargetTerritory(Territory aTerrytory);
@@ -79,11 +82,11 @@ private:
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory> *targetTerritories;
 
-	//List of orders
-	list<Orders> * myOrders;
+	//List of Order
+	list<Order> * myOrder;
 	
-	list<Cards > * handOfCards;
-
+	//list<Card > * handOfCards;
+	Hand		  *handOfCards;
 	const char * playerID;
 	Player * thisPlayerRef = nullptr;
 
