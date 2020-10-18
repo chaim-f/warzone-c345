@@ -4,48 +4,56 @@ using namespace std;
 
 int main() {
 
-	Map m(3, false);
+	Map* m;
+	m = new Map();
+	m->createMap(3, false);
 	Continent c1(0, 1, "Continent A", 2);
 	Continent c2(0, 2, "Continent A", 1);
 	Continent c3(1, 2, "Continent C", 3);
-	m.addEdge(c1);
-	m.addEdge(c2);
-	m.addEdge(c3);
-	m.displayAdjacencyList();
-	m.validate();
+	m->addEdge(c1);
+	m->addEdge(c2);
+	m->addEdge(c3);
+	m->displayAdjacencyList();
+	m->validate();
 
 	cout << endl;
 
-	Map m1(3, false);
-	m1.addEdge(Territory(0, 1, c1));
-	m1.addEdge(Territory(0, 2, c2));
-	m1.addEdge(Territory(1, 2, c3));
-	m1.displayAdjacencyList();
-	m1.validate();
+	Map* m1;
+	m1 = new Map();
+	m1->createMap(3, false);
+	m1->addEdge(Territory(0, 1, c1));
+	m1->addEdge(Territory(0, 2, c2));
+	m1->addEdge(Territory(1, 2, c3));
+	m1->displayAdjacencyList();
+	m1->validate();
 
 	cout << endl;
 
-	Map m2(5, false);
-	m2.addEdge(Territory(0, 1, c1));
-	m2.addEdge(Territory(0, 2, c2));
-	m2.addEdge(Territory(3, 4, c3));
-	m2.displayAdjacencyList();
-	m2.validate();
+	Map* m2;
+	m2 = new Map();
+	m2->createMap(5, false);
+	m2->addEdge(Territory(0, 1, c1));
+	m2->addEdge(Territory(0, 2, c2));
+	m2->addEdge(Territory(3, 4, c3));
+	m2->displayAdjacencyList();
+	m2->validate();
 
 	cout << endl;
 
-	Map m3(6, false);
-	m3.addEdge(Territory(0, 4));
-	m3.addEdge(Territory(0, 3));
-	m3.addEdge(Territory(1, 2));
-	m3.addEdge(Territory(1, 4));
-	m3.addEdge(Territory(1, 5));
-	m3.addEdge(Territory(2, 3));
-	m3.addEdge(Territory(2, 5));
-	m3.addEdge(Territory(5, 3));
-	m3.addEdge(Territory(5, 4));
-	m3.displayAdjacencyList();
-	m3.validate();
+	Map* m3;
+	m3 = new Map();
+	m3->createMap(6, false);
+	m3->addEdge(Territory(0, 4));
+	m3->addEdge(Territory(0, 3));
+	m3->addEdge(Territory(1, 2));
+	m3->addEdge(Territory(1, 4));
+	m3->addEdge(Territory(1, 5));
+	m3->addEdge(Territory(2, 3));
+	m3->addEdge(Territory(2, 5));
+	m3->addEdge(Territory(5, 3));
+	m3->addEdge(Territory(5, 4));
+	m3->displayAdjacencyList();
+	m3->validate();
 	return 0;
 }
 /*

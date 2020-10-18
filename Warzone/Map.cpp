@@ -16,6 +16,20 @@ void Map::DFS(int root, bool visitedArr[])
 	}
 }
 
+Map::Map()
+{
+	numVertices = 0;
+	isDirectedGraph = false;
+	adjList = NULL;
+}
+
+Map::Map(const Map& m)
+{
+	numVertices = 0;
+	isDirectedGraph = false;
+	adjList = NULL;
+}
+
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;
@@ -46,6 +60,13 @@ void Map::addEdge(Continent c)
 	adjList[c.source].push_back(c.destination);
 	adjList[c.destination].push_back(c.source);
 	continentsVec.push_back(c);
+}
+
+void Map::createMap(int vertices, bool isDirected)
+{
+	this->isDirectedGraph = isDirected;
+	this->numVertices = vertices;
+	adjList = new list<int>[vertices];
 }
 
 // to accomodate if Territory (int src, int dest) src or dest does not start at 0
@@ -126,7 +147,9 @@ void Map::validate()
 
 Map* Map::getReverseGraph()
 {
-	Map* m = new Map(numVertices, isDirectedGraph);
+	Map* m;
+	m = new Map();
+	m->createMap(numVertices, isDirectedGraph);
 	for (int v = 0; v < numVertices; v++)
 	{
 		std::list<int>::iterator i;

@@ -35,16 +35,14 @@ class Map
 	vector<Continent> continentsVec;
 	list<int>* adjList;
 	void DFS(int v, bool visitedArr[]);
+	Map* map = nullptr;
 public:
-	Map(int vertices, bool isDirected)
-	{
-		this->isDirectedGraph = isDirected;
-		this->numVertices = vertices;
-		adjList = new list<int>[vertices];
-	}
+	Map();
+	Map(const Map& m); // copy constructor
 	~Map() {
 		delete[] adjList;
 	}
+	void createMap(int vertices, bool isDirected);
 	bool isTerritoryStartAtIndex0();
 	void addEdge(Territory t);
 	void addEdge(Continent c);
