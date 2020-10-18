@@ -19,7 +19,8 @@ void Map::DFS(int root, bool visitedArr[])
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;
-	for (int v = 0; v < numVertices; v++)
+	int j = isTerritoryStartAtIndex0();
+	for (int v = j; v < numVertices; v++)
 	{
 		cout << v << " : ";
 		list<int>::iterator i;
@@ -31,10 +32,10 @@ void Map::displayAdjacencyList()
 	}
 }
 
-void Map::addEdge(Territory t, bool isDiredted)
+void Map::addEdge(Territory t)
 {
 	adjList[t.source].push_back(t.destination);
-	if (isDiredted) {
+	if (!isDirectedGraph) {
 		adjList[t.destination].push_back(t.source);
 	}
 	territoriesVec.push_back(t);
@@ -47,9 +48,8 @@ void Map::addEdge(Continent c)
 	continentsVec.push_back(c);
 }
 
-bool Map::isConnectedGraph()
-{
-	// to accomodate if Territory (int src, int dest) src or dest does not start at 0
+// to accomodate if Territory (int src, int dest) src or dest does not start at 0
+bool Map::isTerritoryStartAtIndex0() {
 	bool isIndexStartAt1 = true;
 	for (size_t i = 0; i < territoriesVec.size(); ++i) {
 		if (territoriesVec[i].source == 0 || territoriesVec[i].destination == 0) {
@@ -57,7 +57,12 @@ bool Map::isConnectedGraph()
 			break;
 		}
 	}
-	int j = isIndexStartAt1 ? 1 : 0;
+	return isIndexStartAt1 ? 1 : 0;
+}
+
+bool Map::isConnectedGraph()
+{
+	int j = isTerritoryStartAtIndex0();
 	for (int i = j; i < numVertices; i++) {
 		visited[i] = false;
 	}
@@ -121,7 +126,7 @@ void Map::validate()
 
 Map* Map::getReverseGraph()
 {
-	Map* m = new Map(numVertices);
+	Map* m = new Map(numVertices, isDirectedGraph);
 	for (int v = 0; v < numVertices; v++)
 	{
 		std::list<int>::iterator i;

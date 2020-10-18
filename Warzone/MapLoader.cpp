@@ -46,7 +46,6 @@ void MapLoader::read()
 void MapLoader::storeContinents() {
 	fstream mapFile;
 	vector<string> vec;
-	//vector<Continent> continentVec;
 	if (this->fileName == "")
 	{
 		cout << "no map file set!" << endl;
@@ -96,7 +95,6 @@ void MapLoader::storeContinents() {
 }
 
 void MapLoader::storeTerritories() {
-	//storeContinents;
 	fstream mapFile;
 	vector<string> vec;
 	if (this->fileName == "")
@@ -148,7 +146,6 @@ void MapLoader::storeTerritories() {
 }
 
 void MapLoader::storeTerritoriesWithBorders() {
-	//storeTerritories;
 	fstream mapFile;
 	vector<string> vec;
 	if (this->fileName == "")

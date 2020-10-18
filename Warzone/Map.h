@@ -9,20 +9,23 @@ using namespace std;
 class Map
 {
 	int numVertices;
+	bool isDirectedGraph;
 	vector<Territory> territoriesVec;
 	vector<Continent> continentsVec;
 	list<int>* adjList;
 	void DFS(int v, bool visitedArr[]);
 public:
-	Map(int vertices)
+	Map(int vertices, bool isDirected)
 	{
+		this->isDirectedGraph = isDirected;
 		this->numVertices = vertices;
 		adjList = new list<int>[vertices];
 	}
 	~Map() {
 		delete[] adjList;
 	}
-	void addEdge(Territory t, bool isDirected);
+	bool isTerritoryStartAtIndex0();
+	void addEdge(Territory t);
 	void addEdge(Continent c);
 	void displayAdjacencyList();
 	bool isConnectedGraph();
