@@ -8,8 +8,6 @@
 
 #include <cstdlib>
 #include <list>
-#include "Territory.h"
-#include "Continent.h"
 #include "Map.h"
 #include "Order.h"
 #include "Player.h"

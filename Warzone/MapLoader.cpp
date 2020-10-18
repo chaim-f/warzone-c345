@@ -4,7 +4,6 @@
 #include <sstream>      
 #include <iostream>
 #include <vector>
-#include "Territory.h"
 
 //Internal/private function implemented at the end of the file
 vector<string> split(string str, char delimiter);

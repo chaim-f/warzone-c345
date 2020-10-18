@@ -7,7 +7,7 @@
 
 #include "Player.h"
 #include <list>
-#include "Territory.h"
+#include "Map.h"
 #include "Cards.h"
 #include <sstream>
 #include "Order.h"

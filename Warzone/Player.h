@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "Territory.h"
 #include "Map.h"
 #include "Order.h"
 #include <list>

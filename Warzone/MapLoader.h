@@ -1,8 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "Continent.h"
-#include "Territory.h"
+#include "Map.h"
 using namespace std;
 
 class MapLoader
