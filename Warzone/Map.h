@@ -42,6 +42,7 @@ public:
 	~Map() {
 		delete[] adjList;
 	}
+	Map& operator = (const Map& t); // assignment operator
 	void createMap(int vertices, bool isDirected);
 	bool isTerritoryStartAtIndex0();
 	void addEdge(Territory t);

@@ -30,6 +30,14 @@ Map::Map(const Map& m)
 	adjList = NULL;
 }
 
+Map& Map::operator=(const Map& t)
+{
+	this->numVertices = 0;
+	this->isDirectedGraph = false;
+	this->adjList = NULL;
+	return *this;
+}
+
 void Map::displayAdjacencyList()
 {
 	cout << "Adjacency List" << endl;

@@ -54,6 +54,11 @@
 //	m3->addEdge(Territory(5, 4));
 //	m3->displayAdjacencyList();
 //	m3->validate();
+//
+//	delete m;
+//	delete m1;
+//	delete m2;
+//	delete m3;
 //	return 0;
 //}
 ///*
