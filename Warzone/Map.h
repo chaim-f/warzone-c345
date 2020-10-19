@@ -15,6 +15,7 @@ public:
 	Continent();
 	Continent(int src, int dest, string name, int bunos);
 	Continent(int src, string name, int bunos);
+	void displayContinents();
 	int getSource();
 	friend class Map;
 	friend int getSource(Continent c);

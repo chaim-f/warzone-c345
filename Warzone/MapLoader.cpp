@@ -56,10 +56,11 @@ void MapLoader::storeContinents() {
 			for (size_t i = continentsStart + 1; i < continentsEnd - 1; ++i) {
 				j++;
 				string str = vec[i];
-				continentVec.push_back(Continent(j, str.substr(0, str.find(" ")), stoi(str.substr(str.find(" ") + 1))));
+				continentVec.push_back(new Continent(j, str.substr(0, str.find(" ")), stoi(str.substr(str.find(" ") + 1))));
 			}
-			for (int i = 0; i < continentVec.size(); i++) {
-				cout << continentVec[i] << endl;;
+			vector<Continent*>::iterator iter;
+			for (iter = continentVec.begin(); iter != continentVec.end(); ++iter) {
+				(*iter)->displayContinents();
 			}
 			cout << "*** Extracting Continents from " << this->fileName << " map... DONE!" << endl;
 		}
@@ -186,7 +187,7 @@ void MapLoader::storeTerritoriesWithBorders() {
 	}
 }
 
-vector<Continent> MapLoader::getContinents() {
+vector<Continent*> MapLoader::getContinents() {
 	return continentVec;
 }
 
@@ -204,7 +205,7 @@ Continent MapLoader::getTerritoryContinentObject(int index) {
 	for (size_t i = 0; i < continentVec.size(); ++i) {
 		if (index == i+1)
 		{
-			return continentVec.at(i);
+			return *continentVec.at(i);
 		};
 	}
 }

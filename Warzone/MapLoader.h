@@ -7,7 +7,7 @@ using namespace std;
 class MapLoader
 {
 	string fileName;
-	vector<Continent> continentVec;
+	vector<Continent*> continentVec;
 	vector<Territory*> territoryVec;
 	vector<Territory*> territoryBordersVec;
 public:
@@ -16,7 +16,7 @@ public:
 	void storeContinents();
 	void storeTerritories();
 	void storeTerritoriesWithBorders();
-	vector<Continent> getContinents();
+	vector<Continent*> getContinents();
 	vector<Territory*> getTerritories();
 	vector<Territory*> getTerritoriesWithBorders();
 	Continent getTerritoryContinentObject(int index);
