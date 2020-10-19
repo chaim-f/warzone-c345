@@ -8,17 +8,16 @@ class MapLoader
 {
 	string fileName;
 	vector<Continent> continentVec;
-	vector<Territory> territoryVec;
-	vector<Territory> territoryBordersVec;
+	vector<Territory*> territoryVec;
+	vector<Territory*> territoryBordersVec;
 public:
 	MapLoader();
 	void setFileName(string name);
-	void read();
 	void storeContinents();
 	void storeTerritories();
 	void storeTerritoriesWithBorders();
 	vector<Continent> getContinents();
-	vector<Territory> getTerritories();
-	vector<Territory> getTerritoriesWithBorders();
+	vector<Territory*> getTerritories();
+	vector<Territory*> getTerritoriesWithBorders();
 	Continent getTerritoryContinentObject(int index);
 };

@@ -7,6 +7,7 @@ using namespace std;
 
 int main() {
 
+	// Valid case
 	// load and store map objects
 	string canadaMapFile = "maps/canada.map";
 	MapLoader canadaMap = MapLoader();
@@ -25,5 +26,26 @@ int main() {
 	}
 	map->displayAdjacencyList();
 	map->validate();
+
+
+	// Invalid case
+	string europeFile = "maps/europe.map";
+	MapLoader europeMap = MapLoader();
+	europeMap.setFileName(europeFile);
+	europeMap.storeContinents();
+	europeMap.storeTerritories();
+	europeMap.storeTerritoriesWithBorders();
+
+	Map* map2;
+	map2 = new Map();
+	map2->createMap(europeMap.getTerritories().size() + 1, true);
+
+	for (size_t i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
+		map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
+	}
+	map2->displayAdjacencyList();
+	map2->validate();
+
+
 }
 
