@@ -16,6 +16,10 @@ void Map::DFS(int root, bool visitedArr[])
 	}
 }
 
+Map::~Map() {
+	delete[] adjList;
+}
+
 Map::Map()
 {
 	numVertices = 0;
@@ -32,15 +36,15 @@ Map::Map(const Map& m)
 
 Map& Map::operator=(const Map& t)
 {
-	this->numVertices = 0;
-	this->isDirectedGraph = false;
-	this->adjList = NULL;
+	numVertices = 0;
+	isDirectedGraph = false;
+	adjList = NULL;
 	return *this;
 }
 
 void Map::displayAdjacencyList()
 {
-	cout << "Adjacency List" << endl;
+	cout << endl << "Adjacency List" << endl;
 	int j = isTerritoryStartAtIndex0();
 	for (int v = j; v < numVertices; v++)
 	{
@@ -54,19 +58,20 @@ void Map::displayAdjacencyList()
 	}
 }
 
-void Map::addEdge(Territory t)
+void Map::addEdge(Territory* t)
 {
-	adjList[t.source].push_back(t.destination);
+	thisTerritory = t;
+	adjList[t->source].push_back(t->destination);
 	if (!isDirectedGraph) {
-		adjList[t.destination].push_back(t.source);
+		adjList[t->destination].push_back(t->source);
 	}
 	territoriesVec.push_back(t);
 }
 
-void Map::addEdge(Continent c)
+void Map::addEdge(Continent* c)
 {
-	adjList[c.source].push_back(c.destination);
-	adjList[c.destination].push_back(c.source);
+	adjList[c->source].push_back(c->destination);
+	adjList[c->destination].push_back(c->source);
 	continentsVec.push_back(c);
 }
 
@@ -81,7 +86,7 @@ void Map::createMap(int vertices, bool isDirected)
 bool Map::isTerritoryStartAtIndex0() {
 	bool isIndexStartAt1 = true;
 	for (size_t i = 0; i < territoriesVec.size(); ++i) {
-		if (territoriesVec[i].source == 0 || territoriesVec[i].destination == 0) {
+		if (territoriesVec[i]->source == 0 || territoriesVec[i]->destination == 0) {
 			isIndexStartAt1 = false;
 			break;
 		}
@@ -119,7 +124,7 @@ bool Map::isTerritoryBelongToAContinent()
 	bool cond = true;
 	if (territoriesVec.size() > 0) {
 		for (size_t i = 0; i < territoriesVec.size(); ++i) {
-			if (territoriesVec[i].continent.getSource() == -1) {
+			if (territoriesVec[i]->continent.getSource() == -1) {
 				cond = false;
 				break;
 			}
@@ -186,6 +191,11 @@ int Continent::getSource()
 
 
 /**************  Continent definition  **************************/
+Continent::Continent() {
+	source = -1; // if not set
+	destination = -1;
+};
+
 Continent::Continent(int src, int dest, string name, int bunos) {
 	source = src;
 	destination = dest;
@@ -207,6 +217,11 @@ ostream& operator<<(ostream& strm, const Continent c)
 
 
 /**************  Territory definition  **************************/
+Territory::Territory() {
+	source = 0;
+	destination = 0;
+}
+
 Territory::Territory(int src, int dest)
 {
 	source = src;
@@ -233,6 +248,15 @@ Territory::Territory(int src, int dest, string name, Continent c)
 	destination = dest;
 	territoryName = name;
 	continent = c;
+}
+
+void Territory::displayTerritories()
+{
+	if (destination > 0) {
+		cout << "Territory(" << source << ", " << destination << ", " << territoryName << ", " << continent << ")" << endl;
+	} else {
+		cout << "Territory(" << source << ", " << territoryName << ", " << continent << ")" << endl;
+	}
 }
 
 Continent Territory::getTerritoryContinent() {

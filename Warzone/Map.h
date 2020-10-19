@@ -12,10 +12,7 @@ class Continent
 	int source;
 	int destination;
 public:
-	Continent() {
-		source = -1; // if not set
-		destination = -1;
-	};
+	Continent();
 	Continent(int src, int dest, string name, int bunos);
 	Continent(int src, string name, int bunos);
 	int getSource();
@@ -31,22 +28,22 @@ class Map
 {
 	int numVertices;
 	bool isDirectedGraph;
-	vector<Territory> territoriesVec;
-	vector<Continent> continentsVec;
+	vector<Territory*> territoriesVec;
+	vector<Continent*> continentsVec;
 	list<int>* adjList;
 	void DFS(int v, bool visitedArr[]);
 	Map* map = nullptr;
+	Territory* thisTerritory = nullptr;
+	Continent* thisContinent = nullptr;
 public:
 	Map();
+	~Map();
 	Map(const Map& m); // copy constructor
-	~Map() {
-		delete[] adjList;
-	}
 	Map& operator = (const Map& t); // assignment operator
 	void createMap(int vertices, bool isDirected);
 	bool isTerritoryStartAtIndex0();
-	void addEdge(Territory t);
-	void addEdge(Continent c);
+	void addEdge(Territory* t);
+	void addEdge(Continent* c);
 	void displayAdjacencyList();
 	bool isConnectedGraph();
 	bool isTerritoryBelongToAContinent();
@@ -61,14 +58,12 @@ class Territory {
 	string territoryName;
 	Continent continent;
 public:
-	Territory() {
-		source = 0;
-		destination = 0;
-	}
+	Territory();
 	Territory(int src, int dest);
 	Territory(int src, int dest, Continent c);
 	Territory(int src, string name, Continent c);
 	Territory(int src, int dest, string name, Continent c);
+	void displayTerritories();
 	Continent getTerritoryContinent();
 	string getTerritoryName();
 	friend class Map;
