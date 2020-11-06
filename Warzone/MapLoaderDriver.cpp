@@ -21,7 +21,7 @@ int main() {
 	map = new Map();
 	map->createMap(canadaMap.getTerritories().size() + 1, true);
 
-	for (size_t i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
+	for (int i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
 		map->addEdge(canadaMap.getTerritoriesWithBorders()[i]);
 	}
 	map->displayAdjacencyList();
@@ -38,9 +38,9 @@ int main() {
 
 	Map* map2;
 	map2 = new Map();
-	map2->createMap(europeMap.getTerritories().size() + 1, true);
+	map2->createMap(static_cast<int>(europeMap.getTerritories().size() + 1), true);
 
-	for (size_t i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
+	for (int i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
 		map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
 	}
 	map2->displayAdjacencyList();

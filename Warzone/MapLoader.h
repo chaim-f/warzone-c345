@@ -12,6 +12,9 @@ class MapLoader
 	vector<Territory*> territoryBordersVec;
 public:
 	MapLoader();
+	~MapLoader();
+	MapLoader(const MapLoader& m); // copy constructor
+	MapLoader& operator = (const MapLoader& t); // assignment operator
 	void setFileName(string name);
 	void storeContinents();
 	void storeTerritories();

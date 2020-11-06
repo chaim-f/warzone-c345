@@ -12,6 +12,21 @@ MapLoader::MapLoader()
 {
 }
 
+MapLoader::~MapLoader()
+{
+}
+
+MapLoader::MapLoader(const MapLoader& m)
+{
+	fileName = "maps/canada.map";
+}
+
+MapLoader& MapLoader::operator=(const MapLoader& t)
+{
+	fileName = "maps/canada.map";
+	return *this;
+}
+
 void MapLoader::setFileName(string name)
 {
 	this->fileName = name;
@@ -41,19 +56,19 @@ void MapLoader::storeContinents() {
 			// find continents starting point
 			vector<string>::iterator continentsIt = find(vec.begin(), vec.end(), "[continents]");
 			if (continentsIt != vec.end()) {
-				continentsStart = distance(vec.begin(), continentsIt);
+				continentsStart = static_cast<int>(distance(vec.begin(), continentsIt));
 			}
 			// find countries starting point
 			vector<string>::iterator territoriesIt = find(vec.begin(), vec.end(), "[countries]");
 			if (territoriesIt != vec.end()) {
-				continentsEnd = distance(vec.begin(), territoriesIt);
+				continentsEnd = static_cast<int>(distance(vec.begin(), territoriesIt));
 			}
 			mapFile.close();
 			// using the starting point for continent and countries
 			// store continent objects
 
 			int j = 0;
-			for (size_t i = continentsStart + 1; i < continentsEnd - 1; ++i) {
+			for (int i = continentsStart + 1; i < continentsEnd - 1; ++i) {
 				j++;
 				string str = vec[i];
 				continentVec.push_back(new Continent(j, str.substr(0, str.find(" ")), stoi(str.substr(str.find(" ") + 1))));
@@ -93,19 +108,19 @@ void MapLoader::storeTerritories() {
 			// find countries/territories starting point
 			vector<string>::iterator territoriesIt = find(vec.begin(), vec.end(), "[countries]");
 			if (territoriesIt != vec.end()) {
-				territoriesStart = distance(vec.begin(), territoriesIt);
+				territoriesStart = static_cast<int>(distance(vec.begin(), territoriesIt));
 			}
 			// find borders starting point
 			vector<string>::iterator bordersIt = find(vec.begin(), vec.end(), "[borders]");
 			if (bordersIt != vec.end()) {
-				territoriesEnd = distance(vec.begin(), bordersIt);
+				territoriesEnd = static_cast<int>(distance(vec.begin(), bordersIt));
 			}
 			mapFile.close();
 			// using the starting point for countries and borders
 			// store territory objects
 
 			int j = 0;
-			for (size_t i = territoriesStart + 1; i < territoriesEnd - 1; ++i) {
+			for (int i = territoriesStart + 1; i < territoriesEnd - 1; ++i) {
 				j++;
 				vector<string> str = split(vec[i], ' ');
 				territoryVec.push_back(new Territory(stoi(str[0]), str[1], getTerritoryContinentObject(stoi(str[2]))));
@@ -154,25 +169,25 @@ void MapLoader::storeTerritoriesWithBorders() {
 			// find borders starting point
 			vector<string>::iterator bordersIt = find(vec.begin(), vec.end(), "[borders]");
 			if (bordersIt != vec.end()) {
-				bordersStart = distance(vec.begin(), bordersIt);
+				bordersStart = static_cast<int>(distance(vec.begin(), bordersIt));
 			}
 
 
 			// find end of file
 			vector<string>::iterator endOfFileIt = find(vec.begin(), vec.end(), str);
 			if (endOfFileIt != vec.end()) {
-				bordersEnd = distance(vec.begin(), endOfFileIt);
+				bordersEnd = static_cast<int>(distance(vec.begin(), endOfFileIt));
 			}
 			mapFile.close();
 			// using the starting point for countries and borders
 			// store territory objects
 
 			int j = 0;
-			for (size_t i = bordersStart + 1; i < bordersEnd; ++i) {
+			for (int i = bordersStart + 1; i < bordersEnd; ++i) {
 				j++;
 				vector<string> subStr = split(vec[i], ' ');
 				for (int k = 1; k < subStr.size(); k++) {
-					territoryBordersVec.push_back(new Territory(stoi(subStr[0]), stoi(subStr[k]), territoryVec[j - 1]->getTerritoryName(), territoryVec[j-1]->getTerritoryContinent()));
+					territoryBordersVec.push_back(new Territory(stoi(subStr[0]), stoi(subStr[k]), territoryVec[j - 1]->getTerritoryName(), territoryVec[j - 1]->getTerritoryContinent()));
 				}
 			}
 			vector<Territory*>::iterator iter;
@@ -202,8 +217,8 @@ vector<Territory*> MapLoader::getTerritoriesWithBorders() {
 
 // Function to return the corresponding Continent object to the continent index
 Continent MapLoader::getTerritoryContinentObject(int index) {
-	for (size_t i = 0; i < continentVec.size(); ++i) {
-		if (index == i+1)
+	for (int i = 0; i < continentVec.size(); ++i) {
+		if (index == i + 1)
 		{
 			return *continentVec.at(i);
 		};
