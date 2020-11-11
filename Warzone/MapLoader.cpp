@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+
 //Internal/private function implemented at the end of the file
 vector<string> split(string str, char delimiter);
 
@@ -31,7 +32,6 @@ void MapLoader::setFileName(string name)
 {
 	this->fileName = name;
 }
-
 
 void MapLoader::storeContinents() {
 	fstream mapFile;
@@ -213,7 +213,6 @@ vector<Territory*> MapLoader::getTerritories() {
 vector<Territory*> MapLoader::getTerritoriesWithBorders() {
 	return territoryBordersVec;
 }
-
 
 // Function to return the corresponding Continent object to the continent index
 Continent MapLoader::getTerritoryContinentObject(int index) {
