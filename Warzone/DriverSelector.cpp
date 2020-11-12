@@ -1,5 +1,6 @@
 #include <iostream>
 #include "DriverSelector.h";
+#include "GameEngine.h";
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
@@ -7,6 +8,13 @@ using namespace std;
 
 
 namespace DriverSelector {
+	void runGameEngine() {
+		GameEngine g;// GameEngine::readMapDir();
+		g.readMapDir();
+		g.loadMaps();
+		g.storeMaps();
+	}
+
 	void runMapDriver()
 	{
 		Continent c1(0, 1, "Continent A", 2);
@@ -283,7 +291,7 @@ int main() {
 	cin >> driverNum;
 	switch (driverNum) {
 	case GAME_ENGINE:
-		cout << "TODO";
+		DriverSelector::runGameEngine();
 		break;
 	case MAP:
 		DriverSelector::runMapDriver();
@@ -301,5 +309,6 @@ int main() {
 		DriverSelector::runCardDriver();
 		break;
 	}
+
 	return 0;
 }

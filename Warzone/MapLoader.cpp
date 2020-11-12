@@ -28,6 +28,11 @@ MapLoader& MapLoader::operator=(const MapLoader& t)
 	return *this;
 }
 
+MapLoader::MapLoader(string fileName)
+{
+	this->fileName = fileName;
+}
+
 void MapLoader::setFileName(string name)
 {
 	this->fileName = name;
@@ -41,7 +46,7 @@ void MapLoader::storeContinents() {
 		cout << "no map file set!" << endl;
 	}
 	else {
-		cout << endl << "*** Extracting continents from " << this->fileName << " map...START!" << endl;
+		cout << "*** Extracting continents from " << this->fileName << endl;
 		int continentsStart = 0;
 		int continentsEnd = 0;
 		mapFile.open(this->fileName, ios::in);
@@ -75,9 +80,8 @@ void MapLoader::storeContinents() {
 			}
 			vector<Continent*>::iterator iter;
 			for (iter = continentVec.begin(); iter != continentVec.end(); ++iter) {
-				(*iter)->displayContinents();
+				// (*iter)->displayContinents();
 			}
-			cout << "*** Extracting Continents from " << this->fileName << " map... DONE!" << endl;
 		}
 		else {
 			cout << this->fileName << " not found!" << endl;
@@ -93,7 +97,7 @@ void MapLoader::storeTerritories() {
 		cout << "no map file set!" << endl;
 	}
 	else {
-		cout << endl << "*** Extracting countries/territories from " << this->fileName << " map...START!" << endl;
+		cout << "*** Extracting countries/territories from " << this->fileName << endl;
 		int territoriesStart = 0;
 		int territoriesEnd = 0;
 		mapFile.open(this->fileName, ios::in);
@@ -127,9 +131,8 @@ void MapLoader::storeTerritories() {
 			}
 			vector<Territory*>::iterator iter;
 			for (iter = territoryVec.begin(); iter != territoryVec.end(); ++iter) {
-				(*iter)->displayTerritories();
+				//(*iter)->displayTerritories();
 			}
-			cout << "*** Extracting countries/territories from " << this->fileName << " map... DONE!" << endl;
 		}
 		else {
 			cout << this->fileName << " not found!" << endl;
@@ -154,7 +157,7 @@ void MapLoader::storeTerritoriesWithBorders() {
 		out << str << "\n";
 		out.close();
 
-		cout << endl << "*** Extracting countries/territories with borders from " << this->fileName << " map...START!" << endl;
+		cout << "*** Extracting countries/territories with borders from " << this->fileName << endl;
 		int bordersStart = 0;
 		int bordersEnd = 0;
 		mapFile.open(this->fileName, ios::in);
@@ -192,14 +195,18 @@ void MapLoader::storeTerritoriesWithBorders() {
 			}
 			vector<Territory*>::iterator iter;
 			for (iter = territoryBordersVec.begin(); iter != territoryBordersVec.end(); ++iter) {
-				(*iter)->displayTerritories();
+				//(*iter)->displayTerritories();
 			}
-			cout << "*** Extracting countries/territories from " << this->fileName << " map... DONE!" << endl;
 		}
 		else {
 			cout << this->fileName << " not found!" << endl;
 		}
 	}
+}
+
+string MapLoader::getFileName()
+{
+	return fileName;
 }
 
 vector<Continent*> MapLoader::getContinents() {
