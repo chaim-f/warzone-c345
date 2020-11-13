@@ -26,6 +26,7 @@ void GameStart::runAllFunctions()
 	this->validatingMaps();
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
+	this->createPlayers();
 }
 
 void GameStart::readMapDirectory()
@@ -131,14 +132,48 @@ void GameStart::setChosenMap(vector<Territory*> chosenMap)
 	this->chosenMap = chosenMap;
 }
 
+void GameStart::setPlayersCreated(vector<Player*> playersCreated)
+{
+	this->playersCreated = playersCreated;
+}
+
 void GameStart::setNumPlayers(int num)
 {
 	this->numPlayers = num;
 }
 
+void GameStart::createPlayers()
+{
+	cout << "Creating players..." << endl;
+	vector<Player*> randPlayers{
+		new Player("Ben"),
+		new Player("Tom"),
+		new Player("Jerry"),
+		new Player("Batman"),
+		new Player("Robin")
+	};
+	vector<Player*> players;
+	for (int i = 0; i < this->getNumPlayers(); i++) {
+		// select player randomly from the list
+		int r = rand() % randPlayers.size() - 1;
+		players.push_back(randPlayers.at(r));
+	}
+	this->setPlayersCreated(players);
+
+	// just to see the name of the first created player
+	cout << this->getPlayersCreated().at(0)->getPlayerName();
+
+	cout << "done...";
+}
+
 int GameStart::getNumPlayers()
 {
 	return numPlayers;
+}
+
+vector<Player*> GameStart::getPlayersCreated()
+{
+	return playersCreated;
 }
 
 vector<Territory*> GameStart::getChosenMap() {

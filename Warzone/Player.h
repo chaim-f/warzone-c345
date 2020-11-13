@@ -18,6 +18,7 @@ class Player
 	
 public:
 
+	Player(string playerName);
 	Player(const char * pid);
 
 	//Copy constructor
@@ -67,6 +68,7 @@ public:
 	Player& operator = (const Player& t);
 	
 	const char* getPlayerID();
+	string getPlayerName();
 
 	~Player();
 		
@@ -86,6 +88,7 @@ private:
 	Hand		  *handOfCards;
 	const char * playerID;
 	Player * thisPlayerRef = nullptr;
+	string* playerName;
 
 };
 

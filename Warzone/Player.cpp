@@ -68,6 +68,11 @@ Player::Player(const char * pid) {
 
 }
 
+Player::Player(string playerName)
+{
+	this->playerName = &playerName;
+}
+
 //Player copy constructor
 Player::Player(const Player& anotherPlayer) {
 
@@ -217,6 +222,11 @@ std::ostream& operator<<(std::ostream& strm, const Player p)
 //Returns this player's ID
 const char* Player::getPlayerID() {
 	return playerID;
+}
+
+string Player::getPlayerName()
+{
+	return *playerName;
 }
 
 Player *playerFactory(const char * pid) {
