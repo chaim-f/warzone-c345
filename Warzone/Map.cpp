@@ -145,7 +145,7 @@ void Map::validate()
 {
 	if (isConnectedGraph() && isTerritoryBelongToAContinent()) {
 		cout << "Graph is connected!" << endl;
-		cout << "All territories belong to a continent!" << endl;
+		// cout << "All territories belong to a continent!" << endl;
 		this->setIsValidMapFile(true);
 	}
 	else {
@@ -157,11 +157,11 @@ void Map::validate()
 			cout << "Graph is connected!" << endl;
 		}
 		if (!isTerritoryBelongToAContinent()) {
-			cout << "One or more territory do(es) NOT belong to a continent!" << endl;
+			// cout << "One or more territory do(es) NOT belong to a continent!" << endl;
 			this->setIsValidMapFile(false);
 		}
 		else {
-			cout << "All territories belong to a continent!" << endl;
+			// cout << "All territories belong to a continent!" << endl;
 		}
 	}
 }

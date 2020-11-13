@@ -7,13 +7,15 @@ namespace fs = std::filesystem;
 
 void GameEngine::GameStart()
 {
-	this->readMapDir();
+	cout << "********** GAME START **********" << endl;
+	this->readMapDirectory();
 	this->loadMaps();
 	this->storeMaps();
 	this->validatingMaps();
+	this->promptUserToSelectMap();
 }
 
-void GameEngine::readMapDir()
+void GameEngine::readMapDirectory()
 {
 	cout << "Reading map directory..." << endl;
 	int i = 0;
@@ -30,7 +32,7 @@ void GameEngine::readMapDir()
 
 void GameEngine::loadMaps()
 {
-	cout << "loading maps..." << endl;
+	cout << "Loading maps..." << endl;
 	list<string>::iterator it;
 	for (it = mapFiles.begin(); it != mapFiles.end(); ++it) {
 		string filename = (*it);
@@ -41,7 +43,7 @@ void GameEngine::loadMaps()
 
 void GameEngine::storeMaps()
 {
-	cout << "storing map..." << endl;
+	cout << "Storing map..." << endl;
 	vector<MapLoader*>::iterator iter;
 	for (iter = mapLoaders.begin(); iter != mapLoaders.end(); ++iter) {
 		(*iter)->storeContinents();
@@ -53,8 +55,8 @@ void GameEngine::storeMaps()
 
 void GameEngine::validatingMaps()
 {
-	cout << "validating maps..." << endl;
-	int invalidMapIndex = 0;
+	cout << "Validating maps..." << endl;
+	int invalidMapIndex = NULL;
 	for (int i = 0; i < mapLoaders.size(); i++) {
 		Map* map;
 		map = new Map();
@@ -64,24 +66,44 @@ void GameEngine::validatingMaps()
 		}
 		cout << "> validating " << mapLoaders.at(i)->getFileName() << endl;
 		map->validate();
-		if (!map->getIsValidMapFile()) {
+		if (map->getIsValidMapFile() == 0) {
 			invalidMapIndex = i; // store index of invalid map
 		}
 	}
-	cout << "gracefully rejecting invalid map..." << endl;
-	mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
+	cout << "done..." << endl;
+	if (invalidMapIndex != NULL) {
+		cout << "Gracefully rejecting " << mapLoaders.at(invalidMapIndex)->getFileName() << endl;
+		mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
+		cout << "done..." << endl;
+	}
 	/*for (unsigned k = 0; k < mapLoaders.size(); ++k) { // open to see valid map
 		cout << mapLoaders.at(k)->getFileName();
 	}*/
-	cout << "done..." << endl;
 }
 
-void GameEngine::promptNumberOfPlayers()
+void GameEngine::promptUserToSelectNumberOfPlayers()
 {
 	int num;
-	cout << "How many players? Min=2, Max=5" << endl;
+	cout << endl << "How many players? Min=2, Max=5" << endl;
 	cin >> num;
 	this->setNumPlayers(num);
+}
+
+void GameEngine::promptUserToSelectMap()
+{
+	cout << endl << "Please choose a map..." << endl;
+	int chosenMapIndex;
+	for (unsigned k = 0; k < mapLoaders.size(); ++k) {
+		cout << "Enter number " << k << " to choose " << mapLoaders.at(k)->getFileName() << endl;
+	}
+	cin >> chosenMapIndex;
+	cout << mapLoaders.at(chosenMapIndex)->getFileName() << " was chosen!";
+	this->setChosenMap(mapLoaders.at(chosenMapIndex)->getTerritoriesWithBorders());
+}
+
+void GameEngine::setChosenMap(vector<Territory*> chosenMap)
+{
+	this->chosenMap = chosenMap;
 }
 
 void GameEngine::setNumPlayers(int num)

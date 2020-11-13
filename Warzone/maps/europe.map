@@ -1,6 +1,7 @@
 ; map: europe.map
 ; map made with the map maker
 ; yura.net Risk 1.0.9.3
+; ADD this to make this map invalid: 25 Luxembourg 3 4
 
 [files]
 pic europe_pic.jpg
@@ -38,7 +39,6 @@ West_Europe 3 blue
 22 Spain 4 96 285
 23 Portugal 4 38 290
 24 Luxembourg 4 227 172
-25 Greenland 4 300 400
 
 [borders]
 1 8 21 6 7 5 2 3 4
@@ -65,22 +65,6 @@ West_Europe 3 blue
 22 23 4 20 21
 23 22
 24 9 21 6
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
-[end]
 [end]
 [end]
 [end]
