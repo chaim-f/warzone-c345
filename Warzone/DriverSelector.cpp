@@ -10,9 +10,7 @@ using namespace std;
 namespace DriverSelector {
 	void runGameEngine() {
 		GameEngine g;// GameEngine::readMapDir();
-		g.readMapDir();
-		g.loadMaps();
-		g.storeMaps();
+		g.GameStart();
 	}
 
 	void runMapDriver()

@@ -1,8 +1,17 @@
 #include "GameEngine.h"
+#include "Map.h"
 #include <iostream>
 #include <filesystem>
 using namespace std;
 namespace fs = std::filesystem;
+
+void GameEngine::GameStart()
+{
+	this->readMapDir();
+	this->loadMaps();
+	this->storeMaps();
+	this->validatingMaps();
+}
 
 void GameEngine::readMapDir()
 {
@@ -12,7 +21,7 @@ void GameEngine::readMapDir()
 		const auto path = p.path();
 		if (p.is_regular_file() && path.filename().extension() == ".map") {
 			i++;
-			cout << "map " << i << ": maps/" + path.filename().string() << endl; // e.g. "maps/canada.map"
+			cout << "> map " << i << ": maps/" + path.filename().string() << endl; // e.g. "maps/canada.map"
 			mapFiles.push_back("maps/" + path.filename().string());
 		}
 	}
@@ -38,6 +47,25 @@ void GameEngine::storeMaps()
 		(*iter)->storeContinents();
 		(*iter)->storeTerritories();
 		(*iter)->storeTerritoriesWithBorders();
+	}
+	cout << "done..." << endl;
+}
+
+void GameEngine::validatingMaps()
+{
+	cout << "validating maps..." << endl;
+	vector<MapLoader*>::iterator iter;
+	for (iter = mapLoaders.begin(); iter != mapLoaders.end(); ++iter) {
+		Map* map;
+		map = new Map();
+		map->createMap((*iter)->getTerritories().size() + 1, true);
+
+		for (int i = 0; i < (*iter)->getTerritoriesWithBorders().size(); i++) {
+			map->addEdge((*iter)->getTerritoriesWithBorders()[i]);
+		}
+		// map->displayAdjacencyList();
+		cout << "> validating " << (*iter)->getFileName() << endl;
+		map->validate();
 	}
 	cout << "done..." << endl;
 }
