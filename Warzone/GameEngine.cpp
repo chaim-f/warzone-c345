@@ -20,15 +20,15 @@ void cinFail() {
 void GameEngine::GameStart()
 {
 	cout << "********** GAME START **********" << endl;
-	this->readMapDirectory();
-	this->loadMaps();
-	this->storeMaps();
-	this->validatingMaps();
-	this->promptUserToSelectMap();
-	this->promptUserToSelectNumberOfPlayers();
+	this->GameStart_readMapDirectory();
+	this->GameStart_loadMaps();
+	this->GameStart_storeMaps();
+	this->GameStart_validatingMaps();
+	this->GameStart_promptUserToSelectMap();
+	this->GameStart_promptUserToSelectNumberOfPlayers();
 }
 
-void GameEngine::readMapDirectory()
+void GameEngine::GameStart_readMapDirectory()
 {
 	cout << "Reading map directory..." << endl;
 	int i = 0;
@@ -43,7 +43,7 @@ void GameEngine::readMapDirectory()
 	cout << "done..." << endl;
 }
 
-void GameEngine::loadMaps()
+void GameEngine::GameStart_loadMaps()
 {
 	cout << "Loading maps..." << endl;
 	list<string>::iterator it;
@@ -54,7 +54,7 @@ void GameEngine::loadMaps()
 	cout << "done..." << endl;
 }
 
-void GameEngine::storeMaps()
+void GameEngine::GameStart_storeMaps()
 {
 	cout << "Storing map..." << endl;
 	vector<MapLoader*>::iterator iter;
@@ -66,7 +66,7 @@ void GameEngine::storeMaps()
 	cout << "done..." << endl;
 }
 
-void GameEngine::validatingMaps()
+void GameEngine::GameStart_validatingMaps()
 {
 	cout << "Validating maps..." << endl;
 	int invalidMapIndex = NULL;
@@ -91,7 +91,7 @@ void GameEngine::validatingMaps()
 	}
 }
 
-void GameEngine::promptUserToSelectNumberOfPlayers()
+void GameEngine::GameStart_promptUserToSelectNumberOfPlayers()
 {
 	int num;
 	cout << endl << "Enter the number players. Must be a value between " << minPlayer << "-" << maxPlayer << endl;
@@ -103,10 +103,10 @@ void GameEngine::promptUserToSelectNumberOfPlayers()
 		cout << "Please try again." << endl;
 		cin >> num;
 	}
-	this->setNumPlayers(num);
+	this->GameStart_setNumPlayers(num);
 }
 
-void GameEngine::promptUserToSelectMap()
+void GameEngine::GameStart_promptUserToSelectMap()
 {
 	cout << endl << "Please choose a map..." << endl;
 	int chosenMapIndex;
@@ -123,20 +123,20 @@ void GameEngine::promptUserToSelectMap()
 	}
 	int chosenIndex = chosenMapIndex - 1;
 	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
-	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
+	this->GameStart_setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
 }
 
-void GameEngine::setChosenMap(vector<Territory*> chosenMap)
+void GameEngine::GameStart_setChosenMap(vector<Territory*> chosenMap)
 {
 	this->chosenMap = chosenMap;
 }
 
-void GameEngine::setNumPlayers(int num)
+void GameEngine::GameStart_setNumPlayers(int num)
 {
 	this->numPlayers = num;
 }
 
-int GameEngine::getNumPlayers()
+int GameEngine::GameStart_getNumPlayers()
 {
 	return numPlayers;
 }
