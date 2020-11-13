@@ -285,7 +285,7 @@ int main() {
 	int driverNum;
 	enum Driver { GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5 };
 	cout << "What driver to run?" << endl;
-	cout << "Enter[GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
+	cout << "Enter [GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
 	cin >> driverNum;
 	switch (driverNum) {
 	case GAME_ENGINE:

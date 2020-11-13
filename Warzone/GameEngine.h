@@ -10,14 +10,18 @@ using namespace std;
 // [ ] 1.2.5 the user can select the number of players
 class GameEngine
 {
-	vector<Territory*> territories;
+	vector<Territory*> selectedMap;
 	vector<MapLoader*> mapLoaders;
+	int numPlayers;
 public:
 	void GameStart(); // calls all related game start functions 
 	void readMapDir();
 	void loadMaps();
 	void storeMaps();
 	void validatingMaps();
+	void promptNumberOfPlayers();
+	void setNumPlayers(int num);
+	int getNumPlayers();
 	list<string> mapFiles;
 };
 

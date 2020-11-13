@@ -136,21 +136,29 @@ bool Map::isTerritoryBelongToAContinent()
 	return cond;
 }
 
+bool Map::getIsValidMapFile()
+{
+	return isValidMapFile;
+}
+
 void Map::validate()
 {
 	if (isConnectedGraph() && isTerritoryBelongToAContinent()) {
 		cout << "Graph is connected!" << endl;
 		cout << "All territories belong to a continent!" << endl;
+		this->setIsValidMapFile(true);
 	}
 	else {
 		if (!isConnectedGraph()) {
 			cout << "Graph is NOT connected!" << endl;
+			this->setIsValidMapFile(false);
 		}
 		else {
 			cout << "Graph is connected!" << endl;
 		}
 		if (!isTerritoryBelongToAContinent()) {
 			cout << "One or more territory do(es) NOT belong to a continent!" << endl;
+			this->setIsValidMapFile(false);
 		}
 		else {
 			cout << "All territories belong to a continent!" << endl;
@@ -172,6 +180,11 @@ Map* Map::getReverseGraph()
 		}
 	}
 	return m;
+}
+
+void Map::setIsValidMapFile(bool isValid)
+{
+	this->isValidMapFile = isValid;
 }
 
 int getSource(Continent c)

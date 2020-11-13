@@ -54,18 +54,42 @@ void GameEngine::storeMaps()
 void GameEngine::validatingMaps()
 {
 	cout << "validating maps..." << endl;
-	vector<MapLoader*>::iterator iter;
-	for (iter = mapLoaders.begin(); iter != mapLoaders.end(); ++iter) {
+	int invalidMapIndex = 0;
+	for (int i = 0; i < mapLoaders.size(); i++) {
 		Map* map;
 		map = new Map();
-		map->createMap((*iter)->getTerritories().size() + 1, true);
-
-		for (int i = 0; i < (*iter)->getTerritoriesWithBorders().size(); i++) {
-			map->addEdge((*iter)->getTerritoriesWithBorders()[i]);
+		map->createMap(mapLoaders.at(i)->getTerritories().size() + 1, true);
+		for (int j = 0; j < mapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
+			map->addEdge(mapLoaders.at(i)->getTerritoriesWithBorders()[j]);
 		}
-		// map->displayAdjacencyList();
-		cout << "> validating " << (*iter)->getFileName() << endl;
+		cout << "> validating " << mapLoaders.at(i)->getFileName() << endl;
 		map->validate();
+		if (!map->getIsValidMapFile()) {
+			invalidMapIndex = i; // store index of invalid map
+		}
 	}
+	cout << "gracefully rejecting invalid map..." << endl;
+	mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
+	/*for (unsigned k = 0; k < mapLoaders.size(); ++k) { // open to see valid map
+		cout << mapLoaders.at(k)->getFileName();
+	}*/
 	cout << "done..." << endl;
+}
+
+void GameEngine::promptNumberOfPlayers()
+{
+	int num;
+	cout << "How many players? Min=2, Max=5" << endl;
+	cin >> num;
+	this->setNumPlayers(num);
+}
+
+void GameEngine::setNumPlayers(int num)
+{
+	this->numPlayers = num;
+}
+
+int GameEngine::getNumPlayers()
+{
+	return numPlayers;
 }
