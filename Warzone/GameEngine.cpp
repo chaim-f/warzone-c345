@@ -5,6 +5,18 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+const int minPlayer = 2;
+const int maxPlayer = 5;
+
+// if input is not of type integer
+void cinFail() {
+	if (cin.fail())
+	{
+		cin.clear();
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+}
+
 void GameEngine::GameStart()
 {
 	cout << "********** GAME START **********" << endl;
@@ -13,6 +25,7 @@ void GameEngine::GameStart()
 	this->storeMaps();
 	this->validatingMaps();
 	this->promptUserToSelectMap();
+	this->promptUserToSelectNumberOfPlayers();
 }
 
 void GameEngine::readMapDirectory()
@@ -84,8 +97,15 @@ void GameEngine::validatingMaps()
 void GameEngine::promptUserToSelectNumberOfPlayers()
 {
 	int num;
-	cout << endl << "How many players? Min=2, Max=5" << endl;
+	cout << endl << "Enter the number players. Must be a value between " << minPlayer << "-" << maxPlayer << endl;
 	cin >> num;
+	while (num < minPlayer || num > maxPlayer)
+	{
+		cinFail();
+		cout << "Invalid input! Must be a value between " << minPlayer << "-" << maxPlayer << endl;
+		cout << "Please try again." << endl;
+		cin >> num;
+	}
 	this->setNumPlayers(num);
 }
 
@@ -99,13 +119,9 @@ void GameEngine::promptUserToSelectMap()
 	cin >> chosenMapIndex;
 	while (chosenMapIndex <= 0 || chosenMapIndex > mapLoaders.size())
 	{
-		if (cin.fail()) // if input is not of type integer
-		{
-			cin.clear();
-			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		}
-		cout << "Invalid input! Must be a value between 1 - " << mapLoaders.size() << endl;
-		cout << "Please enter the number again." << endl;
+		cinFail();
+		cout << "Invalid input! Must be a value between 1-" << mapLoaders.size() << endl;
+		cout << "Please enter a number again." << endl;
 		cin >> chosenMapIndex;
 	}
 	int chosenIndex = chosenMapIndex - 1;
