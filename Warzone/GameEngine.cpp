@@ -94,11 +94,23 @@ void GameEngine::promptUserToSelectMap()
 	cout << endl << "Please choose a map..." << endl;
 	int chosenMapIndex;
 	for (unsigned k = 0; k < mapLoaders.size(); ++k) {
-		cout << "Enter number " << k << " to choose " << mapLoaders.at(k)->getFileName() << endl;
+		cout << "Enter number " << (k + 1) << " to choose " << mapLoaders.at(k)->getFileName() << endl;
 	}
 	cin >> chosenMapIndex;
-	cout << mapLoaders.at(chosenMapIndex)->getFileName() << " was chosen!";
-	this->setChosenMap(mapLoaders.at(chosenMapIndex)->getTerritoriesWithBorders());
+	while (chosenMapIndex <= 0 || chosenMapIndex > mapLoaders.size())
+	{
+		if (cin.fail()) // if input is not of type integer
+		{
+			cin.clear();
+			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		cout << "Invalid input! Must be a value between 1 - " << mapLoaders.size() << endl;
+		cout << "Please enter the number again." << endl;
+		cin >> chosenMapIndex;
+	}
+	int chosenIndex = chosenMapIndex - 1;
+	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
+	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
 }
 
 void GameEngine::setChosenMap(vector<Territory*> chosenMap)
