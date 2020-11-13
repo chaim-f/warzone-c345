@@ -89,9 +89,6 @@ void GameEngine::validatingMaps()
 		mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
 		cout << "done..." << endl;
 	}
-	/*for (unsigned k = 0; k < mapLoaders.size(); ++k) { // open to see valid map
-		cout << mapLoaders.at(k)->getFileName();
-	}*/
 }
 
 void GameEngine::promptUserToSelectNumberOfPlayers()

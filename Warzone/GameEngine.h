@@ -10,7 +10,7 @@ using namespace std;
 // [x] 1.2.5 the user can select the number of players
 class GameEngine
 {
-	vector<Territory*> chosenMap;
+	vector<Territory*> chosenMap; // refer to this, it contains all the territories with continents and adjacencies from the chosen map
 	vector<MapLoader*> mapLoaders;
 	int numPlayers;
 public:
@@ -23,7 +23,7 @@ public:
 	void promptUserToSelectMap();
 	void setChosenMap(vector<Territory*> chosenMap);
 	void setNumPlayers(int num);
-	int getNumPlayers();
+	int getNumPlayers(); // refer to this to create your players based on this value
 	list<string> mapFiles;
 };
 
