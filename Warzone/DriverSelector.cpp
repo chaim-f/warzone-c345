@@ -1,6 +1,7 @@
 #include <iostream>
-#include "DriverSelector.h";
-#include "GameEngine.h";
+#include "DriverSelector.h"
+#include "GameEngine.h"
+#include "GameStart.h"
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
@@ -9,8 +10,8 @@ using namespace std;
 
 namespace DriverSelector {
 	void runGameEngine() {
-		GameEngine g;// GameEngine::readMapDir();
-		g.GameStart();
+		GameStart g;
+		g.runAllFunctions();
 	}
 
 	void runMapDriver()
@@ -281,32 +282,31 @@ namespace DriverSelector {
 	}
 }
 
-int main() {
-	int driverNum;
-	enum Driver { GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5 };
-	cout << "What driver to run?" << endl;
-	cout << "Enter [GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
-	cin >> driverNum;
-	switch (driverNum) {
-	case GAME_ENGINE:
-		DriverSelector::runGameEngine();
-		break;
-	case MAP:
-		DriverSelector::runMapDriver();
-		break;
-	case MAP_LOADER:
-		DriverSelector::runMapLoaderDriver();
-		break;
-	case PLAYER:
-		DriverSelector::runPlayerDriver();
-		break;
-	case ORDER:
-		DriverSelector::runOrderDriver();
-		break;
-	case CARD:
-		DriverSelector::runCardDriver();
-		break;
-	}
-
-	return 0;
-}
+//int main() {
+//	int driverNum;
+//	enum Driver { GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5 };
+//	cout << "What driver to run?" << endl;
+//	cout << "Enter [GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
+//	cin >> driverNum;
+//	switch (driverNum) {
+//	case GAME_ENGINE:
+//		DriverSelector::runGameEngine();
+//		break;
+//	case MAP:
+//		DriverSelector::runMapDriver();
+//		break;
+//	case MAP_LOADER:
+//		DriverSelector::runMapLoaderDriver();
+//		break;
+//	case PLAYER:
+//		DriverSelector::runPlayerDriver();
+//		break;
+//	case ORDER:
+//		DriverSelector::runOrderDriver();
+//		break;
+//	case CARD:
+//		DriverSelector::runCardDriver();
+//		break;
+//	}
+//	return 0;
+//}
