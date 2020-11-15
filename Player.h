@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "Territory.h"
 #include "Map.h"
 #include "Order.h"
 #include <list>
@@ -19,7 +18,8 @@ class Player
 	
 public:
 
-	Player(const char * pid);
+	Player(string playerName);
+	Player(string playerName, const char * pid);
 
 	//Copy constructor
 	Player(const Player& anotherPlayer);
@@ -56,8 +56,6 @@ public:
 	void addMyTerritory(Territory aTerrytory);
 
 
-	void deleteTerritory(int src, int dst);
-
 	//Adds a terrytory to the player's target territories
 	void addTargetTerritory(Territory aTerrytory);
 
@@ -70,6 +68,7 @@ public:
 	Player& operator = (const Player& t);
 	
 	const char* getPlayerID();
+	string getPlayerName();
 
 	~Player();
 		
@@ -89,6 +88,7 @@ private:
 	Hand		  *handOfCards;
 	const char * playerID;
 	Player * thisPlayerRef = nullptr;
+	string playerName;
 
 };
 

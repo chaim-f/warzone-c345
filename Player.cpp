@@ -7,15 +7,15 @@
 
 #include "Player.h"
 #include <list>
-#include "Territory.h"
+#include "Map.h"
 #include "Cards.h"
 #include <sstream>
 #include "Order.h"
 
-Player::Player(const char * pid) {
+Player::Player(string playerName, const char * pid) {
 
 	playerID = pid;
-
+	playerName = playerName;
 	/*
 	targetTerritories = nullptr;
 	myOrder = nullptr;
@@ -66,6 +66,54 @@ Player::Player(const char * pid) {
 		exit(1);
 	}
 
+}
+
+Player::Player(string playerName)
+{
+	this->playerName = playerName;
+
+	//Allocate memory to Order list.
+	try {
+		myOrder = new list<Order>();
+
+		cout << "myOrder list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+
+	//Allocate memory to my territories list.
+	try {
+		myTerritories = new list<Territory>;
+		cout << "myTerritories list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+
+	//Allocate memory to target territories list.
+	try {
+		targetTerritories = new list<Territory>;
+		cout << "myTerritories list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+	//Allocate memory to territories list.
+	try {
+		handOfCards = new Hand();
+		cout << "Player hand of cards dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player hand of cards." << endl;
+		exit(1);
+	}
 }
 
 //Player copy constructor
@@ -195,13 +243,6 @@ void Player::addMyTerritory(Territory aTerrytory) {
 	return;
 }
 
-
-void Player::deleteTerritory(int src, int dst) {
-	//Removing a territory
-
-	std::cout << "Deleteing territory " << src << ", " << dst << "\n";
-}
-
 void Player::addTargetTerritory(Territory aTerrytory) {
 
 	//Add territory at the end of myTerritories
@@ -224,6 +265,11 @@ std::ostream& operator<<(std::ostream& strm, const Player p)
 //Returns this player's ID
 const char* Player::getPlayerID() {
 	return playerID;
+}
+
+string Player::getPlayerName()
+{
+	return playerName;
 }
 
 Player *playerFactory(const char * pid) {
