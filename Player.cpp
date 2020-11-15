@@ -7,7 +7,7 @@
 
 #include "Player.h"
 #include <list>
-#include "Territory.h"
+#include "Map.h"
 #include "Cards.h"
 #include <sstream>
 #include "Order.h"
@@ -15,13 +15,6 @@
 Player::Player(const char * pid) {
 
 	playerID = pid;
-
-	/*
-	targetTerritories = nullptr;
-	myOrder = nullptr;
-	myTerritories = nullptr;
-	handOfCards = nullptr;
-	*/
 
 	//Allocate memory to Order list.
 	try {
@@ -49,7 +42,7 @@ Player::Player(const char * pid) {
 	//Allocate memory to target territories list.
 	try {
 		targetTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
+		cout << "targetTerritories list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -116,7 +109,7 @@ Player::Player(const Player& anotherPlayer) {
 //Player assignment operator
 Player& Player::operator= (const Player& t)
 {
-	cout << "Playerssignment operator called " << endl;
+	cout << "Player assignment operator called " << endl;
 	return *this;
 }
 
@@ -193,13 +186,6 @@ void Player::addMyTerritory(Territory aTerrytory) {
 	cout << "Adding territory: " << aTerrytory << "\n";
 	//this-> myTerritories-> push_back(aTerrytory);
 	return;
-}
-
-
-void Player::deleteTerritory(int src, int dst) {
-	//Removing a territory
-
-	std::cout << "Deleteing territory " << src << ", " << dst << "\n";
 }
 
 void Player::addTargetTerritory(Territory aTerrytory) {
