@@ -15,10 +15,12 @@ public:
 	~MapLoader();
 	MapLoader(const MapLoader& m); // copy constructor
 	MapLoader& operator = (const MapLoader& t); // assignment operator
+	MapLoader(string fileName);
 	void setFileName(string name);
 	void storeContinents();
 	void storeTerritories();
 	void storeTerritoriesWithBorders();
+	string getFileName();
 	vector<Continent*> getContinents();
 	vector<Territory*> getTerritories();
 	vector<Territory*> getTerritoriesWithBorders();

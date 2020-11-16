@@ -36,6 +36,7 @@ class Map
 	Map* map = nullptr;
 	Territory* thisTerritory = nullptr;
 	Continent* thisContinent = nullptr;
+	bool isValidMapFile;
 public:
 	Map();
 	~Map();
@@ -48,8 +49,10 @@ public:
 	void displayAdjacencyList();
 	bool isConnectedGraph();
 	bool isTerritoryBelongToAContinent();
+	bool getIsValidMapFile();
 	void validate();
 	Map* getReverseGraph();
+	void setIsValidMapFile(bool isValid);
 };
 
 

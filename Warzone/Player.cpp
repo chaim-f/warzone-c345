@@ -16,13 +16,6 @@ Player::Player(const char * pid) {
 
 	playerID = pid;
 
-	/*
-	targetTerritories = nullptr;
-	myOrder = nullptr;
-	myTerritories = nullptr;
-	handOfCards = nullptr;
-	*/
-
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
@@ -49,7 +42,7 @@ Player::Player(const char * pid) {
 	//Allocate memory to target territories list.
 	try {
 		targetTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
+		cout << "targetTerritories list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -116,7 +109,7 @@ Player::Player(const Player& anotherPlayer) {
 //Player assignment operator
 Player& Player::operator= (const Player& t)
 {
-	cout << "Playerssignment operator called " << endl;
+	cout << "Player assignment operator called " << endl;
 	return *this;
 }
 
