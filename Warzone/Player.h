@@ -15,20 +15,20 @@
 
 class Player
 {
-	
+
 public:
 
 	Player(string playerName);
-	Player(const char * pid);
+	Player(string playerName, const char* pid);
 
 	//Copy constructor
 	Player(const Player& anotherPlayer);
 
 	//Returns a list of territories to attack
-	list<Territory> * toAttack(); 
+	list<Territory>* toAttack();
 
 	//Returns a list of territories to defend
-	list<Territory> * toDefend();
+	list<Territory>* toDefend();
 
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o);
@@ -37,7 +37,7 @@ public:
 		- add copy constructor
 		- add assigment operator
 		- add stream insertion operator
-		
+
 	*/
 
 	//Executes player Order
@@ -50,7 +50,7 @@ public:
 	list<Order>* listPlayerOrder();
 
 	//Add card to hand of cards
-	void addcardToHandOfCards(Card * card);
+	void addcardToHandOfCards(Card* card);
 
 	//Adds a terrytory to the player's territories
 	void addMyTerritory(Territory aTerrytory);
@@ -59,38 +59,38 @@ public:
 	//Adds a terrytory to the player's target territories
 	void addTargetTerritory(Territory aTerrytory);
 
-	void setThisPlayerRef(Player * myPlayer);
+	void setThisPlayerRef(Player* myPlayer);
 
 	void destroyPlayerObject();
 
 	friend std::ostream& operator<<(std::ostream&, const Player);
 
 	Player& operator = (const Player& t);
-	
+
 	const char* getPlayerID();
 	string getPlayerName();
 
 	~Player();
-		
+
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
-	list<Territory> *myTerritories;
+	list<Territory>* myTerritories;
 
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
-	list<Territory> *targetTerritories;
+	list<Territory>* targetTerritories;
 
 	//List of Order
-	list<Order> * myOrder;
-	
+	list<Order>* myOrder;
+
 	//list<Card > * handOfCards;
-	Hand		  *handOfCards;
-	const char * playerID;
-	Player * thisPlayerRef = nullptr;
-	string* playerName;
+	Hand* handOfCards;
+	const char* playerID;
+	Player* thisPlayerRef = nullptr;
+	string playerName;
 
 };
 
 
-Player *playerFactory(const char * pid);
+Player* playerFactory(const char* pid);

@@ -12,10 +12,10 @@
 #include <sstream>
 #include "Order.h"
 
-Player::Player(const char * pid) {
+Player::Player(string playerName, const char* pid) {
 
 	playerID = pid;
-
+	playerName = playerName;
 	/*
 	targetTerritories = nullptr;
 	myOrder = nullptr;
@@ -26,7 +26,7 @@ Player::Player(const char * pid) {
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
-		
+
 		cout << "myOrder list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -70,7 +70,50 @@ Player::Player(const char * pid) {
 
 Player::Player(string playerName)
 {
-	this->playerName = &playerName;
+	this->playerName = playerName;
+
+	//Allocate memory to Order list.
+	try {
+		myOrder = new list<Order>();
+
+		cout << "myOrder list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+
+	//Allocate memory to my territories list.
+	try {
+		myTerritories = new list<Territory>;
+		cout << "myTerritories list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+
+	//Allocate memory to target territories list.
+	try {
+		targetTerritories = new list<Territory>;
+		cout << "myTerritories list dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+	//Allocate memory to territories list.
+	try {
+		handOfCards = new Hand();
+		cout << "Player hand of cards dynamically created.\n" << endl;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player hand of cards." << endl;
+		exit(1);
+	}
 }
 
 //Player copy constructor
@@ -81,19 +124,19 @@ Player::Player(const Player& anotherPlayer) {
 	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
-	
+
 
 	list<Territory>::iterator ptrTarget;
 	list<Territory>::iterator ptrTerritory;
 	list<Order>::iterator ptrOrder;
 	list<Card>::iterator ptrCards;
-	
+
 
 	//Copy target territories
 	for (ptrTarget = anotherPlayer.targetTerritories->begin(); ptrTarget != anotherPlayer.targetTerritories->end(); ++ptrTarget) {
 		targetTerritories->push_back(*ptrTarget);
-			
-			
+
+
 	}
 
 	//Copy territories
@@ -102,7 +145,7 @@ Player::Player(const Player& anotherPlayer) {
 
 
 	}
-	
+
 	//Copy cards ( just need to copy the reference to the hand of cards)
 	handOfCards = (anotherPlayer.handOfCards);
 
@@ -128,7 +171,7 @@ Player& Player::operator= (const Player& t)
 
 
 
-list<Territory > *Player::toAttack() {
+list<Territory >* Player::toAttack() {
 
 	list<Territory >::iterator ptr;
 	int i = 0;
@@ -136,15 +179,15 @@ list<Territory > *Player::toAttack() {
 	std::cout << "Lit of territories to attack: \n";
 
 	for (ptr = targetTerritories->begin(); ptr != targetTerritories->end(); ++ptr) {
-		std::cout <<"\n\t" <<*ptr << "\n";
+		std::cout << "\n\t" << *ptr << "\n";
 	}
 
 	std::cout << std::endl;
-	
-	
+
+
 	return targetTerritories;
 }
-list<Territory > * Player::toDefend() {
+list<Territory >* Player::toDefend() {
 
 	list<Territory >::iterator ptr;
 	int i = 0;
@@ -169,13 +212,13 @@ void Player::executeOrder() {
 	return;
 }
 
-list<Order> * Player::listPlayerOrder() {
+list<Order>* Player::listPlayerOrder() {
 	list<Order>::iterator ptr;
 	int i = 0;
 	std::cout << "My list of Order: \n";
 	for (ptr = myOrder->begin(); ptr != myOrder->end(); ++ptr) {
 		std::cout << "\n\t" << *ptr << "\n";
-		
+
 	}
 	std::cout << std::endl;
 
@@ -188,7 +231,7 @@ void Player::addOrder(Order order) {
 	return;
 }
 
-void Player::setThisPlayerRef(Player * myPlayer) {
+void Player::setThisPlayerRef(Player* myPlayer) {
 	thisPlayerRef = myPlayer;
 }
 
@@ -207,7 +250,7 @@ void Player::addTargetTerritory(Territory aTerrytory) {
 	return;
 }
 
-void Player::addcardToHandOfCards(Card * card) {
+void Player::addcardToHandOfCards(Card* card) {
 
 	//handOfCards->addCard(card);
 	return;
@@ -226,17 +269,17 @@ const char* Player::getPlayerID() {
 
 string Player::getPlayerName()
 {
-	return *playerName;
+	return playerName;
 }
 
-Player *playerFactory(const char * pid) {
+Player* playerFactory(const char* pid) {
 
 	Player* myPlayer = nullptr;
 
 	//Allocate memory to player.
 	try {
 		myPlayer = new Player(pid);
-		cout << "Player " << pid <<" dynamically created.\n" << endl;
+		cout << "Player " << pid << " dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -258,7 +301,7 @@ Player::~Player() {
 void Player::destroyPlayerObject() {
 
 	cout << "Cleaning player " << this->playerID << " from heap before ending program.\n" << endl;
-	
+
 	delete handOfCards;
 	delete myOrder;
 	delete myTerritories;

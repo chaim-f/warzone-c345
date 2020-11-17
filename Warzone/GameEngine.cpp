@@ -33,7 +33,7 @@ void GameStart::runAllFunctions()
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
 	vector<Territory*>::iterator iter;
-	//this->createPlayers();
+	this->createPlayers();
 }
 
 void GameStart::readMapDirectory()
@@ -168,7 +168,7 @@ void GameStart::createPlayers()
 	this->setPlayersCreated(players);
 
 	// just to see the name of the first created player
-	cout << this->getPlayersCreated().at(0)->getPlayerName();
+	cout << this->getPlayersCreated().at(0)->getPlayerName() << endl;
 
 	cout << "done...";
 }
