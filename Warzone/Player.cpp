@@ -313,7 +313,16 @@ void Player::destroyPlayerObject() {
 }
 
 int Player::getreinforcePool() { return reinforcePool; }
+int Player::getTurnNumber()
+{
+	return turnNumber;
+}
 void Player::setreinforcePool(int value) { if (value >= 0) { reinforcePool = value; } }
+
+void Player::setTurnNumber(int value)
+{
+	this->turnNumber = value;
+}
 
 void Player::addTerritory(Territory* terrytory)
 {

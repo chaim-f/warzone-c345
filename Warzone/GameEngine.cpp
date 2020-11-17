@@ -237,7 +237,15 @@ void StartUpPhase::startupPhase()
 
 void StartUpPhase::createOrderOfPlay()
 {
-
+	int numPlayers = this->getPlayers().size();
+	vector<int> randomSequence = createRandomSequence(numPlayers);
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		this->players.at(i)->setTurnNumber(randomSequence.at(i));
+	}
+	cout << "\norder of play\n";
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		cout << this->getPlayers().at(i)->getPlayerName() << " : " << this->getPlayers().at(i)->getTurnNumber() << endl;
+	}
 }
 
 void StartUpPhase::distrubuiteTerritories() {

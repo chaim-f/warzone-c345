@@ -64,7 +64,9 @@ public:
 	~Player();
 
 	int getreinforcePool();//getter of reinforcePool
+	int getTurnNumber();
 	void setreinforcePool(int value);//setter/mutator of reinforcePool
+	void setTurnNumber(int value);
 
 	void addTerritory(Territory* terrytory);
 	vector<Territory*> getTerritoriesOwn();
@@ -89,6 +91,7 @@ private:
 	Player* thisPlayerRef = nullptr;
 	string playerName;
 	int reinforcePool;//holds th ammout to be used in the reinforcement
+	int turnNumber;
 };
 
 
