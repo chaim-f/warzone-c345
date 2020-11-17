@@ -72,6 +72,7 @@ public:
 	Continent getTerritoryContinent();
 	string getTerritoryName();
 	int getTerritoryIndex();
+	int getBorder();
 	friend class Map;
 	friend ostream& operator<<(ostream& strm, const Territory t);
 };

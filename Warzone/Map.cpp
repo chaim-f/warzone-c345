@@ -295,6 +295,11 @@ int Territory::getTerritoryIndex()
 	return source;
 }
 
+int Territory::getBorder()
+{
+	return destination;
+}
+
 ostream& operator<<(ostream& strm, const Territory t)
 {
 	if (t.destination > 0 || t.destination >= 1) {

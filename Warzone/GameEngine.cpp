@@ -52,6 +52,12 @@ void GameStart::runAllFunctions()
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
 	this->createPlayers();
+
+	/*for (int i = 0; i < this->getChosenMap().size(); i++) {
+		if (this->getChosenMap().at(i)->getTerritoryIndex() == 1) {
+			cout << this->getChosenMap().at(i)->getBorder() << endl;
+		}
+	}*/
 }
 
 void GameStart::readMapDirectory()
