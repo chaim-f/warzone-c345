@@ -45,14 +45,16 @@ public:
 	void setNumPlayers(int num);
 	void createPlayers();
 	int getNumPlayers(); // refer to this to create your players based on this value	
-	vector<Player*>& getPlayersCreated();
+	vector<Player*> getPlayersCreated();
 };
 
 class StartUpPhase
 {
-	GameStart gameStart;
+	vector<Territory*> territories;
+	int numOfPlayers;
+	vector<Player*> players;
 public:
-	StartUpPhase(GameStart g);
+	StartUpPhase(vector<Territory*> territories, int numOfPlayers, vector<Player*> players);
 	void startupPhase();
 	
 	// 2.2.3 The order of play of the players are determine randomly

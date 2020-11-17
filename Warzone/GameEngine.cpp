@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 int main() {
 	GameStart g;
 	g.runAllFunctions();
-	StartUpPhase sup(g);
+	StartUpPhase sup(g.getChosenMap(), g.getNumPlayers(), g.getPlayersCreated());
 	sup.startupPhase();
 	return 0;
 }
@@ -27,6 +27,19 @@ void cinFail() {
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
+}
+
+// create random sequence of integers given length
+// e.g. if length is 3, then this will return a random sequence of 0-3 every time it is called, 
+// for example: {0,2,1}, {1,0,2}, {2,1,0}, etc.
+vector<int> createRandomSequence(int sequenceLength)
+{
+	random_device rd;
+	mt19937 rng(rd());
+	vector<int> data(sequenceLength);
+	iota(data.begin(), data.end(), 0);
+	shuffle(data.begin(), data.end(), rng);
+	return data;
 }
 
 void GameStart::runAllFunctions()
@@ -159,21 +172,11 @@ void GameStart::createPlayers()
 	cout << "Creating " << this->getNumPlayers() << " players" << endl;
 	cout << "------------------------------------------------------" << endl;
 	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
-
-	random_device rd;
-	mt19937 rng(rd());
-	vector<int> data(maxPlayer); // this will create a random sequence of 0-4, e.g. [2,4,3,1,0]; [1,0,2,3,4]
-	iota(data.begin(), data.end(), 0);
-	shuffle(data.begin(), data.end(), rng); // every
-	vector<int> randomSequence;
 	vector<Player*> players;
-	for (auto& r : data) {
-		randomSequence.push_back(r);
-	}
+	vector<int> randomSequence = createRandomSequence(maxPlayer);
 	for (int i = 0; i < this->getNumPlayers(); i++) {
 		players.push_back(new Player(names.at(randomSequence.at(i))));
 	}
-
 	// if the random sequence is [2,4,3,1,0]
 	// and number of player chosen was 4
 	// then we take select the first 4 elements from the sequence: [2,4,3,1]
@@ -181,7 +184,6 @@ void GameStart::createPlayers()
 	// and number of player chosen was 2
 	// then players: Tom (at index 1) and Ben (at index 0) will play the game
 	this->setPlayersCreated(players);
-	cout << "------------------------------------------------------" << endl;
 }
 
 
@@ -190,34 +192,40 @@ int GameStart::getNumPlayers()
 	return numPlayers;
 }
 
-vector<Player*>& GameStart::getPlayersCreated()
+vector<Player*> GameStart::getPlayersCreated()
 {
-	return playersCreated;
+	return this->playersCreated;
 }
 
 vector<Territory*> GameStart::getChosenMap() {
 	return chosenMap;
 }
 
-StartUpPhase::StartUpPhase(GameStart gs)
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 2
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+StartUpPhase::StartUpPhase(vector<Territory*> territories, int numOfPlayers, vector<Player*> players)
 {
-	this->gameStart = gs;
+	this->territories = territories;
+	this->numOfPlayers = numOfPlayers;
+	this->players = players;
+	//cout << this->players.at(0)->getPlayerName() << "*******";
 }
 
 void StartUpPhase::startupPhase()
 {
-	this->createOrderOfPlay();
-	this->setReinforcements();
 	this->distrubuiteTerritories();
+	this->setReinforcements();
+	this->createOrderOfPlay();
 }
 
 void StartUpPhase::createOrderOfPlay()
 {
+
 }
 
 void StartUpPhase::distrubuiteTerritories() {
-	int numOfPlayers = this->gameStart.getNumPlayers();
-	int numberOfTerritories = this->gameStart.getChosenMap().size();
+	int numberOfTerritories = this->territories.size();
 	int counter = numberOfTerritories;
 	int temp;
 	int holderT[9999];//assumed max number of Territories 
@@ -230,13 +238,13 @@ void StartUpPhase::distrubuiteTerritories() {
 			if (temp >= holderT[j]) { temp = (temp + 1) % numberOfTerritories; }
 		}
 		holderT[i] = temp;
-		this->gameStart.getPlayersCreated().at(i % numOfPlayers)->addMyTerritory(*gameStart.getChosenMap().at(temp));
+		this->players.at(i % this->numOfPlayers)->addMyTerritory(*this->territories.at(temp));
 	}
 	cout << "\nAll Territories ranadomly allowcated";//it is random and so long as each territory is unique in the map it will also be unique here and not allowcated to two players
 }
 
 void StartUpPhase::setReinforcements() {
-	int numOfPlayers = this->gameStart.getNumPlayers();
+	int numOfPlayers = this->numOfPlayers;
 	int reinforcePool = 0;
 	switch (numOfPlayers) {
 	case 2: reinforcePool = 40; break;
@@ -245,7 +253,7 @@ void StartUpPhase::setReinforcements() {
 	case 5: reinforcePool = 25; break;
 	}
 	for (int i = 0; i < numOfPlayers; i++) {
-		this->gameStart.getPlayersCreated().at(i)->setreinforcePool(reinforcePool);
+		this->players.at(i)->setreinforcePool(reinforcePool);
 	}
-	cout << "\nFilled each players reinforcement pool with " << reinforcePool << endl;
+	cout << "\nFilled each players reinforcement pool with " << reinforcePool << " armies each" << endl;
 }
