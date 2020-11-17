@@ -1,9 +1,7 @@
 /***********************************************************************
 	Assignment 1 - TEAM 21
 	Part 4
-*/
-
-/**********************************************************************/
+***********************************************************************/
 
 #pragma once
 
@@ -33,6 +31,7 @@ public:
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o);
 
+
 	//Executes player Order
 	void executeOrder();
 
@@ -47,7 +46,6 @@ public:
 
 	//Adds a terrytory to the player's territories
 	void addMyTerritory(Territory aTerrytory);
-
 
 	//Adds a terrytory to the player's target territories
 	void addTargetTerritory(Territory aTerrytory);
@@ -64,6 +62,9 @@ public:
 	string getPlayerName();
 
 	~Player();
+
+	int getreinforcePool();//getter of reinforcePool
+	void setreinforcePool(int value);//setter/mutator of reinforcePool
 
 private:
 
@@ -82,8 +83,8 @@ private:
 	const char* playerID;
 	Player* thisPlayerRef = nullptr;
 	string playerName;
-
+	int reinforcePool;//holds th ammout to be used in the reinforcement
 };
 
 
-Player* playerFactory(const char* pid);
+Player* playerFactory(string pid);

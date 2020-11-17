@@ -2,6 +2,7 @@
 #include "Map.h"
 #include <iostream>
 #include <filesystem>
+#include <time.h>
 #include <random>
 #include <algorithm>
 #include <numeric>
@@ -11,6 +12,8 @@ namespace fs = std::filesystem;
 int main() {
 	GameStart g;
 	g.runAllFunctions();
+	StartUpPhase sup(g);
+	sup.startupPhase();
 	return 0;
 }
 
@@ -35,7 +38,6 @@ void GameStart::runAllFunctions()
 	this->validatingMaps();
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
-	vector<Territory*>::iterator iter;
 	this->createPlayers();
 }
 
@@ -165,7 +167,7 @@ void GameStart::createPlayers()
 	shuffle(data.begin(), data.end(), rng); // every
 	vector<int> randomSequence;
 	vector<Player*> players;
-	for (auto r : data) {
+	for (auto& r : data) {
 		randomSequence.push_back(r);
 	}
 	for (int i = 0; i < this->getNumPlayers(); i++) {
@@ -182,16 +184,68 @@ void GameStart::createPlayers()
 	cout << "------------------------------------------------------" << endl;
 }
 
+
 int GameStart::getNumPlayers()
 {
 	return numPlayers;
 }
 
-vector<Player*> GameStart::getPlayersCreated()
+vector<Player*>& GameStart::getPlayersCreated()
 {
 	return playersCreated;
 }
 
 vector<Territory*> GameStart::getChosenMap() {
 	return chosenMap;
+}
+
+StartUpPhase::StartUpPhase(GameStart gs)
+{
+	this->gameStart = gs;
+}
+
+void StartUpPhase::startupPhase()
+{
+	this->createOrderOfPlay();
+	this->setReinforcements();
+	this->distrubuiteTerritories();
+}
+
+void StartUpPhase::createOrderOfPlay()
+{
+}
+
+void StartUpPhase::distrubuiteTerritories() {
+	int numOfPlayers = this->gameStart.getNumPlayers();
+	int numberOfTerritories = this->gameStart.getChosenMap().size();
+	int counter = numberOfTerritories;
+	int temp;
+	int holderT[9999];//assumed max number of Territories 
+	for (int i = 0; i < 9999; i++) {
+		holderT[i] = -1;
+	}
+	for (int i = 0; i < numberOfTerritories; i++) {
+		temp = (int)rand() % counter--;//takes the random values and takes the mod so it returns values between 0 and number of territories -1
+		for (int j = 0; j < i; j++) {
+			if (temp >= holderT[j]) { temp = (temp + 1) % numberOfTerritories; }
+		}
+		holderT[i] = temp;
+		this->gameStart.getPlayersCreated().at(i % numOfPlayers)->addMyTerritory(*gameStart.getChosenMap().at(temp));
+	}
+	cout << "\nAll Territories ranadomly allowcated";//it is random and so long as each territory is unique in the map it will also be unique here and not allowcated to two players
+}
+
+void StartUpPhase::setReinforcements() {
+	int numOfPlayers = this->gameStart.getNumPlayers();
+	int reinforcePool = 0;
+	switch (numOfPlayers) {
+	case 2: reinforcePool = 40; break;
+	case 3: reinforcePool = 35; break;
+	case 4: reinforcePool = 30; break;
+	case 5: reinforcePool = 25; break;
+	}
+	for (int i = 0; i < numOfPlayers; i++) {
+		this->gameStart.getPlayersCreated().at(i)->setreinforcePool(reinforcePool);
+	}
+	cout << "\nFilled each players reinforcement pool with " << reinforcePool << endl;
 }

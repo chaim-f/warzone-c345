@@ -1,10 +1,7 @@
 /***********************************************************************
 	Assignment 1 - TEAM 21
 	Part 4
-*/
-
-/**********************************************************************/
-
+***********************************************************************/
 #include "Player.h"
 #include <list>
 #include "Map.h"
@@ -16,12 +13,6 @@ Player::Player(string playerName, const char* pid) {
 
 	playerID = pid;
 	playerName = playerName;
-	/*
-	targetTerritories = nullptr;
-	myOrder = nullptr;
-	myTerritories = nullptr;
-	handOfCards = nullptr;
-	*/
 
 	//Allocate memory to Order list.
 	try {
@@ -49,7 +40,7 @@ Player::Player(string playerName, const char* pid) {
 	//Allocate memory to target territories list.
 	try {
 		targetTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
+		cout << "targetTerritories list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -72,11 +63,11 @@ Player::Player(string playerName)
 {
 	this->playerName = playerName;
 	cout << "\nCreating: " << playerName << endl;
-
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
-		cout << "order list dynamically created." << endl;
+
+		cout << "myOrder list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -87,7 +78,7 @@ Player::Player(string playerName)
 	//Allocate memory to my territories list.
 	try {
 		myTerritories = new list<Territory>;
-		cout << "territories list dynamically created." << endl;
+		cout << "myTerritories list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -98,7 +89,7 @@ Player::Player(string playerName)
 	//Allocate memory to target territories list.
 	try {
 		targetTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created." << endl;
+		cout << "targetTerritories list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -108,7 +99,7 @@ Player::Player(string playerName)
 	//Allocate memory to territories list.
 	try {
 		handOfCards = new Hand();
-		cout << "Player hand of cards dynamically created." << endl;
+		cout << "Player hand of cards dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player hand of cards." << endl;
@@ -118,45 +109,48 @@ Player::Player(string playerName)
 
 //Player copy constructor
 Player::Player(const Player& anotherPlayer) {
-
-	playerID = anotherPlayer.playerID;
+	playerID = anotherPlayer.playerID;//does nothing as it is a const pointer cannot move the intial allocated memmory
+	playerName = anotherPlayer.playerName;
 	targetTerritories = nullptr;
 	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
-
 
 	list<Territory>::iterator ptrTarget;
 	list<Territory>::iterator ptrTerritory;
 	list<Order>::iterator ptrOrder;
 	list<Card>::iterator ptrCards;
 
-
 	//Copy target territories
-	for (ptrTarget = anotherPlayer.targetTerritories->begin(); ptrTarget != anotherPlayer.targetTerritories->end(); ++ptrTarget) {
-		targetTerritories->push_back(*ptrTarget);
-
-
+	if (!(anotherPlayer.targetTerritories->empty())) {
+		if (targetTerritories == nullptr) {
+			targetTerritories = new list<Territory>;
+		}
+		for (ptrTarget = anotherPlayer.targetTerritories->begin(); ptrTarget != anotherPlayer.targetTerritories->end(); ++ptrTarget) {
+			targetTerritories->push_back(*ptrTarget);
+		}
 	}
-
 	//Copy territories
-	for (ptrTerritory = anotherPlayer.myTerritories->begin(); ptrTerritory != anotherPlayer.myTerritories->end(); ++ptrTerritory) {
-		myTerritories->push_back(*ptrTerritory);
-
-
+	if (!(anotherPlayer.myTerritories->empty())) {
+		if (myTerritories == nullptr) {
+			myTerritories = new list<Territory>;
+		}
+		for (ptrTerritory = anotherPlayer.myTerritories->begin(); ptrTerritory != anotherPlayer.myTerritories->end(); ++ptrTerritory) {
+			myTerritories->push_back(*ptrTerritory);
+		}
 	}
-
 	//Copy cards ( just need to copy the reference to the hand of cards)
-	handOfCards = (anotherPlayer.handOfCards);
-
+	handOfCards = new Hand(*anotherPlayer.handOfCards);
 
 	//Copy Order
-	for (ptrOrder = anotherPlayer.myOrder->begin(); ptrOrder != anotherPlayer.myOrder->end(); ++ptrOrder) {
-		myOrder->push_back(*ptrOrder);
-
-
+	if (!(anotherPlayer.myOrder->empty())) {
+		if (myOrder == nullptr) {
+			myOrder = new list<Order>;
+		}
+		for (ptrOrder = anotherPlayer.myOrder->begin(); ptrOrder != anotherPlayer.myOrder->end(); ++ptrOrder) {
+			myOrder->push_back(*ptrOrder);
+		}
 	}
-
 
 }
 
@@ -164,11 +158,9 @@ Player::Player(const Player& anotherPlayer) {
 //Player assignment operator
 Player& Player::operator= (const Player& t)
 {
-	cout << "Playerssignment operator called " << endl;
+	cout << "Player assignment operator called " << endl;
 	return *this;
 }
-
-
 
 
 list<Territory >* Player::toAttack() {
@@ -239,7 +231,7 @@ void Player::addMyTerritory(Territory aTerrytory) {
 
 	//Add territory at the end of myTerritories
 	cout << "Adding territory: " << aTerrytory << "\n";
-	//this-> myTerritories-> push_back(aTerrytory);
+	this->myTerritories->push_back(aTerrytory);
 	return;
 }
 
@@ -252,14 +244,14 @@ void Player::addTargetTerritory(Territory aTerrytory) {
 
 void Player::addcardToHandOfCards(Card* card) {
 
-	//handOfCards->addCard(card);
+	handOfCards->addCard(card);
 	return;
 }
 
 
 std::ostream& operator<<(std::ostream& strm, const Player p)
 {
-	return strm << "Player: " << p.playerID << "\n";
+	return strm << "Player ID: " << p.playerName << "\n";
 }
 
 //Returns this player's ID
@@ -272,7 +264,7 @@ string Player::getPlayerName()
 	return playerName;
 }
 
-Player* playerFactory(const char* pid) {
+Player* playerFactory(string pid) {
 
 	Player* myPlayer = nullptr;
 
@@ -293,25 +285,32 @@ Player* playerFactory(const char* pid) {
 
 
 Player::~Player() {
-	//destroyPlayerObject();
+	destroyPlayerObject();;
 }
 
 
 //Clean heap memory used by player objects
 void Player::destroyPlayerObject() {
-
-	cout << "Cleaning player " << this->playerID << " from heap before ending program.\n" << endl;
-
-	delete handOfCards;
-	delete myOrder;
-	delete myTerritories;
-	delete targetTerritories;
+	if (!(playerID == nullptr)) {
+		cout << "Cleaning player " << this->playerID << " from heap before ending program.\n" << endl;
+	}
+	if (!(handOfCards == nullptr)) {
+		delete handOfCards;
+	}
+	if (!(myOrder == nullptr)) {
+		delete myOrder;
+	}
+	if (!(myTerritories == nullptr)) {
+		delete myTerritories;
+	}
+	if (!(targetTerritories == nullptr)) {
+		delete targetTerritories;
+	}
 	myOrder = NULL;
 	myTerritories = NULL;
 	targetTerritories = NULL;
 	handOfCards = NULL;
-	/*
-	delete thisPlayerRef;
-	thisPlayerRef = NULL;
-	*/
 }
+
+int Player::getreinforcePool() { return reinforcePool; }
+void Player::setreinforcePool(int value) { if (value >= 0) { reinforcePool = value; } }
