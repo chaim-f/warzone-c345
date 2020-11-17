@@ -65,4 +65,8 @@ public:
 	
 	// 2.2.2 Driver that clearly demonstrates that all players are given a number of armies which is put in their reinforment pool
 	void setReinforcements();
+
+	vector<Territory*> getTerritories();
+	int getNumOfPlayers();
+	vector<Player*> getPlayers();
 };

@@ -217,6 +217,10 @@ void StartUpPhase::startupPhase()
 	this->distrubuiteTerritories();
 	this->setReinforcements();
 	this->createOrderOfPlay();
+
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		this->getPlayers().at(i)->getTerritoriesOwn().at(0)->displayTerritories();
+	}
 }
 
 void StartUpPhase::createOrderOfPlay()
@@ -238,13 +242,15 @@ void StartUpPhase::distrubuiteTerritories() {
 			if (temp >= holderT[j]) { temp = (temp + 1) % numberOfTerritories; }
 		}
 		holderT[i] = temp;
-		this->players.at(i % this->numOfPlayers)->addMyTerritory(*this->territories.at(temp));
+		//this->players.at(i % this->numOfPlayers)->addMyTerritory(*this->territories.at(temp));
+		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(temp));
 	}
+
 	cout << "\nAll Territories ranadomly allowcated";//it is random and so long as each territory is unique in the map it will also be unique here and not allowcated to two players
 }
 
 void StartUpPhase::setReinforcements() {
-	int numOfPlayers = this->numOfPlayers;
+	int numOfPlayers = this->getNumOfPlayers();
 	int reinforcePool = 0;
 	switch (numOfPlayers) {
 	case 2: reinforcePool = 40; break;
@@ -256,4 +262,19 @@ void StartUpPhase::setReinforcements() {
 		this->players.at(i)->setreinforcePool(reinforcePool);
 	}
 	cout << "\nFilled each players reinforcement pool with " << reinforcePool << " armies each" << endl;
+}
+
+vector<Territory*> StartUpPhase::getTerritories()
+{
+	return territories;
+}
+
+int StartUpPhase::getNumOfPlayers()
+{
+	return numOfPlayers;
+}
+
+vector<Player*> StartUpPhase::getPlayers()
+{
+	return players;
 }

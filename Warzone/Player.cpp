@@ -64,45 +64,47 @@ Player::Player(string playerName)
 	this->playerName = playerName;
 	cout << "\nCreating: " << playerName << endl;
 	
-	//Allocate memory to Order list.
-	try {
-		myOrder = new list<Order>();
-		cout << "Order list dynamically created." << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
+	////Allocate memory to Order list.
+	//try {
+	//	myOrder = new list<Order>();
+	//	cout << "Order list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
 
-	//Allocate memory to my territories list.
-	try {
-		myTerritories = new list<Territory>;
-		cout << "Territories list dynamically created." << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
+	////Allocate memory to my territories list.
+	//try {
+	//	myTerritories = new list<Territory>;
+	//	cout << "Territories list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
 
-	//Allocate memory to target territories list.
-	try {
-		targetTerritories = new list<Territory>;
-		cout << "targetTerritories list dynamically created." << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
+	//
 
-	//Allocate memory to territories list.
-	try {
-		handOfCards = new Hand();
-		cout << "Player hand of cards dynamically created." << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player hand of cards." << endl;
-		exit(1);
-	}
+	////Allocate memory to target territories list.
+	//try {
+	//	targetTerritories = new list<Territory>;
+	//	cout << "targetTerritories list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
+
+	////Allocate memory to territories list.
+	//try {
+	//	handOfCards = new Hand();
+	//	cout << "Player hand of cards dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player hand of cards." << endl;
+	//	exit(1);
+	//}
 }
 
 //Player copy constructor
@@ -312,3 +314,15 @@ void Player::destroyPlayerObject() {
 
 int Player::getreinforcePool() { return reinforcePool; }
 void Player::setreinforcePool(int value) { if (value >= 0) { reinforcePool = value; } }
+
+void Player::addTerritory(Territory* terrytory)
+{
+	//Add territory at the end of myTerritories
+	this->territoriesOwn.push_back(terrytory);
+	return;
+}
+
+vector<Territory*> Player::getTerritoriesOwn()
+{
+	return this->territoriesOwn;
+}

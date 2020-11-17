@@ -66,11 +66,16 @@ public:
 	int getreinforcePool();//getter of reinforcePool
 	void setreinforcePool(int value);//setter/mutator of reinforcePool
 
+	void addTerritory(Territory* terrytory);
+	vector<Territory*> getTerritoriesOwn();
+
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
 	list<Territory>* myTerritories;
+
+	vector<Territory*> territoriesOwn;
 
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory>* targetTerritories;
