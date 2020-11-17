@@ -71,12 +71,12 @@ Player::Player(string playerName, const char* pid) {
 Player::Player(string playerName)
 {
 	this->playerName = playerName;
+	cout << "\nCreating: " << playerName << endl;
 
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
-
-		cout << "myOrder list dynamically created.\n" << endl;
+		cout << "order list dynamically created." << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -87,7 +87,7 @@ Player::Player(string playerName)
 	//Allocate memory to my territories list.
 	try {
 		myTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
+		cout << "territories list dynamically created." << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -98,7 +98,7 @@ Player::Player(string playerName)
 	//Allocate memory to target territories list.
 	try {
 		targetTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
+		cout << "myTerritories list dynamically created." << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player." << endl;
@@ -108,7 +108,7 @@ Player::Player(string playerName)
 	//Allocate memory to territories list.
 	try {
 		handOfCards = new Hand();
-		cout << "Player hand of cards dynamically created.\n" << endl;
+		cout << "Player hand of cards dynamically created." << endl;
 	}
 	catch (bad_alloc&) {
 		cout << "Error allocating memory to player hand of cards." << endl;

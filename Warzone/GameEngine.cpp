@@ -2,6 +2,9 @@
 #include "Map.h"
 #include <iostream>
 #include <filesystem>
+#include <random>
+#include <algorithm>
+#include <numeric>
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -151,26 +154,32 @@ void GameStart::setNumPlayers(int num)
 
 void GameStart::createPlayers()
 {
-	cout << "Creating players..." << endl;
-	vector<Player*> randPlayers{
-		new Player("Ben"),
-		new Player("Tom"),
-		new Player("Jerry"),
-		new Player("Batman"),
-		new Player("Robin")
-	};
+	cout << "Creating " << this->getNumPlayers() << " players" << endl;
+	cout << "------------------------------------------------------" << endl;
+	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
+
+	random_device rd;
+	mt19937 rng(rd());
+	vector<int> data(maxPlayer); // this will create a random sequence of 0-4, e.g. [2,4,3,1,0]; [1,0,2,3,4]
+	iota(data.begin(), data.end(), 0);
+	shuffle(data.begin(), data.end(), rng); // every
+	vector<int> randomSequence;
 	vector<Player*> players;
-	for (int i = 0; i < this->getNumPlayers(); i++) {
-		// select player randomly from the list
-		int r = rand() % randPlayers.size() - 1;
-		players.push_back(randPlayers.at(r));
+	for (auto r : data) {
+		randomSequence.push_back(r);
 	}
+	for (int i = 0; i < this->getNumPlayers(); i++) {
+		players.push_back(new Player(names.at(randomSequence.at(i))));
+	}
+
+	// if the random sequence is [2,4,3,1,0]
+	// and number of player chosen was 4
+	// then we take select the first 4 elements from the sequence: [2,4,3,1]
+	// similarly, if the random sequence is [1,0,2,3,4]
+	// and number of player chosen was 2
+	// then players: Tom (at index 1) and Ben (at index 0) will play the game
 	this->setPlayersCreated(players);
-
-	// just to see the name of the first created player
-	cout << this->getPlayersCreated().at(0)->getPlayerName() << endl;
-
-	cout << "done...";
+	cout << "------------------------------------------------------" << endl;
 }
 
 int GameStart::getNumPlayers()

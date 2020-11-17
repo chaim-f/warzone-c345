@@ -33,13 +33,6 @@ public:
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o);
 
-	/*TODO
-		- add copy constructor
-		- add assigment operator
-		- add stream insertion operator
-
-	*/
-
 	//Executes player Order
 	void executeOrder();
 
