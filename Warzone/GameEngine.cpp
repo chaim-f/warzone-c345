@@ -182,7 +182,6 @@ void GameStart::setNumPlayers(int num)
 void GameStart::createPlayers()
 {
 	cout << "Creating " << this->getNumPlayers() << " players" << endl;
-	cout << "------------------------------------------------------" << endl;
 	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
 	vector<Player*> players;
 	vector<int> randomSequence = createRandomSequence(maxPlayer);
@@ -221,7 +220,6 @@ StartUpPhase::StartUpPhase(vector<Territory*> territories, int numOfPlayers, vec
 	this->territories = territories;
 	this->numOfPlayers = numOfPlayers;
 	this->players = players;
-	//cout << this->players.at(0)->getPlayerName() << "*******";
 }
 
 void StartUpPhase::startupPhase()
@@ -229,17 +227,6 @@ void StartUpPhase::startupPhase()
 	this->distrubuiteTerritories();
 	this->setReinforcements();
 	this->createOrderOfPlay();
-
-	for (int i = 0; i < this->getPlayers().size(); i++) {
-		for (int j = 0; j < this->getPlayers().at(i)->getTerritoriesOwn().size(); j++) {
-			cout << this->getPlayers().at(i)->getPlayerName() << " owns ";
-			this->getPlayers().at(i)->getTerritoriesOwn().at(j)->displayTerritories();
-		}
-	}
-
-	for (int i = 0; i < this->getPlayers().size(); i++) {
-		cout << this->getPlayers().at(i)->getPlayerName() << " has " << this->getPlayers().at(i)->getreinforcePool() << " armies " << endl;
-	}
 }
 
 void StartUpPhase::createOrderOfPlay()
@@ -249,28 +236,22 @@ void StartUpPhase::createOrderOfPlay()
 
 void StartUpPhase::distrubuiteTerritories() {
 	int numberOfTerritories = this->territories.size();
-	int counter = numberOfTerritories;
-	int temp;
-	int holderT[9999];//assumed max number of Territories 
-	for (int i = 0; i < 9999; i++) {
-		holderT[i] = -1;
-	}
+	vector<int> randomSequence = createRandomSequence(numberOfTerritories); // create a random sequence of [0-numberOfTerritories]
+	// e.g. numberOfTerritories = 24, a random sequence would be something like [23,1,4,6,1,2,0,8,5,...]
+
+	cout << "\nditributing territories...\n";
 	for (int i = 0; i < numberOfTerritories; i++) {
-		temp = (int)rand() % counter--;//takes the random values and takes the mod so it returns values between 0 and number of territories -1
-		for (int j = 0; j < i; j++) {
-			if (temp >= holderT[j]) { temp = (temp + 1) % numberOfTerritories; }
-		}
-		holderT[i] = temp;
-		//this->players.at(i % this->numOfPlayers)->addMyTerritory(*this->territories.at(temp));
-		int current = this->territories.at(i)->getTerritoryIndex();
-		int next = current + 1;
-		if (this->territories.at(i)->getTerritoryIndex() == next) {
-
-		}
-		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(temp));
+		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(randomSequence.at(i)));
 	}
 
-	cout << "\nAll Territories ranadomly allowcated";//it is random and so long as each territory is unique in the map it will also be unique here and not allowcated to two players
+	// display territories own by players
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		for (int j = 0; j < this->getPlayers().at(i)->getTerritoriesOwn().size(); j++) {
+			cout << this->getPlayers().at(i)->getPlayerName() << " owns ";
+			this->getPlayers().at(i)->getTerritoriesOwn().at(j)->displayTerritories();
+		}
+	}
+	cout << "All Territories ranadomly allowcated\n";
 }
 
 void StartUpPhase::setReinforcements() {
@@ -286,6 +267,9 @@ void StartUpPhase::setReinforcements() {
 		this->players.at(i)->setreinforcePool(reinforcePool);
 	}
 	cout << "\nFilled each players reinforcement pool with " << reinforcePool << " armies each" << endl;
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		cout << this->getPlayers().at(i)->getPlayerName() << " has " << this->getPlayers().at(i)->getreinforcePool() << " armies " << endl;
+	}
 }
 
 vector<Territory*> StartUpPhase::getTerritories()
