@@ -53,6 +53,7 @@ public:
 	void validate();
 	Map* getReverseGraph();
 	void setIsValidMapFile(bool isValid);
+	vector<Territory*> getTerritoriesVec();
 };
 
 

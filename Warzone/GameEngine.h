@@ -23,6 +23,7 @@ class GameStart
 	vector<Territory*> chosenMap;
 	vector<MapLoader*> mapLoaders;
 	vector<Player*> playersCreated;
+	vector<Territory*> territories;
 	int numPlayers;
 public:
 	void runAllFunctions(); // calls all related game start functions 
@@ -33,6 +34,8 @@ public:
 	void storeMaps();
 	void validatingMaps();
 	void setChosenMap(vector<Territory*> chosenMap);
+	void setTerritories(vector<Territory*> territories);
+	vector<Territory*> getTerritories();
 	vector<Territory*> getChosenMap(); // will return the chosen map by the user
 	list<string> mapFiles;
 

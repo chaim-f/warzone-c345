@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 int main() {
 	GameStart g;
 	g.runAllFunctions();
-	StartUpPhase sup(g.getChosenMap(), g.getNumPlayers(), g.getPlayersCreated());
+	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
 	sup.startupPhase();
 	return 0;
 }
@@ -150,11 +150,23 @@ void GameStart::promptUserToSelectMap()
 	int chosenIndex = chosenMapIndex - 1;
 	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
 	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
+	this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
+
 }
 
 void GameStart::setChosenMap(vector<Territory*> chosenMap)
 {
 	this->chosenMap = chosenMap;
+}
+
+void GameStart::setTerritories(vector<Territory*> territories)
+{
+	this->territories = territories;
+}
+
+vector<Territory*> GameStart::getTerritories()
+{
+	return territories;
 }
 
 void GameStart::setPlayersCreated(vector<Player*> playersCreated)
@@ -250,6 +262,11 @@ void StartUpPhase::distrubuiteTerritories() {
 		}
 		holderT[i] = temp;
 		//this->players.at(i % this->numOfPlayers)->addMyTerritory(*this->territories.at(temp));
+		int current = this->territories.at(i)->getTerritoryIndex();
+		int next = current + 1;
+		if (this->territories.at(i)->getTerritoryIndex() == next) {
+
+		}
 		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(temp));
 	}
 

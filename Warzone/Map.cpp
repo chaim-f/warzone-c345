@@ -187,6 +187,11 @@ void Map::setIsValidMapFile(bool isValid)
 	this->isValidMapFile = isValid;
 }
 
+vector<Territory*> Map::getTerritoriesVec()
+{
+	return territoriesVec;
+}
+
 int getSource(Continent c)
 {
 	return c.source;
