@@ -219,7 +219,14 @@ void StartUpPhase::startupPhase()
 	this->createOrderOfPlay();
 
 	for (int i = 0; i < this->getPlayers().size(); i++) {
-		this->getPlayers().at(i)->getTerritoriesOwn().at(0)->displayTerritories();
+		for (int j = 0; j < this->getPlayers().at(i)->getTerritoriesOwn().size(); j++) {
+			cout << this->getPlayers().at(i)->getPlayerName() << " owns ";
+			this->getPlayers().at(i)->getTerritoriesOwn().at(j)->displayTerritories();
+		}
+	}
+
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		cout << this->getPlayers().at(i)->getPlayerName() << " has " << this->getPlayers().at(i)->getreinforcePool() << " armies " << endl;
 	}
 }
 
