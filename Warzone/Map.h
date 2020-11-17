@@ -70,6 +70,7 @@ public:
 	void displayTerritories();
 	Continent getTerritoryContinent();
 	string getTerritoryName();
+	int getTerritoryIndex();
 	friend class Map;
 	friend ostream& operator<<(ostream& strm, const Territory t);
 };
