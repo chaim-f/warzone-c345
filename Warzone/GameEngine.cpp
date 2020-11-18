@@ -14,6 +14,8 @@ int main() {
 	g.runAllFunctions();
 	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
 	sup.startupPhase();
+	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
+	mgl.mainGameLoop();
 	return 0;
 }
 
@@ -221,6 +223,7 @@ vector<Territory*> GameStart::getChosenMap() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // PART 2
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+
 StartUpPhase::StartUpPhase(vector<Territory*> territories, int numOfPlayers, vector<Player*> players)
 {
 	this->territories = territories;
@@ -299,4 +302,38 @@ int StartUpPhase::getNumOfPlayers()
 vector<Player*> StartUpPhase::getPlayers()
 {
 	return players;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 3
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+MainGameLoop::MainGameLoop(vector<Territory*> territoriesWithBorders, vector<Player*> players)
+{
+	this->territoriesWithBorders = territoriesWithBorders;
+	this->players = players;
+}
+
+void MainGameLoop::mainGameLoop()
+{
+	this->reinforcementPhase();
+	this->issueOrdersPhase();
+	this->executeOrdersPhase();
+}
+
+void MainGameLoop::reinforcementPhase()
+{
+
+	for (int i = 0; i < this->players.size(); i++) {
+		cout << this->players.at(i)->getPlayerName() << endl;
+	}
+}
+
+void MainGameLoop::issueOrdersPhase()
+{
+}
+
+void MainGameLoop::executeOrdersPhase()
+{
 }

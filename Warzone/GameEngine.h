@@ -60,16 +60,28 @@ public:
 	StartUpPhase(vector<Territory*> territories, int numOfPlayers, vector<Player*> players);
 	void startupPhase();
 	
-	// 2.2.3 The order of play of the players are determine randomly
+	// [x] 2.2.3 The order of play of the players are determine randomly
 	void createOrderOfPlay(); // order of play
 
-	// 2.2.1 driver that clearly demonstrates that all territories in the map are assigned to one and only one player
+	// [x] 2.2.1 driver that clearly demonstrates that all territories in the map are assigned to one and only one player
 	void distrubuiteTerritories();
 	
-	// 2.2.2 Driver that clearly demonstrates that all players are given a number of armies which is put in their reinforment pool
+	// [x] 2.2.2 Driver that clearly demonstrates that all players are given a number of armies which is put in their reinforment pool
 	void setReinforcements();
 
 	vector<Territory*> getTerritories();
 	int getNumOfPlayers();
 	vector<Player*> getPlayers();
+};
+
+class MainGameLoop
+{
+	vector<Territory*> territoriesWithBorders;
+	vector<Player*> players;
+public:
+	MainGameLoop(vector<Territory*> territoriesWithBorders, vector<Player*> players);
+	void mainGameLoop();
+	void reinforcementPhase();
+	void issueOrdersPhase();
+	void executeOrdersPhase();
 };
