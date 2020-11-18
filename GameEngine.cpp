@@ -320,6 +320,7 @@ void MainGameLoop::mainGameLoop()
 {
 	bool playOn=true;
 	while (playOn) {
+		cout << "\nin main loop";
 		this->issueOrdersPhase();
 		this->executeOrdersPhase();
 		int temp;
@@ -343,7 +344,7 @@ void MainGameLoop::mainGameLoop()
 
 void MainGameLoop::reinforcementPhase()
 {
-	
+	cout << "\nin reinforcement phase";
 }
 
 void MainGameLoop::issueOrdersPhase()
@@ -379,11 +380,50 @@ void MainGameLoop::issueOrdersPhase()
 
 void MainGameLoop::executeOrdersPhase()
 {
-	cout << "\nIN exacute mode removing player";
-	for (auto& x : players.at(0)->getTerritoriesOwn()) {
-		players.at(0)->removeTerritory(x);
+	for (int i = 0; i < players.size(); i++) {
+		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the deploy orders first
+				if (x->getName().compare("Deploy") == 0) {
+					players.at(i)->executeOrderOfList(x);
+				}
+			}
+		}
+		cout << "\nAll deploy orders are done";
+		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
+			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+				if (x->getName().compare("Airlift") == 0) {
+					players.at(i)->executeOrderOfList(x);
+				}
+			}
+		}
+		cout << "\nAll airlift orders are done";
+		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
+			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+				if (x->getName().compare("Blockade") == 0) {
+					players.at(i)->executeOrderOfList(x);
+				}
+			}
+		}
+		cout << "\nAll blockade orders are done";
+		bool keepGoing=false;
+		for (int i = 0; i < players.size(); i++) {
+			if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+				keepGoing = true;
+			}
+		}
+		while (keepGoing) {
+			for (int i = 0; i < players.size(); i++) {
+				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+							players.at(i)->executeOrderOfList(players.at(i)->getOrderlist()->getOrderList().front());
+				}
+			}
+			keepGoing = false;
+			for (int i = 0; i < players.size(); i++) {
+				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+					keepGoing = true;
+				}
+			}
+		}
+
 	}
-	cout << "\nremoved all territories from " << players.at(0)->getPlayerName();
-	players.at(0)->setNumTerritoriesOwn(players.at(0)->getTerritoriesOwn().size());
-	cout << "\n " << players.at(0)->getTerritoriesOwn().size();
 }
