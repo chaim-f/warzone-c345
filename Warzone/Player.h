@@ -10,7 +10,10 @@
 #include <list>
 #include "Cards.h"
 #include <sstream>
-
+class Order;
+class Orderlist;
+class Card;
+class Hand;
 class Player
 {
 
@@ -74,10 +77,14 @@ public:
 	void addArmiesToTerritory(Territory* territory, int value);
 	vector<Territory*> getTerritoriesOwn();
 	void removeTerritory(Territory* terrytory);
-	/*void removeMyTerritory(Territory aTerrytory);
-	void removeTargetTerritory(Territory aTerrytory);
-	void removeOrder(Order o);*/
-
+	void issueOrdertoList(Order* o);
+	//Executes player Order
+	void executeOrderOfList(Order* o);
+	//Add Order to list of Order
+	void addOrderToList(Order* order);
+	//List plyer Order
+	Orderlist* getOrderlist();
+	void removeOrderOrderList(Order* o);
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
@@ -87,10 +94,9 @@ private:
 
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory>* targetTerritories;
-
+	Orderlist* myOrderList;
 	//List of Order
 	list<Order>* myOrder;
-
 	//list<Card > * handOfCards;
 	Hand* handOfCards;
 	const char* playerID;

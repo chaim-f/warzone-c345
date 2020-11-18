@@ -13,11 +13,10 @@ Player::Player(string playerName, const char* pid) {
 
 	playerID = pid;
 	playerName = playerName;
-
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
-
+		myOrderList = new Orderlist();
 		cout << "myOrder list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -141,7 +140,9 @@ Player::Player(const Player& anotherPlayer) {
 	}
 	//Copy cards ( just need to copy the reference to the hand of cards)
 	handOfCards = new Hand(*anotherPlayer.handOfCards);
-
+	if (!(anotherPlayer.myOrderList->getOrderList().empty())) {
+		myOrderList = new Orderlist(*anotherPlayer.myOrderList);
+	}
 	//Copy Order
 	if (!(anotherPlayer.myOrder->empty())) {
 		if (myOrder == nullptr) {
@@ -151,7 +152,6 @@ Player::Player(const Player& anotherPlayer) {
 			myOrder->push_back(*ptrOrder);
 		}
 	}
-
 }
 
 
@@ -362,12 +362,24 @@ void Player::removeTerritory(Territory* aterrytory) {
 	}
 	territoriesOwn.erase(territoriesOwn.begin() + temp);
 }
-/*void Player::removeMyTerritory(Territory aTerrytory) {
-	myTerritories->remove(aTerrytory);
+
+
+void Player::issueOrdertoList(Order* o) {
+	myOrderList->add(o);
 }
-void Player::removeTargetTerritory(Territory aTerrytory) {
-	targetTerritories->remove(aTerrytory);
+//Executes player Order
+void Player::executeOrderOfList(Order* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
 }
-void Player::removeOrder(Order o) {
-	myOrder->remove(o);
-}*/
+void Player::removeOrderOrderList(Order* o) {
+	myOrderList->remove(o);
+}
+//Add Order to list of Order
+void Player::addOrderToList(Order* order) {
+	myOrderList->add(order);
+}
+//List plyer Order
+Orderlist* Player::getOrderlist() {
+	return myOrderList;
+}
