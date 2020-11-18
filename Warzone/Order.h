@@ -24,6 +24,7 @@ public:
     friend std::ostream& operator<<(std::ostream& strm, Order& o);
     Order& operator= (const Order& o);
 
+    Player* player;
 };
 
 
@@ -35,12 +36,16 @@ class Deploy : public Order {
 
 public:
     Deploy();
-    Deploy(const Deploy& o);
+    Deploy(Player* player, Territory* territory, int army);
 
+    Deploy(const Deploy& o);
     bool validate();
     bool execute();
 
     Deploy& operator= (const Deploy& o);
+
+    Territory* territory;
+    int army;
    
 };
 
@@ -51,6 +56,7 @@ class Advance : public Order {
   
 public:
     Advance();
+    Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army);
     Advance(const Advance& o);
 
     bool validate();
@@ -58,6 +64,9 @@ public:
 
     Advance& operator= (const Advance& o);
 
+    Territory* myTerritory;
+    Territory* otherTerritory;
+    int army;
 };
 
 //Bomb
@@ -68,11 +77,14 @@ class Bomb : public Order {
 public:
     Bomb();
     Bomb(const Bomb& o);
+    Bomb(Player* player, Territory* otherTerritory);
 
     bool validate();
     bool execute();
 
     Bomb& operator= (const Bomb& o);
+
+    Territory* otherTerritory;
 };
 
 //Blockade
@@ -82,12 +94,15 @@ class Blockade : public Order {
     
 public:
     Blockade();
+    Blockade(Player* player, Territory* myTerritory);
     Blockade(const Blockade& o);
 
     bool validate();
     bool execute();
 
     Blockade& operator= (const Blockade& o);
+
+    Territory* myTerritory;
 };
 
 //Airlift
@@ -97,12 +112,18 @@ class Airlift : public Order {
     
 public:
     Airlift();
+    Airlift(Player* player, Territory* fromTerritory, Territory* toTerritory, int army);
     Airlift(const Airlift& o);
 
     bool validate();
     bool execute();
 
     Airlift& operator= (const Airlift& o);
+
+    Territory* fromTerritory;
+    Territory* toTerritory;
+    int army;
+
 };
 
 //Negotiate
@@ -112,12 +133,15 @@ class Negotiate : public Order {
     
 public:
     Negotiate();
+    Negotiate(Player* player, Player* otherPlayer);
     Negotiate(const Negotiate& o);
 
     bool validate();
     bool execute();
 
     Negotiate& operator= (const Negotiate& o);
+
+    Player* otherPlayer;
 };
 
 
