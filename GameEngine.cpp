@@ -6,13 +6,17 @@
 #include <random>
 #include <algorithm>
 #include <numeric>
+#include <math.h>
 using namespace std;
 namespace fs = std::filesystem;
 
 int main() {
 	GameStart g;
-	g.runAllFunctions(); 
-	startupPhase(g);
+	g.runAllFunctions();
+	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
+	sup.startupPhase();
+	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
+	mgl.mainGameLoop();
 	return 0;
 }
 
@@ -28,6 +32,19 @@ void cinFail() {
 	}
 }
 
+// create random sequence of integers given length
+// e.g. if length is 3, then this will return a random sequence of 0-3 every time it is called, 
+// for example: {0,2,1}, {1,0,2}, {2,1,0}, etc.
+vector<int> createRandomSequence(int sequenceLength)
+{
+	random_device rd;
+	mt19937 rng(rd());
+	vector<int> data(sequenceLength);
+	iota(data.begin(), data.end(), 0);
+	shuffle(data.begin(), data.end(), rng);
+	return data;
+}
+
 void GameStart::runAllFunctions()
 {
 	cout << "********** GAME START **********" << endl;
@@ -37,8 +54,13 @@ void GameStart::runAllFunctions()
 	this->validatingMaps();
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
-	vector<Territory*>::iterator iter;
 	this->createPlayers();
+
+	/*for (int i = 0; i < this->getChosenMap().size(); i++) {
+		if (this->getChosenMap().at(i)->getTerritoryIndex() == 1) {
+			cout << this->getChosenMap().at(i)->getBorder() << endl;
+		}
+	}*/
 }
 
 void GameStart::readMapDirectory()
@@ -137,11 +159,23 @@ void GameStart::promptUserToSelectMap()
 	int chosenIndex = chosenMapIndex - 1;
 	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
 	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
+	this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
+
 }
 
 void GameStart::setChosenMap(vector<Territory*> chosenMap)
 {
 	this->chosenMap = chosenMap;
+}
+
+void GameStart::setTerritories(vector<Territory*> territories)
+{
+	this->territories = territories;
+}
+
+vector<Territory*> GameStart::getTerritories()
+{
+	return territories;
 }
 
 void GameStart::setPlayersCreated(vector<Player*> playersCreated)
@@ -154,57 +188,22 @@ void GameStart::setNumPlayers(int num)
 	this->numPlayers = num;
 }
 
-/*void GameStart::createPlayers()
-{
-	cout << "Creating players..." << endl;
-	vector<Player*> randPlayers{
-		new Player("Ben"),
-		new Player("Tom"),
-		new Player("Jerry"),
-		new Player("Batman"),
-		new Player("Robin")
-	};
-	vector<Player*> players;
-	for (int i = 0; i < this->getNumPlayers(); i++) {
-		// select player randomly from the list
-		int r = rand() % randPlayers.size() - 1;
-		players.push_back(randPlayers.at(r));
-	}
-	this->setPlayersCreated(players);
-
-	// just to see the name of the first created player
-	cout << this->getPlayersCreated().at(0)->getPlayerName() << endl;
-
-	cout << "done...";
-}*/
 void GameStart::createPlayers()
 {
-cout << "Creating " << this->getNumPlayers() << " players" << endl;
-cout << "------------------------------------------------------" << endl;
-vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
-
-random_device rd;
-mt19937 rng(rd());
-vector<int> data(maxPlayer); // this will create a random sequence of 0-4, e.g. [2,4,3,1,0]; [1,0,2,3,4]
-iota(data.begin(), data.end(), 0);
-shuffle(data.begin(), data.end(), rng); // every
-vector<int> randomSequence;
-vector<Player*> players;
-for (auto& r : data) {
-	randomSequence.push_back(r);
-}
-for (int i = 0; i < this->getNumPlayers(); i++) {
-	players.push_back(new Player(names.at(randomSequence.at(i))));
-}
-
-// if the random sequence is [2,4,3,1,0]
-// and number of player chosen was 4
-// then we take select the first 4 elements from the sequence: [2,4,3,1]
-// similarly, if the random sequence is [1,0,2,3,4]
-// and number of player chosen was 2
-// then players: Tom (at index 1) and Ben (at index 0) will play the game
-this->setPlayersCreated(players);
-cout << "------------------------------------------------------" << endl;
+	cout << "Creating " << this->getNumPlayers() << " players" << endl;
+	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
+	vector<Player*> players;
+	vector<int> randomSequence = createRandomSequence(maxPlayer);
+	for (int i = 0; i < this->getNumPlayers(); i++) {
+		players.push_back(new Player(names.at(randomSequence.at(i))));
+	}
+	// if the random sequence is [2,4,3,1,0]
+	// and number of player chosen was 4
+	// then we take select the first 4 elements from the sequence: [2,4,3,1]
+	// similarly, if the random sequence is [1,0,2,3,4]
+	// and number of player chosen was 2
+	// then players: Tom (at index 1) and Ben (at index 0) will play the game
+	this->setPlayersCreated(players);
 }
 
 
@@ -213,79 +212,178 @@ int GameStart::getNumPlayers()
 	return numPlayers;
 }
 
-vector<Player*>& GameStart::getPlayersCreated()
+vector<Player*> GameStart::getPlayersCreated()
 {
-	return playersCreated;
+	return this->playersCreated;
 }
 
 vector<Territory*> GameStart::getChosenMap() {
 	return chosenMap;
 }
 
-void startupPhase(GameStart& g) {	
-	createTheOrder(g);
-	distrubuiteTerritories(g);
-	setReinforcements(g);
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 2
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+StartUpPhase::StartUpPhase(vector<Territory*> territories, int numOfPlayers, vector<Player*> players)
+{
+	this->territories = territories;
+	this->numOfPlayers = numOfPlayers;
+	this->players = players;
 }
 
-void createTheOrder(GameStart& g) {
-	int numOfPlayers = g.getNumPlayers();
-	int holder[5] = { -1,-1,-1,-1,-1 };
-	vector<Player> tempVector;//put the order in here than copy to pList
-	srand((unsigned)time(NULL));//seeds the rand function based on the time
-	int temp;
-	int counter = numOfPlayers;
-	for (int i = 0; i < numOfPlayers; i++) {
-		temp = (int)rand() % counter--;//takes the random values and takes the mod so it returns values between 0 and number ofplayers who have not yet been assigned a value
-		for (int j = 0; j < i; j++) {//goes through all previous value
-			if (temp >= holder[j]) { temp = (temp + 1) % numOfPlayers; }//if the random value is greater or equal to a player already chosen temp++ so it can access the later values
-		}
-		holder[i] = temp;//the player number temp is in the ith postion
-		tempVector.push_back(*g.getPlayersCreated().at(temp));//push the player at the temp position in the pList to the ith position in the tempVector
+void StartUpPhase::startupPhase()
+{
+	this->distrubuiteTerritories();
+	this->setReinforcements();
+	this->createOrderOfPlay();
+}
+
+void StartUpPhase::createOrderOfPlay()
+{
+	int numPlayers = this->getPlayers().size();
+	vector<int> randomSequence = createRandomSequence(numPlayers);
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		this->players.at(i)->setTurnNumber(randomSequence.at(i));
 	}
-	for (auto& x : g.getPlayersCreated()) {
-		delete x;
-		x = NULL;
-	}
-	g.getPlayersCreated().empty();
-	for (auto& x : tempVector) {
-		g.getPlayersCreated().push_back(new Player(x));
-	}
-	cout << "\nthe Players were randomly chosen with the following order: \n";
-	for (int i = 0; i < numOfPlayers; i++) {
-		cout << (i + 1) << " " << g.getPlayersCreated().at(temp)->getPlayerName();
+	cout << "\norder of play\n";
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		cout << this->getPlayers().at(i)->getPlayerName() << " : " << this->getPlayers().at(i)->getTurnNumber() << endl;
 	}
 }
-void distrubuiteTerritories(GameStart& g) {
-	int numOfPlayers = g.getNumPlayers();
-	int numberOfTerritories = g.getChosenMap().size();
-	int counter = numberOfTerritories;
-	int temp;
-	int holderT[9999];//assumed max number of Territories 
-	for (int i = 0; i < 9999; i++) {
-		holderT[i] = -1;
-	}
+
+void StartUpPhase::distrubuiteTerritories() {
+	int numberOfTerritories = this->territories.size();
+	vector<int> randomSequence = createRandomSequence(numberOfTerritories); // create a random sequence of [0-numberOfTerritories]
+	// e.g. numberOfTerritories = 24, a random sequence would be something like [23,1,4,6,1,2,0,8,5,...]
+
+	cout << "\nditributing territories...\n";
 	for (int i = 0; i < numberOfTerritories; i++) {
-		temp = (int)rand() % counter--;//takes the random values and takes the mod so it returns values between 0 and number of territories -1
-		for (int j = 0; j < i; j++) {
-			if (temp >= holderT[j]) { temp = (temp + 1) % numberOfTerritories; }
-		}
-		holderT[i] = temp;
-		g.getPlayersCreated().at(i % numOfPlayers)->addMyTerritory(*g.getChosenMap().at(temp));
+		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(randomSequence.at(i)));
 	}
-	cout << "\nAll Territories ranadomly allowcated";//it is random and so long as each territory is unique in the map it will also be unique here and not allowcated to two players
+
+	// display territories own by players
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		for (int j = 0; j < this->getPlayers().at(i)->getTerritoriesOwn().size(); j++) {
+			cout << this->getPlayers().at(i)->getPlayerName() << " owns ";
+			this->getPlayers().at(i)->getTerritoriesOwn().at(j)->displayTerritories();
+		}
+	}
+	cout << "All Territories ranadomly allowcated\n";
 }
-void setReinforcements(GameStart& g) {
-	int numOfPlayers = g.getNumPlayers();
+
+void StartUpPhase::setReinforcements() {
+	int numOfPlayers = this->getNumOfPlayers();
 	int reinforcePool = 0;
 	switch (numOfPlayers) {
 	case 2: reinforcePool = 40; break;
-	case 3:reinforcePool = 35; break;
-	case 4:reinforcePool = 30; break;
-	case 5:reinforcePool = 25; break;
+	case 3: reinforcePool = 35; break;
+	case 4: reinforcePool = 30; break;
+	case 5: reinforcePool = 25; break;
 	}
 	for (int i = 0; i < numOfPlayers; i++) {
-		g.getPlayersCreated().at(i)->setreinforcePool(reinforcePool);
+		this->players.at(i)->setreinforcePool(reinforcePool);
 	}
-	cout << "\nFilled each players reinforcement pool with " << reinforcePool << endl;
+	cout << "\nFilled each players reinforcement pool with " << reinforcePool << " armies each" << endl;
+	for (int i = 0; i < this->getPlayers().size(); i++) {
+		cout << this->getPlayers().at(i)->getPlayerName() << " has " << this->getPlayers().at(i)->getreinforcePool() << " armies " << endl;
+	}
+}
+
+vector<Territory*> StartUpPhase::getTerritories()
+{
+	return territories;
+}
+
+int StartUpPhase::getNumOfPlayers()
+{
+	return numOfPlayers;
+}
+
+vector<Player*> StartUpPhase::getPlayers()
+{
+	return players;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 3
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> players)
+{
+	this->territories = territories;
+	this->players = players;
+}
+
+void MainGameLoop::mainGameLoop()
+{
+	bool playOn=true;
+	while (playOn) {
+		this->issueOrdersPhase();
+		this->executeOrdersPhase();
+		int temp;
+		temp = 0;
+		for (auto& x : players) {
+			players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
+			if (x->getNumTerritoriesOwn() == 0) {
+				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
+				players.erase(players.begin() + temp);//remove the player if he owns no territories
+				continue;
+			}
+			temp++;
+		}
+		if (players.size() == 1) {
+			cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
+			playOn = false;
+		}
+		this->reinforcementPhase();
+	}
+}
+
+void MainGameLoop::reinforcementPhase()
+{
+	
+}
+
+void MainGameLoop::issueOrdersPhase()
+{
+	cout << "\nissuing Orders\n";
+	for (int i = 0; i < this->players.size(); i++) {
+		this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+		vector<Player*> players = this->players;
+		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
+		int reinforcementPool = players.at(i)->getreinforcePool();
+		int unit = 0;
+		int territoriesOwn = playerTerritories.size();
+		for (int j = 0; j < territoriesOwn; j++) {
+			unit += ceil(reinforcementPool / territoriesOwn);
+			if (j == (territoriesOwn - 2)) { // if this is the last territory, take whatever is left
+				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), (reinforcementPool - unit));
+			}
+			else {
+				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), ceil(reinforcementPool / territoriesOwn));
+			}
+		}
+	}
+
+	for (int i = 0; i < this->players.size(); i++) {
+		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
+		for (int j = 0; j < playerTerritories.size(); j++) {
+			//playerTerritories.at(j)->displayTerritories();
+			cout << this->players.at(i)->getPlayerName() << " territory " << playerTerritories.at(j)->getTerritoryName() << " has "
+				<< playerTerritories.at(j)->getTerritoryArmies() << " armies " << endl;
+		}
+	}
+}
+
+void MainGameLoop::executeOrdersPhase()
+{
+	cout << "\nIN exacute mode removing player";
+	for (auto& x : players.at(0)->getTerritoriesOwn()) {
+		players.at(0)->removeTerritory(x);
+	}
+	cout << "\nremoved all territories from " << players.at(0)->getPlayerName();
+	players.at(0)->setNumTerritoriesOwn(players.at(0)->getTerritoriesOwn().size());
+	cout << "\n " << players.at(0)->getTerritoriesOwn().size();
 }

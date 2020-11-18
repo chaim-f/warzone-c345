@@ -13,7 +13,7 @@ Player::Player(string playerName, const char* pid) {
 
 	playerID = pid;
 	playerName = playerName;
-	
+
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
@@ -63,48 +63,48 @@ Player::Player(string playerName)
 {
 	this->playerName = playerName;
 	cout << "\nCreating: " << playerName << endl;
-	//Allocate memory to Order list.
-	try {
-		myOrder = new list<Order>();
+	
+	////Allocate memory to Order list.
+	//try {
+	//	myOrder = new list<Order>();
+	//	cout << "Order list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
 
-		cout << "myOrder list dynamically created.\n" << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
+	////Allocate memory to my territories list.
+	//try {
+	//	myTerritories = new list<Territory>;
+	//	cout << "Territories list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
 
+	//
 
-	//Allocate memory to my territories list.
-	try {
-		myTerritories = new list<Territory>;
-		cout << "myTerritories list dynamically created.\n" << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
+	////Allocate memory to target territories list.
+	//try {
+	//	targetTerritories = new list<Territory>;
+	//	cout << "targetTerritories list dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player." << endl;
+	//	exit(1);
+	//}
 
-
-	//Allocate memory to target territories list.
-	try {
-		targetTerritories = new list<Territory>;
-		cout << "targetTerritories list dynamically created.\n" << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player." << endl;
-		exit(1);
-	}
-
-	//Allocate memory to territories list.
-	try {
-		handOfCards = new Hand();
-		cout << "Player hand of cards dynamically created.\n" << endl;
-	}
-	catch (bad_alloc&) {
-		cout << "Error allocating memory to player hand of cards." << endl;
-		exit(1);
-	}
+	////Allocate memory to territories list.
+	//try {
+	//	handOfCards = new Hand();
+	//	cout << "Player hand of cards dynamically created." << endl;
+	//}
+	//catch (bad_alloc&) {
+	//	cout << "Error allocating memory to player hand of cards." << endl;
+	//	exit(1);
+	//}
 }
 
 //Player copy constructor
@@ -122,7 +122,7 @@ Player::Player(const Player& anotherPlayer) {
 	list<Card>::iterator ptrCards;
 
 	//Copy target territories
-	if(!(anotherPlayer.targetTerritories->empty())){
+	if (!(anotherPlayer.targetTerritories->empty())) {
 		if (targetTerritories == nullptr) {
 			targetTerritories = new list<Territory>;
 		}
@@ -131,7 +131,7 @@ Player::Player(const Player& anotherPlayer) {
 		}
 	}
 	//Copy territories
-	if(!(anotherPlayer.myTerritories->empty())){
+	if (!(anotherPlayer.myTerritories->empty())) {
 		if (myTerritories == nullptr) {
 			myTerritories = new list<Territory>;
 		}
@@ -231,7 +231,7 @@ void Player::addMyTerritory(Territory aTerrytory) {
 
 	//Add territory at the end of myTerritories
 	cout << "Adding territory: " << aTerrytory << "\n";
-	this-> myTerritories-> push_back(aTerrytory);
+	this->myTerritories->push_back(aTerrytory);
 	return;
 }
 
@@ -251,7 +251,7 @@ void Player::addcardToHandOfCards(Card* card) {
 
 std::ostream& operator<<(std::ostream& strm, const Player p)
 {
-	return strm << "Player ID: " << p.playerName<<"\n";
+	return strm << "Player ID: " << p.playerName << "\n";
 }
 
 //Returns this player's ID
@@ -291,7 +291,7 @@ Player::~Player() {
 
 //Clean heap memory used by player objects
 void Player::destroyPlayerObject() {
-	if (!(playerID ==nullptr)) {
+	if (!(playerID == nullptr)) {
 		cout << "Cleaning player " << this->playerID << " from heap before ending program.\n" << endl;
 	}
 	if (!(handOfCards == nullptr)) {
@@ -305,7 +305,11 @@ void Player::destroyPlayerObject() {
 	}
 	if (!(targetTerritories == nullptr)) {
 		delete targetTerritories;
-	}	
+	}
+	for (auto& x : territoriesOwn) {
+		delete x;
+		x = NULL;
+	}
 	myOrder = NULL;
 	myTerritories = NULL;
 	targetTerritories = NULL;
@@ -313,4 +317,57 @@ void Player::destroyPlayerObject() {
 }
 
 int Player::getreinforcePool() { return reinforcePool; }
+int Player::getTurnNumber()
+{
+	return turnNumber;
+}
+int Player::getNumTerritoriesOwn()
+{
+	return numberTerritoriesOwn;
+}
 void Player::setreinforcePool(int value) { if (value >= 0) { reinforcePool = value; } }
+
+void Player::setNumTerritoriesOwn(int value)
+{
+	this->numberTerritoriesOwn = value;
+}
+
+void Player::setTurnNumber(int value)
+{
+	this->turnNumber = value;
+}
+
+void Player::addTerritory(Territory* terrytory)
+{
+	//Add territory at the end of myTerritories
+	this->territoriesOwn.push_back(terrytory);
+	return;
+}
+
+void Player::addArmiesToTerritory(Territory* territory, int value)
+{
+	territory->setTerritoryArmies(value);
+}
+
+vector<Territory*> Player::getTerritoriesOwn()
+{
+	return this->territoriesOwn;
+}
+
+void Player::removeTerritory(Territory* aterrytory) {
+	int temp = 0;
+	for (auto&& x : territoriesOwn) {
+		if (x == aterrytory) { delete x; break; }
+		temp++;
+	}
+	territoriesOwn.erase(territoriesOwn.begin() + temp);
+}
+/*void Player::removeMyTerritory(Territory aTerrytory) {
+	myTerritories->remove(aTerrytory);
+}
+void Player::removeTargetTerritory(Territory aTerrytory) {
+	targetTerritories->remove(aTerrytory);
+}
+void Player::removeOrder(Order o) {
+	myOrder->remove(o);
+}*/

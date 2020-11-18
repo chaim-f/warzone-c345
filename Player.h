@@ -64,13 +64,26 @@ public:
 	~Player();
 
 	int getreinforcePool();//getter of reinforcePool
+	int getTurnNumber();
+	int getNumTerritoriesOwn();
 	void setreinforcePool(int value);//setter/mutator of reinforcePool
+	void setNumTerritoriesOwn(int value);
+	void setTurnNumber(int value);
+
+	void addTerritory(Territory* terrytory);
+	void addArmiesToTerritory(Territory* territory, int value);
+	vector<Territory*> getTerritoriesOwn();
+	void removeTerritory(Territory* terrytory);
+	/*void removeMyTerritory(Territory aTerrytory);
+	void removeTargetTerritory(Territory aTerrytory);
+	void removeOrder(Order o);*/
 
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
 	list<Territory>* myTerritories;
+	vector<Territory*> territoriesOwn;
 
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory>* targetTerritories;
@@ -84,12 +97,9 @@ private:
 	Player* thisPlayerRef = nullptr;
 	string playerName;
 	int reinforcePool;//holds th ammout to be used in the reinforcement
+	int turnNumber;
+	int numberTerritoriesOwn;
 };
 
 
 Player* playerFactory(string pid);
-
-
-
-	
-
