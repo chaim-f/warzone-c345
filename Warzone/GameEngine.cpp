@@ -325,7 +325,7 @@ void MainGameLoop::mainGameLoop()
 		int temp;
 		temp = 0;
 		for (auto& x : players) {
-			cout << "\nlooking at " << players.at(temp)->getPlayerName() << " " << temp;
+			players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
 			if (x->getNumTerritoriesOwn() == 0) {
 				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
 				players.erase(players.begin() + temp);//remove the player if he owns no territories
