@@ -2,8 +2,11 @@
   Team 21
 */
 #include "Order.h"
+#include "Map.h"
+#include "Player.h"
 #include <iostream>
 #include <list>
+#include <algorithm>
 
 
 Order::Order() { setName("Order"); };
@@ -14,7 +17,7 @@ Order::Order(const Order& o) {
 
 bool Order::validate() { return true; };
 bool Order::execute() { return validate(); }
-void Order::setName(string n) { name = n;}
+void Order::setName(string n) { name = n; }
 string Order::getName() { return name; }
 
 Order& Order::operator= (const Order& o) {
@@ -32,34 +35,111 @@ std::ostream& operator<<(std::ostream& strm, Order& o)
 //As a result the validate and execute are just skeleton functions
 
 //Deploy
-Deploy::Deploy() { 
+Deploy::Deploy() {
 	setName("Deploy");
-	cout << "Created a deploy order\n"; };
+	cout << "Created a deploy order\n";
+};
 
 Deploy::Deploy(const Deploy& o) {
 	name = o.name;
 };
 
-bool Deploy::validate() { return true; };
-bool Deploy::execute() { return validate(); }
+Deploy::Deploy(Player* player, Territory* territory, int army) {
+	this->army = army;
+	this->player = player;
+	this->territory = territory;
+};
+
+bool Deploy::validate() { 
+
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), territory)
+		!= myTerr.end();
+
+	if (territoryIsInList)
+		return true;
+	return false;
+
+};
+
+bool Deploy::execute() {
+	
+	if (validate()) {
+		player->setreinforcePool( ( player->getreinforcePool() ) - army);
+		territory->setTerritoryArmies ( (territory->getTerritoryArmies()) + army ) ;
+		
+		return true;
+	}
+	else {
+		cout << "Deploy order not valid\n";
+		return validate();
+	}
+
+}
 
 Deploy& Deploy::operator= (const Deploy& o) {
 	name = o.name;
 	return *this;
-	};
+};
 
 
 //Advace
-Advance::Advance() { 
+Advance::Advance() {
 	setName("Advance");
-	cout << "Created an advance order\n"; };
+	cout << "Created an advance order\n";
+}
+
+Advance::Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army)
+{
+	this->player = player;
+	this->myTerritory = myTerritory;
+	this->otherTerritory = otherTerritory;
+	this->army = army;
+}
+;
 
 Advance::Advance(const Advance& o) {
 	name = o.name;
 };
 
-bool Advance::validate() { return true; };
-bool Advance::execute() { return validate(); }
+bool Advance::validate() { 
+	
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory) 
+		!= myTerr.end();
+
+	// source territory doesn't belong to me
+	if (territoryIsInList)
+		return true;
+
+	else 
+		return false;
+
+
+};
+bool Advance::execute() { 
+	
+	if (!validate())
+		return false;
+
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), myTerritory)
+		!= myTerr.end();
+	
+	//Both territories are mine
+	if (otherTerrIsMine) {
+		
+		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
+		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
+
+	}
+	//Source territory is mine, Dest territory is Other
+	else {
+		//TODO
+	}
+	
+	return true;
+}
 
 Advance& Advance::operator= (const Advance& o) {
 	name = o.name;
@@ -68,18 +148,41 @@ Advance& Advance::operator= (const Advance& o) {
 };
 
 //Bomb
-Bomb::Bomb() { 
+Bomb::Bomb() {
 	setName("Bomb");
-	cout << "Created a bomb order\n"; };
+	cout << "Created a bomb order\n";
+};
 
 Bomb::Bomb(const Bomb& o) {
 	name = o.name;
 
+}
+Bomb::Bomb(Player* player, Territory* otherTerritory)
+{
+	this->player = player;
+	this->otherTerritory = otherTerritory;
+}
+;
+
+
+bool Bomb::validate() { 
+	
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
+		!= myTerr.end();
+	
+	return !territoryIsInList;
+
 };
+bool Bomb::execute() { 
+	
+	if(!validate())
+		return false;
 
+	otherTerritory->setTerritoryArmies( otherTerritory->getTerritoryArmies() / 2);
 
-bool Bomb::validate() { return true; };
-bool Bomb::execute() { return validate(); }
+	return true;
+}
 
 Bomb& Bomb::operator= (const Bomb& o) {
 	name = o.name;
@@ -89,16 +192,43 @@ Bomb& Bomb::operator= (const Bomb& o) {
 
 
 //Blockade
-Blockade::Blockade() { 
+Blockade::Blockade() {
 	setName("Blockade");
-	cout << "Created a blockade order\n"; };
+	cout << "Created a blockade order\n";
+}
+Blockade::Blockade(Player* player, Territory* myTerritory)
+{
+	this->player = player;
+	this->myTerritory = myTerritory;
+}
+;
 
 Blockade::Blockade(const Blockade& o) {
 	name = o.name;
 };
 
-bool Blockade::validate() { return true; };
-bool Blockade::execute() { return validate(); }
+bool Blockade::validate() { 
+	
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
+		!= myTerr.end();
+	
+	return territoryIsInList;
+
+};
+
+bool Blockade::execute() { 
+	
+	if (!validate())
+		return false;
+
+	myTerritory->setTerritoryArmies( myTerritory->getTerritoryArmies() * 2);
+	player->removeTerritory(myTerritory);
+	
+	return true;
+
+
+}
 
 Blockade& Blockade::operator= (const Blockade& o) {
 	name = o.name;
@@ -107,16 +237,46 @@ Blockade& Blockade::operator= (const Blockade& o) {
 };
 
 //Airlift
-Airlift::Airlift() { 
+Airlift::Airlift() {
 	setName("Airlift");
-	cout << "Created an airlift order\n"; };
+	cout << "Created an airlift order\n";
+}
+
+Airlift::Airlift(Player* player, Territory* fromTerritory, Territory* toTerritory, int army)
+{
+	this->player = player;
+	this->fromTerritory = fromTerritory;
+	this->toTerritory = toTerritory;
+	this->army = army;
+}
+;
 
 Airlift::Airlift(const Airlift& o) {
 	name = o.name;
 };
 
-bool Airlift::validate() { return true; };
-bool Airlift::execute() { return validate(); }
+bool Airlift::validate() { 
+	
+	vector<Territory*> myTerr = player->getTerritoriesOwn();
+	bool territoryAIsInList = std::find(myTerr.begin(), myTerr.end(), fromTerritory)
+		!= myTerr.end();
+
+	bool territoryBIsInList = std::find(myTerr.begin(), myTerr.end(), toTerritory)
+		!= myTerr.end();
+
+	return territoryAIsInList && territoryBIsInList;
+	 
+};
+bool Airlift::execute() {
+
+	if (!validate())
+		return false;
+	
+	fromTerritory->setTerritoryArmies(fromTerritory->getTerritoryArmies() - army);
+	toTerritory->setTerritoryArmies(toTerritory->getTerritoryArmies() + army);
+
+	return true;
+}
 
 Airlift& Airlift::operator= (const Airlift& o) {
 	name = o.name;
@@ -126,16 +286,36 @@ Airlift& Airlift::operator= (const Airlift& o) {
 
 
 //Negotiate
-Negotiate::Negotiate() { 
+Negotiate::Negotiate() {
 	setName("Negotiate");
-	cout << "Created a negotiate order\n"; };
+	cout << "Created a negotiate order\n";
+}
+
+Negotiate::Negotiate(Player* player, Player* otherPlayer)
+{
+	this->player = player;
+	this->otherPlayer = otherPlayer;
+}
+;
 
 Negotiate::Negotiate(const Negotiate& o) {
 	name = o.name;
 };
 
-bool Negotiate::validate() { return true; };
-bool Negotiate::execute() { return validate(); }
+bool Negotiate::validate() { 
+	
+	return player != otherPlayer;
+
+};
+bool Negotiate::execute() { 
+
+	if (!validate())
+		return false;
+
+
+
+	return true;
+}
 
 Negotiate& Negotiate::operator= (const Negotiate& o) {
 	name = o.name;
@@ -156,17 +336,17 @@ Orderlist::Orderlist(const Orderlist& ol) {
 void Orderlist::add(Order* order) {
 
 	orderList->push_back(order);
-		
+
 }
 
 Order Orderlist::remove(Order* order) {
-	
+
 	for (auto it = orderList->begin(); it != orderList->end(); it++)
 		if (*it == order) {
 			orderList->erase(it);
 			return *order;
 		}
-	
+
 	return *order;
 
 }
@@ -176,7 +356,7 @@ void Orderlist::move(Order* insertOrder, Order* destinationOrder) {
 
 
 	auto insert = std::find(orderList->begin(), orderList->end(), insertOrder);
-	
+
 	auto destination = std::find(orderList->begin(), orderList->end(), destinationOrder);
 
 	orderList->splice(destination, *orderList, insert);
@@ -185,7 +365,7 @@ void Orderlist::move(Order* insertOrder, Order* destinationOrder) {
 
 
 std::ostream& operator<<(std::ostream& strm, const Orderlist& ol)
-{	
+{
 	for (auto it = ol.orderList->begin(); it != ol.orderList->end(); it++)
 		strm << *(*it) << " ";
 
