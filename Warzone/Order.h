@@ -2,6 +2,11 @@
   Team 21
 */
 
+class Player;
+/*COMP 345 A1
+  Team 21
+*/
+
 #pragma once
 using namespace std;
 #include <iostream>
@@ -148,26 +153,29 @@ public:
 };
 
 
+
 //Orderlist points to a <list> of Order pointers
 class Orderlist {
 
-    list <Order*>* orderList;
+    list <Order*> orderList;
 
 public:
-
+    
     Orderlist();
 
     Orderlist(const Orderlist& ol);
 
     void move(Order* insertOrder, Order* destinationOrder);
 
-    Order remove(Order* order);
+    bool remove(Order* order);
 
     void add(Order* order);
 
-    friend std::ostream& operator<<(std::ostream& strm, const Orderlist& ol);
+   friend std::ostream& operator<<(std::ostream& strm, const Orderlist& ol);
 
-
+   list <Order*> getOrderList();
+   ~Orderlist();
+   bool OrderListIsEmpty();
 };
 
 

@@ -50,7 +50,7 @@ Deploy::Deploy(Player* player, Territory* territory, int army) {
 	this->territory = territory;
 };
 
-bool Deploy::validate() { 
+bool Deploy::validate() {
 
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), territory)
@@ -63,11 +63,11 @@ bool Deploy::validate() {
 };
 
 bool Deploy::execute() {
-	
+
 	if (validate()) {
-		player->setreinforcePool( ( player->getreinforcePool() ) - army);
-		territory->setTerritoryArmies ( (territory->getTerritoryArmies()) + army ) ;
-		
+		player->setreinforcePool((player->getreinforcePool()) - army);
+		territory->setTerritoryArmies((territory->getTerritoryArmies()) + army);
+
 		return true;
 	}
 	else {
@@ -102,33 +102,33 @@ Advance::Advance(const Advance& o) {
 	name = o.name;
 };
 
-bool Advance::validate() { 
-	
+bool Advance::validate() {
+
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
-	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory) 
+	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
 
 	// source territory doesn't belong to me
 	if (territoryIsInList)
 		return true;
 
-	else 
+	else
 		return false;
 
 
 };
-bool Advance::execute() { 
-	
+bool Advance::execute() {
+
 	if (!validate())
 		return false;
 
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-	
+
 	//Both territories are mine
 	if (otherTerrIsMine) {
-		
+
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
 
@@ -137,7 +137,7 @@ bool Advance::execute() {
 	else {
 		//TODO
 	}
-	
+
 	return true;
 }
 
@@ -165,21 +165,21 @@ Bomb::Bomb(Player* player, Territory* otherTerritory)
 ;
 
 
-bool Bomb::validate() { 
-	
+bool Bomb::validate() {
+
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
 		!= myTerr.end();
-	
+
 	return !territoryIsInList;
 
 };
-bool Bomb::execute() { 
-	
-	if(!validate())
+bool Bomb::execute() {
+
+	if (!validate())
 		return false;
 
-	otherTerritory->setTerritoryArmies( otherTerritory->getTerritoryArmies() / 2);
+	otherTerritory->setTerritoryArmies(otherTerritory->getTerritoryArmies() / 2);
 
 	return true;
 }
@@ -207,24 +207,24 @@ Blockade::Blockade(const Blockade& o) {
 	name = o.name;
 };
 
-bool Blockade::validate() { 
-	
+bool Blockade::validate() {
+
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-	
+
 	return territoryIsInList;
 
 };
 
-bool Blockade::execute() { 
-	
+bool Blockade::execute() {
+
 	if (!validate())
 		return false;
 
-	myTerritory->setTerritoryArmies( myTerritory->getTerritoryArmies() * 2);
+	myTerritory->setTerritoryArmies(myTerritory->getTerritoryArmies() * 2);
 	player->removeTerritory(myTerritory);
-	
+
 	return true;
 
 
@@ -255,8 +255,8 @@ Airlift::Airlift(const Airlift& o) {
 	name = o.name;
 };
 
-bool Airlift::validate() { 
-	
+bool Airlift::validate() {
+
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryAIsInList = std::find(myTerr.begin(), myTerr.end(), fromTerritory)
 		!= myTerr.end();
@@ -265,13 +265,13 @@ bool Airlift::validate() {
 		!= myTerr.end();
 
 	return territoryAIsInList && territoryBIsInList;
-	 
+
 };
 bool Airlift::execute() {
 
 	if (!validate())
 		return false;
-	
+
 	fromTerritory->setTerritoryArmies(fromTerritory->getTerritoryArmies() - army);
 	toTerritory->setTerritoryArmies(toTerritory->getTerritoryArmies() + army);
 
@@ -302,12 +302,12 @@ Negotiate::Negotiate(const Negotiate& o) {
 	name = o.name;
 };
 
-bool Negotiate::validate() { 
-	
+bool Negotiate::validate() {
+
 	return player != otherPlayer;
 
 };
-bool Negotiate::execute() { 
+bool Negotiate::execute() {
 
 	if (!validate())
 		return false;
@@ -323,10 +323,9 @@ Negotiate& Negotiate::operator= (const Negotiate& o) {
 
 };
 
-
 //Orderlist
 
-Orderlist::Orderlist() { orderList = new std::list <Order*>(); };
+Orderlist::Orderlist() { };
 
 Orderlist::Orderlist(const Orderlist& ol) {
 	orderList = ol.orderList;
@@ -334,42 +333,57 @@ Orderlist::Orderlist(const Orderlist& ol) {
 }
 
 void Orderlist::add(Order* order) {
-
-	orderList->push_back(order);
-
+	orderList.push_back(order);
 }
 
-Order Orderlist::remove(Order* order) {
-
-	for (auto it = orderList->begin(); it != orderList->end(); it++)
+bool Orderlist::remove(Order* order) {
+	
+	for (auto it = orderList.begin(); it != orderList.end(); it++)
 		if (*it == order) {
-			orderList->erase(it);
-			return *order;
+			delete* it;//delete what the pointer is pointing to not sure if this is correct
+			orderList.erase(it);
+			return true;
 		}
-
-	return *order;
-
+	return false;
 }
 
 
 void Orderlist::move(Order* insertOrder, Order* destinationOrder) {
 
 
-	auto insert = std::find(orderList->begin(), orderList->end(), insertOrder);
+	auto insert = std::find(orderList.begin(), orderList.end(), insertOrder);
+	
+	auto destination = std::find(orderList.begin(), orderList.end(), destinationOrder);
 
-	auto destination = std::find(orderList->begin(), orderList->end(), destinationOrder);
-
-	orderList->splice(destination, *orderList, insert);
+	orderList.splice(destination, orderList, insert);
 
 }
 
 
 std::ostream& operator<<(std::ostream& strm, const Orderlist& ol)
-{
-	for (auto it = ol.orderList->begin(); it != ol.orderList->end(); it++)
-		strm << *(*it) << " ";
+{	
+	for (auto it = ol.orderList.begin(); it != ol.orderList.end(); it++)
+		strm << (*it) << " ";
 
 	return strm;
 };
 
+Orderlist::~Orderlist() {
+	for (auto& x : orderList) {
+		delete x;
+	}
+}
+list <Order*> Orderlist::getOrderList() {
+	return orderList;
+}
+bool  Orderlist::OrderListIsEmpty() {
+	/*int temp = 0;
+	for (auto& x : orderList) {
+		temp++;
+	}
+	if (temp == 0) { return true; }*/
+	//if (orderList.empty())return true;
+	//if (orderList.size() == 0)return true;
+	return true;
+}
 
