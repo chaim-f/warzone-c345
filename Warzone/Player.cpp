@@ -317,7 +317,16 @@ int Player::getTurnNumber()
 {
 	return turnNumber;
 }
+int Player::getNumTerritoriesOwn()
+{
+	return numberTerritoriesOwn;
+}
 void Player::setreinforcePool(int value) { if (value >= 0) { reinforcePool = value; } }
+
+void Player::setNumTerritoriesOwn(int value)
+{
+	this->numberTerritoriesOwn = value;
+}
 
 void Player::setTurnNumber(int value)
 {

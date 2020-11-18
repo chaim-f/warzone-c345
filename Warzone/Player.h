@@ -65,7 +65,9 @@ public:
 
 	int getreinforcePool();//getter of reinforcePool
 	int getTurnNumber();
+	int getNumTerritoriesOwn();
 	void setreinforcePool(int value);//setter/mutator of reinforcePool
+	void setNumTerritoriesOwn(int value);
 	void setTurnNumber(int value);
 
 	void addTerritory(Territory* terrytory);
@@ -92,6 +94,7 @@ private:
 	string playerName;
 	int reinforcePool;//holds th ammout to be used in the reinforcement
 	int turnNumber;
+	int numberTerritoriesOwn;
 };
 
 

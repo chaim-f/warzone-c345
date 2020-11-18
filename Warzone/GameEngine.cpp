@@ -309,9 +309,9 @@ vector<Player*> StartUpPhase::getPlayers()
 // PART 3
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-MainGameLoop::MainGameLoop(vector<Territory*> territoriesWithBorders, vector<Player*> players)
+MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> players)
 {
-	this->territoriesWithBorders = territoriesWithBorders;
+	this->territories = territories;
 	this->players = players;
 }
 
@@ -324,10 +324,22 @@ void MainGameLoop::mainGameLoop()
 
 void MainGameLoop::reinforcementPhase()
 {
+	int count = 0;
+	for (int i = 0; i < this->players.size(); i++) {
+		this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+	}
 
 	for (int i = 0; i < this->players.size(); i++) {
-		cout << this->players.at(i)->getPlayerName() << endl;
+		cout << this->players.at(i)->getPlayerName() << ":" << this->players.at(i)->getNumTerritoriesOwn() << endl;
 	}
+
+	// using the armies in the reinforcement pool
+	// for each player use its reinforcement pool to populate its territories with armies
+	//for (int i = 0; i < this->players.size(); i++) {
+	//	for (int j = 0; j < this->players.at(i)->getTerritoriesOwn().size(); j++) {
+	//		//this->players.at(i)->populateTerritoryWithArmies(this->players.at(i)->getreinforcePool() / );
+	//	}
+	//}
 }
 
 void MainGameLoop::issueOrdersPhase()

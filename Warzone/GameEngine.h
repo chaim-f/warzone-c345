@@ -76,10 +76,10 @@ public:
 
 class MainGameLoop
 {
-	vector<Territory*> territoriesWithBorders;
+	vector<Territory*> territories;
 	vector<Player*> players;
 public:
-	MainGameLoop(vector<Territory*> territoriesWithBorders, vector<Player*> players);
+	MainGameLoop(vector<Territory*> territories, vector<Player*> players);
 	void mainGameLoop();
 	void reinforcementPhase();
 	void issueOrdersPhase();
