@@ -71,6 +71,7 @@ public:
 	void setTurnNumber(int value);
 
 	void addTerritory(Territory* terrytory);
+	void addArmiesToTerritory(Territory* territory, int value);
 	vector<Territory*> getTerritoriesOwn();
 
 private:

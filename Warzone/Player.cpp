@@ -340,6 +340,11 @@ void Player::addTerritory(Territory* terrytory)
 	return;
 }
 
+void Player::addArmiesToTerritory(Territory* territory, int value)
+{
+	territory->setTerritoryArmies(value);
+}
+
 vector<Territory*> Player::getTerritoriesOwn()
 {
 	return this->territoriesOwn;

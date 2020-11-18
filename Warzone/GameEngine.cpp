@@ -6,6 +6,7 @@
 #include <random>
 #include <algorithm>
 #include <numeric>
+#include <math.h>
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -324,22 +325,33 @@ void MainGameLoop::mainGameLoop()
 
 void MainGameLoop::reinforcementPhase()
 {
-	int count = 0;
+	cout << "\ndistributing armies to territories\n";
 	for (int i = 0; i < this->players.size(); i++) {
 		this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+		vector<Player*> players = this->players;
+		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
+		int reinforcementPool = players.at(i)->getreinforcePool();
+		int unit = 0;
+		int territoriesOwn = playerTerritories.size();
+		for (int j = 0; j < territoriesOwn; j++) {
+			unit += ceil(reinforcementPool / territoriesOwn);
+			if (j == (territoriesOwn - 2)) { // if this is the last territory, take whatever is left
+				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), (reinforcementPool - unit));
+			}
+			else {
+				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), ceil(reinforcementPool / territoriesOwn));
+			}
+		}
 	}
 
 	for (int i = 0; i < this->players.size(); i++) {
-		cout << this->players.at(i)->getPlayerName() << ":" << this->players.at(i)->getNumTerritoriesOwn() << endl;
+		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
+		for (int j = 0; j < playerTerritories.size(); j++) {
+			//playerTerritories.at(j)->displayTerritories();
+			cout << this->players.at(i)->getPlayerName() << " territory " << playerTerritories.at(j)->getTerritoryName() << " has "
+				<< playerTerritories.at(j)->getTerritoryArmies() << " armies " << endl;
+		}
 	}
-
-	// using the armies in the reinforcement pool
-	// for each player use its reinforcement pool to populate its territories with armies
-	//for (int i = 0; i < this->players.size(); i++) {
-	//	for (int j = 0; j < this->players.at(i)->getTerritoriesOwn().size(); j++) {
-	//		//this->players.at(i)->populateTerritoryWithArmies(this->players.at(i)->getreinforcePool() / );
-	//	}
-	//}
 }
 
 void MainGameLoop::issueOrdersPhase()

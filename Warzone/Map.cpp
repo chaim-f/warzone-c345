@@ -282,6 +282,11 @@ void Territory::displayTerritories()
 	}
 }
 
+void Territory::setTerritoryArmies(int v)
+{
+	this->territoryArmies = v;
+}
+
 Continent Territory::getTerritoryContinent() {
 	return continent;
 }
@@ -298,6 +303,11 @@ int Territory::getTerritoryIndex()
 int Territory::getBorder()
 {
 	return destination;
+}
+
+int Territory::getTerritoryArmies()
+{
+	return territoryArmies;
 }
 
 ostream& operator<<(ostream& strm, const Territory t)
