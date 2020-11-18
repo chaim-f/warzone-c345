@@ -7,14 +7,17 @@ using namespace std;
 #include <iostream>
 #include <list>
 
+class Player;
+class Territory;
+
 //Parents class Order
 //Currently has no attributes implemented
 class Order {
-    
+
     string name;
 
-//Included Copy, Assignment, Outstream
-public:    
+    //Included Copy, Assignment, Outstream
+public:
     Order();
     Order(const Order& o);
     bool validate();
@@ -46,14 +49,14 @@ public:
 
     Territory* territory;
     int army;
-   
+
 };
 
 //Advance
 class Advance : public Order {
-    
+
     string name;
-  
+
 public:
     Advance();
     Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army);
@@ -91,7 +94,7 @@ public:
 class Blockade : public Order {
 
     string name;
-    
+
 public:
     Blockade();
     Blockade(Player* player, Territory* myTerritory);
@@ -109,7 +112,7 @@ public:
 class Airlift : public Order {
 
     string name;
-    
+
 public:
     Airlift();
     Airlift(Player* player, Territory* fromTerritory, Territory* toTerritory, int army);
@@ -130,7 +133,7 @@ public:
 class Negotiate : public Order {
 
     string name;
-    
+
 public:
     Negotiate();
     Negotiate(Player* player, Player* otherPlayer);
@@ -151,7 +154,7 @@ class Orderlist {
     list <Order*>* orderList;
 
 public:
-    
+
     Orderlist();
 
     Orderlist(const Orderlist& ol);
@@ -162,7 +165,7 @@ public:
 
     void add(Order* order);
 
-   friend std::ostream& operator<<(std::ostream& strm, const Orderlist& ol);
+    friend std::ostream& operator<<(std::ostream& strm, const Orderlist& ol);
 
 
 };
