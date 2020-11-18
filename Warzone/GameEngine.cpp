@@ -388,7 +388,9 @@ void MainGameLoop::executeOrdersPhase()
 				}
 			}
 		}
-		cout << "\nAll deploy orders are done";
+	}
+	cout << "\nAll deploy orders are done";
+	for (int i = 0; i < players.size(); i++) {
 		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
 			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
 				if (x->getName().compare("Airlift") == 0) {
@@ -396,7 +398,9 @@ void MainGameLoop::executeOrdersPhase()
 				}
 			}
 		}
-		cout << "\nAll airlift orders are done";
+	}
+	cout << "\nAll airlift orders are done";
+	for (int i = 0; i < players.size(); i++) {
 		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
 			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
 				if (x->getName().compare("Blockade") == 0) {
@@ -404,26 +408,25 @@ void MainGameLoop::executeOrdersPhase()
 				}
 			}
 		}
-		cout << "\nAll blockade orders are done";
-		bool keepGoing=false;
+	}
+	cout << "\nAll blockade orders are done";
+	bool keepGoing=false;
+	for (int i = 0; i < players.size(); i++) {
+		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+			keepGoing = true;
+		}
+	}
+	while (keepGoing) {
+		for (int i = 0; i < players.size(); i++) {
+			if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+						players.at(i)->executeOrderOfList(players.at(i)->getOrderlist()->getOrderList().front());
+			}
+		}
+		keepGoing = false;
 		for (int i = 0; i < players.size(); i++) {
 			if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 				keepGoing = true;
 			}
 		}
-		while (keepGoing) {
-			for (int i = 0; i < players.size(); i++) {
-				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
-							players.at(i)->executeOrderOfList(players.at(i)->getOrderlist()->getOrderList().front());
-				}
-			}
-			keepGoing = false;
-			for (int i = 0; i < players.size(); i++) {
-				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
-					keepGoing = true;
-				}
-			}
-		}
-
 	}
 }
