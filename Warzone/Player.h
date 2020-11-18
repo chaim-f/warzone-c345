@@ -73,13 +73,16 @@ public:
 	void addTerritory(Territory* terrytory);
 	void addArmiesToTerritory(Territory* territory, int value);
 	vector<Territory*> getTerritoriesOwn();
+	void removeTerritory(Territory* terrytory);
+	/*void removeMyTerritory(Territory aTerrytory);
+	void removeTargetTerritory(Territory aTerrytory);
+	void removeOrder(Order o);*/
 
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
 	list<Territory>* myTerritories;
-
 	vector<Territory*> territoriesOwn;
 
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,

@@ -318,14 +318,37 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 
 void MainGameLoop::mainGameLoop()
 {
-	this->reinforcementPhase();
-	this->issueOrdersPhase();
-	this->executeOrdersPhase();
+	bool playOn=true;
+	while (playOn) {
+		this->issueOrdersPhase();
+		this->executeOrdersPhase();
+		int temp;
+		temp = 0;
+		for (auto& x : players) {
+			cout << "\nlooking at " << players.at(temp)->getPlayerName() << " " << temp;
+			if (x->getNumTerritoriesOwn() == 0) {
+				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
+				players.erase(players.begin() + temp);//remove the player if he owns no territories
+				continue;
+			}
+			temp++;
+		}
+		if (players.size() == 1) {
+			cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
+			playOn = false;
+		}
+		this->reinforcementPhase();
+	}
 }
 
 void MainGameLoop::reinforcementPhase()
 {
-	cout << "\ndistributing armies to territories\n";
+	
+}
+
+void MainGameLoop::issueOrdersPhase()
+{
+	cout << "\nissuing Orders\n";
 	for (int i = 0; i < this->players.size(); i++) {
 		this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
 		vector<Player*> players = this->players;
@@ -354,10 +377,13 @@ void MainGameLoop::reinforcementPhase()
 	}
 }
 
-void MainGameLoop::issueOrdersPhase()
-{
-}
-
 void MainGameLoop::executeOrdersPhase()
 {
+	cout << "\nIN exacute mode removing player";
+	for (auto& x : players.at(0)->getTerritoriesOwn()) {
+		players.at(0)->removeTerritory(x);
+	}
+	cout << "\nremoved all territories from " << players.at(0)->getPlayerName();
+	players.at(0)->setNumTerritoriesOwn(players.at(0)->getTerritoriesOwn().size());
+	cout << "\n " << players.at(0)->getTerritoriesOwn().size();
 }

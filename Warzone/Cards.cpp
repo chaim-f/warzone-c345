@@ -346,7 +346,8 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 {
 	int temp = 0;
 	for (auto&& x : handCards) {
-		if (x == cardID) { break; }
+		if (x == cardID) { delete x;
+		break; }
 		temp++;
 	}
 	handCards.erase(handCards.begin() + temp);

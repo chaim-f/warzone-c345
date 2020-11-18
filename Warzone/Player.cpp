@@ -306,6 +306,10 @@ void Player::destroyPlayerObject() {
 	if (!(targetTerritories == nullptr)) {
 		delete targetTerritories;
 	}
+	for (auto& x : territoriesOwn) {
+		delete x;
+		x = NULL;
+	}
 	myOrder = NULL;
 	myTerritories = NULL;
 	targetTerritories = NULL;
@@ -349,3 +353,21 @@ vector<Territory*> Player::getTerritoriesOwn()
 {
 	return this->territoriesOwn;
 }
+
+void Player::removeTerritory(Territory* aterrytory) {
+	int temp = 0;
+	for (auto&& x : territoriesOwn) {
+		if (x == aterrytory) { delete x; break; }
+		temp++;
+	}
+	territoriesOwn.erase(territoriesOwn.begin() + temp);
+}
+/*void Player::removeMyTerritory(Territory aTerrytory) {
+	myTerritories->remove(aTerrytory);
+}
+void Player::removeTargetTerritory(Territory aTerrytory) {
+	targetTerritories->remove(aTerrytory);
+}
+void Player::removeOrder(Order o) {
+	myOrder->remove(o);
+}*/

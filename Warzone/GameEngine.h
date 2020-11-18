@@ -6,13 +6,6 @@
 #include "Player.h"
 using namespace std;
 
-class GameEngine
-{
-
-public:
-
-};
-
 class GameStart
 {
 	// [x] 1.2.1 driver that demonstrate that different valid maps can be loaded and their validity verified
