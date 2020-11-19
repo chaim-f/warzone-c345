@@ -96,41 +96,33 @@ Order* Card::play()
 {
 		
 	std::string cardType = getCardType();
-	Order* TempCard = new Order();;
-	if (true) {
-		delete TempCard;
-		if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
-		{
-			Bomb* cardT = new Bomb();
-			TempCard = cardT;
-		}
-		else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
-		{
-			Deploy* cardT = new Deploy();
-			TempCard = cardT;
-		}
-		else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
-		{
-			Blockade* cardT = new Blockade();
-			TempCard = cardT;
-		}
-		else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
-		{
-			Airlift* carT = new Airlift();
-			TempCard = carT;
-		}
-		else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
-		{
-			Negotiate* carT = new Negotiate();
-			TempCard = carT;
-		}
-		else {
-			std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n";
-			Order* carT = new Order();
-			TempCard = carT;
-		}
+
+
+	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
+	{
+		Bomb* cardT = new Bomb();
 	}
-	return TempCard;
+	else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
+	{
+		Deploy* cardT = new Deploy();
+	}
+	else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
+	{
+		Blockade* cardT = new Blockade();
+	}
+	else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
+	{
+		Airlift* carT = new Airlift();
+	}
+	else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
+	{
+		Negotiate* carT = new Negotiate();
+	}
+	else {
+		std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n";
+		Order* carT = new Order();
+	}
+
 }
 
 void Card::printCard()
@@ -363,7 +355,6 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 
 Order* Hand::play(std::string cardType, Deck& deckId)
 {
-	Order* order = new Order();
 	if (isInHand(cardType))//check if the type card is in hand  
 	{
 		Card* tempCardP = nullptr;
@@ -371,14 +362,14 @@ Order* Hand::play(std::string cardType, Deck& deckId)
 			if (x->getCardType().compare(cardType) == 0) { tempCardP = x; break; }
 		}
 		if (tempCardP != nullptr) {
-			delete order;
-			order = tempCardP->play();
+			Order* order = tempCardP->play();
 			deckId.returnCard(tempCardP);
 			removeCard(tempCardP);
 		}
 	}
 	else {
 		std::cout << cardType << " is not in this hand to play\n";
+		Order* order = new Order();
 	}
 
 	return order;

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
-#include <time.h>
 
 
 Order::Order() { setName("Order"); };
@@ -43,18 +42,12 @@ Deploy::Deploy() {
 
 Deploy::Deploy(const Deploy& o) {
 	name = o.name;
-	this->army = o.army;
-	this->player = o.player;
-	this->territory = o.territory;
-
 };
 
 Deploy::Deploy(Player* player, Territory* territory, int army) {
 	this->army = army;
 	this->player = player;
 	this->territory = territory;
-	setName("Deploy");
-	cout << "Created a deploy order\n";
 };
 
 bool Deploy::validate() {
@@ -62,19 +55,16 @@ bool Deploy::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), territory)
 		!= myTerr.end();
-	
-	cout << "Deploy is valid: " << territoryIsInList;
-	return territoryIsInList;
+
+	if (territoryIsInList)
+		return true;
+	return false;
 
 };
 
 bool Deploy::execute() {
 
 	if (validate()) {
-		if (player->getreinforcePool() - army < 0) {
-			army = player->getreinforcePool();
-		}
-
 		player->setreinforcePool((player->getreinforcePool()) - army);
 		territory->setTerritoryArmies((territory->getTerritoryArmies()) + army);
 
@@ -93,31 +83,23 @@ Deploy& Deploy::operator= (const Deploy& o) {
 };
 
 
-//Advance
+//Advace
 Advance::Advance() {
 	setName("Advance");
 	cout << "Created an advance order\n";
 }
 
-Advance::Advance(Player* player, Player* playerB, Territory* myTerritory, Territory* otherTerritory, int army)
+Advance::Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army)
 {
 	this->player = player;
 	this->myTerritory = myTerritory;
 	this->otherTerritory = otherTerritory;
-	this->playerB = playerB;
 	this->army = army;
-	setName("Advance");
-	cout << "Created an advance order\n";
 }
 ;
 
 Advance::Advance(const Advance& o) {
 	name = o.name;
-	this->player = o.player;
-	this->myTerritory = o.myTerritory;
-	this->otherTerritory = o.otherTerritory;
-	this->playerB = o.playerB;
-	this->army = o.army;
 };
 
 bool Advance::validate() {
@@ -125,8 +107,7 @@ bool Advance::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-	
-	cout << "Advance is valid: " << territoryIsInList;
+
 	// source territory doesn't belong to me
 	if (territoryIsInList)
 		return true;
@@ -142,49 +123,19 @@ bool Advance::execute() {
 		return false;
 
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
-	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
+	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
 
 	//Both territories are mine
 	if (otherTerrIsMine) {
-		
+
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
-		
-		
+
 	}
 	//Source territory is mine, Dest territory is Other
 	else {
-		
-		srand(time(NULL));
-		int diceroll;
-		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
-
-		int defArmy = otherTerritory->getTerritoryArmies();
-
-		while (defArmy != 0 && army != 0) {
-			
-			diceroll = (rand() % 10) + 1;
-			if (diceroll < 7)
-				defArmy--;
-
-			diceroll = (rand() % 10) + 1;
-			if (diceroll < 8)
-				army--;
-			
-		}
-
-		otherTerritory->setTerritoryArmies(defArmy);
-		if (defArmy == 0 && army > 0) {
-			
-			playerB->removeTerritory(otherTerritory);
-			player->addTerritory(otherTerritory);
-			player->addArmiesToTerritory(otherTerritory, army);
-
-			//player->addcardToHandOfCards();
-		}
-		
-			
+		//TODO
 	}
 
 	return true;
@@ -204,16 +155,12 @@ Bomb::Bomb() {
 
 Bomb::Bomb(const Bomb& o) {
 	name = o.name;
-	this->player = o.player;
-	this->otherTerritory = o.otherTerritory;
 
 }
 Bomb::Bomb(Player* player, Territory* otherTerritory)
 {
 	this->player = player;
 	this->otherTerritory = otherTerritory;
-	setName("Bomb");
-	cout << "Created a bomb order\n";
 }
 ;
 
@@ -224,7 +171,6 @@ bool Bomb::validate() {
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
 		!= myTerr.end();
 
-	cout << "Bomb is valid: " << !territoryIsInList;
 	return !territoryIsInList;
 
 };
@@ -254,16 +200,11 @@ Blockade::Blockade(Player* player, Territory* myTerritory)
 {
 	this->player = player;
 	this->myTerritory = myTerritory;
-	setName("Blockade");
-	cout << "Created a blockade order\n";
 }
 ;
 
 Blockade::Blockade(const Blockade& o) {
 	name = o.name;
-	this->player = o.player;
-	this->myTerritory = o.myTerritory;
-
 };
 
 bool Blockade::validate() {
@@ -271,7 +212,7 @@ bool Blockade::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-	cout << "Blockade is valid: " << territoryIsInList;
+
 	return territoryIsInList;
 
 };
@@ -307,18 +248,11 @@ Airlift::Airlift(Player* player, Territory* fromTerritory, Territory* toTerritor
 	this->fromTerritory = fromTerritory;
 	this->toTerritory = toTerritory;
 	this->army = army;
-	setName("Airlift");
-	cout << "Created an airlift order\n";
 }
 ;
 
 Airlift::Airlift(const Airlift& o) {
 	name = o.name;
-	this->player = o.player;
-	this->fromTerritory = o.fromTerritory;
-	this->toTerritory = o.toTerritory;
-	this->army = o.army;
-
 };
 
 bool Airlift::validate() {
@@ -330,8 +264,6 @@ bool Airlift::validate() {
 	bool territoryBIsInList = std::find(myTerr.begin(), myTerr.end(), toTerritory)
 		!= myTerr.end();
 
-	
-	cout << "Airlift is valid: " << territoryAIsInList && territoryBIsInList;
 	return territoryAIsInList && territoryBIsInList;
 
 };
@@ -363,20 +295,15 @@ Negotiate::Negotiate(Player* player, Player* otherPlayer)
 {
 	this->player = player;
 	this->otherPlayer = otherPlayer;
-	setName("Negotiate");
-	cout << "Created a negotiate order\n";
 }
 ;
 
 Negotiate::Negotiate(const Negotiate& o) {
 	name = o.name;
-	this->player = o.player;
-	this->otherPlayer = o.otherPlayer;
-
 };
 
 bool Negotiate::validate() {
-	cout << "Negotiate is valid: " << (player != otherPlayer);
+
 	return player != otherPlayer;
 
 };
@@ -450,13 +377,13 @@ list <Order*> Orderlist::getOrderList() {
 	return orderList;
 }
 bool  Orderlist::OrderListIsEmpty() {
-	if (orderList.empty()) { return true; }
-	cout << "\n returned false\n";
-	return true;
-}
-void Orderlist::printOrderList() {
-	for (auto& x:orderList) {
-		cout << *x;
+	/*int temp = 0;
+	for (auto& x : orderList) {
+		temp++;
 	}
+	if (temp == 0) { return true; }*/
+	//if (orderList.empty())return true;
+	//if (orderList.size() == 0)return true;
+	return true;
 }
 

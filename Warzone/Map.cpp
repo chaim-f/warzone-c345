@@ -187,6 +187,11 @@ void Map::setIsValidMapFile(bool isValid)
 	this->isValidMapFile = isValid;
 }
 
+vector<Territory*> Map::getTerritoriesVec()
+{
+	return territoriesVec;
+}
+
 int getSource(Continent c)
 {
 	return c.source;
@@ -277,12 +282,32 @@ void Territory::displayTerritories()
 	}
 }
 
+void Territory::setTerritoryArmies(int v)
+{
+	this->territoryArmies = v;
+}
+
 Continent Territory::getTerritoryContinent() {
 	return continent;
 }
 
 string Territory::getTerritoryName() {
 	return territoryName;
+}
+
+int Territory::getTerritoryIndex()
+{
+	return source;
+}
+
+int Territory::getBorder()
+{
+	return destination;
+}
+
+int Territory::getTerritoryArmies()
+{
+	return territoryArmies;
 }
 
 ostream& operator<<(ostream& strm, const Territory t)

@@ -53,6 +53,7 @@ public:
 	void validate();
 	Map* getReverseGraph();
 	void setIsValidMapFile(bool isValid);
+	vector<Territory*> getTerritoriesVec();
 };
 
 
@@ -61,6 +62,7 @@ class Territory {
 	int destination;
 	string territoryName;
 	Continent continent;
+	int territoryArmies;
 public:
 	Territory();
 	Territory(int src, int dest);
@@ -68,8 +70,12 @@ public:
 	Territory(int src, string name, Continent c);
 	Territory(int src, int dest, string name, Continent c);
 	void displayTerritories();
+	void setTerritoryArmies(int v);
 	Continent getTerritoryContinent();
 	string getTerritoryName();
+	int getTerritoryIndex();
+	int getBorder();
+	int getTerritoryArmies();
 	friend class Map;
 	friend ostream& operator<<(ostream& strm, const Territory t);
 };
