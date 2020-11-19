@@ -98,6 +98,8 @@ public:
 	void executeOrderOfList(Blockade* o);
 	void executeOrderOfList(Airlift* o);
 	void executeOrderOfList(Negotiate* o);
+	void setConqueredTerratory(bool set);
+	bool getConqueredTerratory();
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
@@ -117,6 +119,7 @@ private:
 	int reinforcePool;//holds th ammout to be used in the reinforcement
 	int turnNumber;
 	int numberTerritoriesOwn;
+	bool conqueredTerratory;
 };
 
 

@@ -10,7 +10,7 @@
 #include "Order.h"
 
 Player::Player(string playerName, const char* pid) {
-
+	conqueredTerratory = false;
 	playerID = pid;
 	this->playerName = playerName;
 	//Allocate memory to Order list.
@@ -62,6 +62,7 @@ Player::Player(string playerName)
 {
 	this->playerName = playerName;
 	cout << "\nCreating: " << playerName << endl;	
+	conqueredTerratory = false;
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
@@ -109,7 +110,7 @@ Player::Player(const Player& anotherPlayer) {
 	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
-
+	conqueredTerratory = anotherPlayer.conqueredTerratory;
 	list<Territory>::iterator ptrTarget;
 	list<Territory>::iterator ptrTerritory;
 	list<Order>::iterator ptrOrder;
@@ -433,4 +434,10 @@ void Player::executeOrderOfList(Airlift* o) {
 void Player::executeOrderOfList(Negotiate* o) {
 	o->execute();
 	this->removeOrderOrderList(o);
+}
+void Player::setConqueredTerratory(bool set) {
+	conqueredTerratory = set;
+}
+bool Player::getConqueredTerratory() {
+	return conqueredTerratory;
 }
