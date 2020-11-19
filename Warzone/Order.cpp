@@ -142,19 +142,20 @@ bool Advance::execute() {
 		return false;
 
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
-	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), myTerritory)
+	bool otherTerrIsMine = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
 		!= myTerr.end();
 
 	//Both territories are mine
 	if (otherTerrIsMine) {
-
+		
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
-
-
+		
+		
 	}
 	//Source territory is mine, Dest territory is Other
 	else {
+		
 		srand(time(NULL));
 		int diceroll;
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
@@ -162,7 +163,7 @@ bool Advance::execute() {
 		int defArmy = otherTerritory->getTerritoryArmies();
 
 		while (defArmy != 0 && army != 0) {
-
+			
 			diceroll = (rand() % 10) + 1;
 			if (diceroll < 7)
 				defArmy--;
@@ -170,19 +171,20 @@ bool Advance::execute() {
 			diceroll = (rand() % 10) + 1;
 			if (diceroll < 8)
 				army--;
-
+			
 		}
-		if (defArmy == 0 && army > 0) {
 
+		otherTerritory->setTerritoryArmies(defArmy);
+		if (defArmy == 0 && army > 0) {
+			
 			playerB->removeTerritory(otherTerritory);
 			player->addTerritory(otherTerritory);
 			player->addArmiesToTerritory(otherTerritory, army);
 
+			//player->addcardToHandOfCards();
 		}
-
-
-
-
+		
+			
 	}
 
 	return true;
