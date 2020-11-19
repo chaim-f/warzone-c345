@@ -363,14 +363,11 @@ vector<Territory*> Player::getTerritoriesOwn()
 	return this->territoriesOwn;
 }
 
-void Player::removeTerritory(Territory* aterrytory) {
-	int temp = 0;
-	for (auto&& x : territoriesOwn) {
-		if (x == aterrytory) { delete x; break; }
-		temp++;
-	}
-	territoriesOwn.erase(territoriesOwn.begin() + temp);
+void Player::removeTerritory(Territory* aTerritory) {
+	
+	territoriesOwn.erase(std::remove(territoriesOwn.begin(), territoriesOwn.end(), aTerritory), territoriesOwn.end());
 }
+
 
 
 void Player::issueOrdertoList(Order* o) {
