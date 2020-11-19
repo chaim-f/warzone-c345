@@ -441,3 +441,6 @@ bool Player::getConqueredTerratory() {
 Hand* Player::getHand() {
 	return handOfCards;
 }
+void Player::Play(string cd, Deck adeck) {
+	addOrderToList(handOfCards->play(cd, adeck));
+}

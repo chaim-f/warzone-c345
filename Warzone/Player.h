@@ -101,6 +101,7 @@ public:
 	void setConqueredTerratory(bool set);
 	bool getConqueredTerratory();
 	Hand* getHand();
+	void Play(string cd, Deck adeck);
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
