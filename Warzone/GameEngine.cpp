@@ -16,7 +16,6 @@ int main() {
 	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
 	sup.startupPhase();
 	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
-	mgl.setContinents(g.getContinents());
 	mgl.mainGameLoop();
 	return 0;
 }
@@ -56,12 +55,6 @@ void GameStart::runAllFunctions()
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
 	this->createPlayers();
-
-	/*for (int i = 0; i < this->getChosenMap().size(); i++) {
-		if (this->getChosenMap().at(i)->getTerritoryIndex() == 1) {
-			cout << this->getChosenMap().at(i)->getBorder() << endl;
-		}
-	}*/
 }
 
 void GameStart::readMapDirectory()
@@ -161,7 +154,7 @@ void GameStart::promptUserToSelectMap()
 	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
 	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
 	this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
-	this->setContinents(mapLoaders.at(chosenIndex)->getContinents());
+
 }
 
 void GameStart::setChosenMap(vector<Territory*> chosenMap)
@@ -172,11 +165,6 @@ void GameStart::setChosenMap(vector<Territory*> chosenMap)
 void GameStart::setTerritories(vector<Territory*> territories)
 {
 	this->territories = territories;
-}
-
-void GameStart::setContinents(vector<Continent*> continents)
-{
-	this->continents = continents;
 }
 
 vector<Territory*> GameStart::getTerritories()
@@ -227,11 +215,6 @@ vector<Territory*> GameStart::getChosenMap() {
 	return chosenMap;
 }
 
-vector<Continent*> GameStart::getContinents()
-{
-	return continents;
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // PART 2
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +263,7 @@ void StartUpPhase::distrubuiteTerritories() {
 			this->getPlayers().at(i)->getTerritoriesOwn().at(j)->displayTerritories();
 		}
 	}
-	cout << "All Territories ranadomly allowcated\n";
+	cout << "All Territories ranadomly allocated\n";
 }
 
 void StartUpPhase::setReinforcements() {
@@ -329,35 +312,43 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 
 void MainGameLoop::mainGameLoop()
 {
-	//bool playOn = true;
-	//while (playOn) {
-	//	cout << "\nin main loop";
-	//	this->issueOrdersPhase();
-	//	this->executeOrdersPhase();
-	//	int temp;
-	//	temp = 0;
-	//	for (auto& x : players) {
-	//		players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
-	//		if (x->getNumTerritoriesOwn() == 0) {
-	//			cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
-	//			players.erase(players.begin() + temp);//remove the player if he owns no territories
-	//			continue;
-	//		}
-	//		temp++;
-	//	}
-	//	if (players.size() == 1) {
-	//		cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
-	//		playOn = false;
-	//	}
-	//	this->reinforcementPhase();
-	//}
-	this->getContinentBonus(this->players.at(0));
+	bool playOn=true;
+	while (playOn) {
+		cout << "\nin main loop";
+		this->issueOrdersPhase();
+		this->executeOrdersPhase();
+		int temp;
+		temp = 0;
+		for (auto& x : players) {
+			players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
+			if (x->getNumTerritoriesOwn() == 0) {
+				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
+				players.erase(players.begin() + temp);//remove the player if he owns no territories
+				continue;
+			}
+			temp++;
+		}
+		if (players.size() == 1) {
+			cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
+			playOn = false;
+		}
+		this->reinforcementPhase();
+	}
 }
 
 void MainGameLoop::reinforcementPhase()
 {
-
-	cout << "\nin reinforcement phase";
+	cout << "\nreinforcement phase";
+	for (auto& x : players) {
+		int reinfocement =x->getNumTerritoriesOwn()/3;
+		//need to add the continent bonus if a player owns all the territories in the continent
+		if (reinfocement < 3) {
+			reinfocement = 3;
+		}
+		x->setreinforcePool(reinfocement);
+		cout << endl << "player " << x->getPlayerName() << " got " << reinfocement << " reinforecement to allocate\n";
+		cout << x->getreinforcePool();
+	}
 }
 
 void MainGameLoop::issueOrdersPhase()
@@ -371,20 +362,22 @@ void MainGameLoop::issueOrdersPhase()
 		int unit = 0;
 		int territoriesOwn = playerTerritories.size();
 		for (int j = 0; j < territoriesOwn; j++) {
-			unit += ceil(reinforcementPool / territoriesOwn);
-			if (j == (territoriesOwn - 2)) { // if this is the last territory, take whatever is left
-				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), (reinforcementPool - unit));
+			Deploy* od;
+			unit += floor(reinforcementPool / territoriesOwn);
+			if (unit < 3) { unit = 3; }//put at least three in the first few 
+			if (j == (territoriesOwn - 1)) { // if this is the last territory, take whatever is left
+				od =new Deploy(players.at(i), playerTerritories.at(j), reinforcementPool);
 			}
 			else {
-				players.at(i)->addArmiesToTerritory(playerTerritories.at(j), ceil(reinforcementPool / territoriesOwn));
+				od = new Deploy(players.at(i), playerTerritories.at(j), unit);//fill each one equally or with 3 untill it runs out at which point deploy will stop him
 			}
+			players.at(i)->addOrderToList(od);
 		}
 	}
 
 	for (int i = 0; i < this->players.size(); i++) {
 		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
 		for (int j = 0; j < playerTerritories.size(); j++) {
-			//playerTerritories.at(j)->displayTerritories();
 			cout << this->players.at(i)->getPlayerName() << " territory " << playerTerritories.at(j)->getTerritoryName() << " has "
 				<< playerTerritories.at(j)->getTerritoryArmies() << " armies " << endl;
 		}
@@ -394,30 +387,40 @@ void MainGameLoop::issueOrdersPhase()
 void MainGameLoop::executeOrdersPhase()
 {
 	for (int i = 0; i < players.size(); i++) {
-		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
-			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the deploy orders first
-				if (x->getName().compare("Deploy") == 0) {
-					players.at(i)->executeOrderOfList(x);
+		if (!(players.at(i)->getOrderlist() == nullptr)) {
+			players.at(i)->getOrderlist()->printOrderList();
+			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+				for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the deploy orders first
+					if (x->getName().compare("Deploy") == 0) {
+						Deploy* y = (Deploy*) x;
+						players.at(i)->executeOrderOfList(y);
+					}
 				}
 			}
 		}
 	}
 	cout << "\nAll deploy orders are done";
 	for (int i = 0; i < players.size(); i++) {
-		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
-			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
-				if (x->getName().compare("Airlift") == 0) {
-					players.at(i)->executeOrderOfList(x);
+		if (!(players.at(i)->getOrderlist() == nullptr)) {
+			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
+				for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+					if (x->getName().compare("Airlift") == 0) {
+						Airlift* y = (Airlift*)x;
+						players.at(i)->executeOrderOfList(y);
+					}
 				}
 			}
 		}
 	}
 	cout << "\nAll airlift orders are done";
 	for (int i = 0; i < players.size(); i++) {
-		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
-			for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
-				if (x->getName().compare("Blockade") == 0) {
-					players.at(i)->executeOrderOfList(x);
+		if (!(players.at(i)->getOrderlist() == nullptr)) {
+			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {//rechecking as there might have only be deploy orders
+				for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+					if (x->getName().compare("Blockade") == 0) {
+						Blockade* y = (Blockade*)x;
+						players.at(i)->executeOrderOfList(y);
+					}
 				}
 			}
 		}
@@ -425,42 +428,45 @@ void MainGameLoop::executeOrdersPhase()
 	cout << "\nAll blockade orders are done";
 	bool keepGoing=false;
 	for (int i = 0; i < players.size(); i++) {
-		if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
-			keepGoing = true;
-		}
-	}
-	while (keepGoing) {
-		for (int i = 0; i < players.size(); i++) {
-			if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
-						players.at(i)->executeOrderOfList(players.at(i)->getOrderlist()->getOrderList().front());
-			}
-		}
-		keepGoing = false;
-		for (int i = 0; i < players.size(); i++) {
-			if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+		if (!(players.at(i)->getOrderlist() == nullptr)) {
+			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 				keepGoing = true;
 			}
 		}
 	}
-}
-
-int MainGameLoop::getContinentBonus(Player* p)
-{
-	for (auto& x : p->getTerritoriesOwn()) {
-		x->displayTerritories();
-	}
-	int count = 0;
-	for (auto& x : this->territories) {
-		for (auto& j : this->continents) {
-			if (j->getSource() == x->getTerritoryContinent().getSource()) {
-				count++;
+	while (keepGoing) {
+		cout << "started\n";
+		for (int i = 0; i < players.size(); i++) {
+			if (!(players.at(i)->getOrderlist() == nullptr)) {
+				if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+					for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+						if (x->getName().compare("Order") == 0) {
+							players.at(i)->executeOrderOfList(x);
+						}
+						if (x->getName().compare("Advance") == 0) {
+							Advance* y = (Advance*)x;
+							players.at(i)->executeOrderOfList(y);
+						}
+						if (x->getName().compare("Bomb") == 0) {
+							Bomb* y = (Bomb*)x;
+							players.at(i)->executeOrderOfList(y);
+						}
+						if (x->getName().compare("Airlift") == 0) {
+							Negotiate* y = (Negotiate*)x;
+							players.at(i)->executeOrderOfList(y);
+						}
+						break;//only runs one loop per player
+					}
+				}
+			}
+		}
+		keepGoing = false;
+		for (int i = 0; i < players.size(); i++) {
+			if (!(players.at(i)->getOrderlist() == nullptr)) {
+				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
+					keepGoing = true;
+				}
 			}
 		}
 	}
-	return 0;
-}
-
-void MainGameLoop::setContinents(vector<Continent*> continents)
-{
-	this->continents = continents;
 }

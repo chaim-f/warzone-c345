@@ -17,7 +17,6 @@ class GameStart
 	vector<MapLoader*> mapLoaders;
 	vector<Player*> playersCreated;
 	vector<Territory*> territories;
-	vector<Continent*> continents;
 	int numPlayers;
 public:
 	void runAllFunctions(); // calls all related game start functions 
@@ -29,10 +28,8 @@ public:
 	void validatingMaps();
 	void setChosenMap(vector<Territory*> chosenMap);
 	void setTerritories(vector<Territory*> territories);
-	void setContinents(vector<Continent*> continents);
 	vector<Territory*> getTerritories();
 	vector<Territory*> getChosenMap(); // will return the chosen map by the user
-	vector<Continent*> getContinents();
 	list<string> mapFiles;
 
 	// user input
@@ -74,13 +71,10 @@ class MainGameLoop
 {
 	vector<Territory*> territories;
 	vector<Player*> players;
-	vector<Continent*> continents;
 public:
 	MainGameLoop(vector<Territory*> territories, vector<Player*> players);
 	void mainGameLoop();
 	void reinforcementPhase();
 	void issueOrdersPhase();
 	void executeOrdersPhase();
-	int getContinentBonus(Player* p);
-	void setContinents(vector<Continent*> continents);
 };
