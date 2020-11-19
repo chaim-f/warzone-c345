@@ -329,29 +329,29 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 
 void MainGameLoop::mainGameLoop()
 {
-	bool playOn = true;
-	while (playOn) {
-		cout << "\nin main loop";
-		this->issueOrdersPhase();
-		this->executeOrdersPhase();
-		int temp;
-		temp = 0;
-		for (auto& x : players) {
-			players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
-			if (x->getNumTerritoriesOwn() == 0) {
-				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
-				players.erase(players.begin() + temp);//remove the player if he owns no territories
-				continue;
-			}
-			temp++;
-		}
-		if (players.size() == 1) {
-			cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
-			playOn = false;
-		}
-		this->reinforcementPhase();
-	}
-	//this->getContinentBonus(this->players.at(0));
+	//bool playOn = true;
+	//while (playOn) {
+	//	cout << "\nin main loop";
+	//	this->issueOrdersPhase();
+	//	this->executeOrdersPhase();
+	//	int temp;
+	//	temp = 0;
+	//	for (auto& x : players) {
+	//		players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
+	//		if (x->getNumTerritoriesOwn() == 0) {
+	//			cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
+	//			players.erase(players.begin() + temp);//remove the player if he owns no territories
+	//			continue;
+	//		}
+	//		temp++;
+	//	}
+	//	if (players.size() == 1) {
+	//		cout << "\n\nPlayer " << players.at(0)->getPlayerName() << " Won ending game";
+	//		playOn = false;
+	//	}
+	//	this->reinforcementPhase();
+	//}
+	this->getContinentBonus(this->players.at(0));
 }
 
 void MainGameLoop::reinforcementPhase()
@@ -446,6 +446,18 @@ void MainGameLoop::executeOrdersPhase()
 
 int MainGameLoop::getContinentBonus(Player* p)
 {
+	for (auto& x : p->getTerritoriesOwn()) {
+		x->displayTerritories();
+	}
+	int count = 0;
+	for (auto& x : this->territories) {
+		for (auto& j : this->continents) {
+			if (j->getSource() == x->getTerritoryContinent().getSource()) {
+				count++;
+			}
+		}
+	}
+	return 0;
 }
 
 void MainGameLoop::setContinents(vector<Continent*> continents)
