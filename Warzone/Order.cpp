@@ -62,7 +62,8 @@ bool Deploy::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), territory)
 		!= myTerr.end();
-
+	
+	cout << "Deploy is valid: " << territoryIsInList;
 	return territoryIsInList;
 
 };
@@ -124,7 +125,8 @@ bool Advance::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-
+	
+	cout << "Advance is valid: " << territoryIsInList;
 	// source territory doesn't belong to me
 	if (territoryIsInList)
 		return true;
@@ -220,6 +222,7 @@ bool Bomb::validate() {
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), otherTerritory)
 		!= myTerr.end();
 
+	cout << "Bomb is valid: " << !territoryIsInList;
 	return !territoryIsInList;
 
 };
@@ -266,7 +269,7 @@ bool Blockade::validate() {
 	vector<Territory*> myTerr = player->getTerritoriesOwn();
 	bool territoryIsInList = std::find(myTerr.begin(), myTerr.end(), myTerritory)
 		!= myTerr.end();
-
+	cout << "Blockade is valid: " << territoryIsInList;
 	return territoryIsInList;
 
 };
@@ -325,6 +328,8 @@ bool Airlift::validate() {
 	bool territoryBIsInList = std::find(myTerr.begin(), myTerr.end(), toTerritory)
 		!= myTerr.end();
 
+	
+	cout << "Airlift is valid: " << territoryAIsInList && territoryBIsInList;
 	return territoryAIsInList && territoryBIsInList;
 
 };
@@ -369,7 +374,7 @@ Negotiate::Negotiate(const Negotiate& o) {
 };
 
 bool Negotiate::validate() {
-
+	cout << "Negotiate is valid: " << (player != otherPlayer);
 	return player != otherPlayer;
 
 };
