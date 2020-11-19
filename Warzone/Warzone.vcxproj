@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClInclude Include="DriverSelector.h" />
     <ClInclude Include="GameEngine.h" />
-    <ClInclude Include="GameObservers.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Order.h" />
@@ -152,7 +151,6 @@
   <ItemGroup>
     <ClCompile Include="DriverSelector.cpp" />
     <ClCompile Include="GameEngine.cpp" />
-    <ClCompile Include="GameObservers.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapDriver.cpp" />
     <ClCompile Include="MapLoader.cpp" />
