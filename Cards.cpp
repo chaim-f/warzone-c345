@@ -92,38 +92,37 @@ void Card::setCardType(std::string s)//setter
 	}
 }
 
-void Card::play()//to do fill it in such that it fills the order list
+Order* Card::play()
 {
-	
-	
-	
+		
 	std::string cardType = getCardType();
-	Order myOrder;
-
-	//myOrder = new Order();
 
 
 	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
 	{
-		std::cout << "played a bomb card\n";
+		Bomb* cardT = new Bomb();
 	}
 	else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
 	{
-		std::cout << "played a reinforcement card\n";
+		Deploy* cardT = new Deploy();
 	}
 	else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
 	{
-		std::cout << "played a blockade card\n";
+		Blockade* cardT = new Blockade();
 	}
 	else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
 	{
-		std::cout << "played a airlift card\n";
+		Airlift* carT = new Airlift();
 	}
 	else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
 	{
-		std::cout << "played a diplomacy card\n";
+		Negotiate* carT = new Negotiate();
 	}
-	else { std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n"; }
+	else {
+		std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n";
+		Order* carT = new Order();
+	}
+
 }
 
 void Card::printCard()
@@ -251,6 +250,7 @@ void Deck::Draw(Hand& handID)//draws a random card
 	srand((unsigned)time(NULL));
 	int temp = (int)rand() % currentDeckSize;
 	handID.addCard(deckCards.at(temp));
+	deckCards.at(temp)->printCard();
 	deckCards.erase(deckCards.begin() + temp);
 }
 
@@ -346,14 +346,14 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 {
 	int temp = 0;
 	for (auto&& x : handCards) {
-		if (x == cardID) { delete x;
+		if (x == cardID) {
 		break; }
 		temp++;
 	}
 	handCards.erase(handCards.begin() + temp);
 }
 
-std::string Hand::play(std::string cardType, Deck& deckId)
+Order* Hand::play(std::string cardType, Deck& deckId)
 {
 	if (isInHand(cardType))//check if the type card is in hand  
 	{
@@ -362,16 +362,17 @@ std::string Hand::play(std::string cardType, Deck& deckId)
 			if (x->getCardType().compare(cardType) == 0) { tempCardP = x; break; }
 		}
 		if (tempCardP != nullptr) {
-			tempCardP->play();
+			Order* order = tempCardP->play();
 			deckId.returnCard(tempCardP);
 			removeCard(tempCardP);
 		}
 	}
 	else {
 		std::cout << cardType << " is not in this hand to play\n";
+		Order* order = new Order();
 	}
 
-	return cardType;
+	return order;
 }
 bool Hand::isInHand(std::string cardType)
 {
@@ -417,4 +418,10 @@ void printCommands() {
 	std::cout << "\nList of commands:\n";
 	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\naddCard(): adds a random card to the Deck\naddCard(string cardID);//adds the specified card type to the Deck\n";
 	std::cout << "\nFor Hand: \naddCard(Card* cardID): adds card to hand,\nremoveCard(Card* cardID): removes card from Hand,\nplay(string cardType, Deck deck): plays card type and returns played card to deck,\nisInHand(string cardType): check if card type is in hand returns a boolean value,\n;printHand() prints the contents of the hand\n";
+}
+bool Deck::isEmpty() {
+	if (deckCards.empty()) {
+		return true;
+	}
+	return false;
 }
