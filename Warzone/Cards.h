@@ -20,7 +20,7 @@ public:
 	Card& operator=(const Card &orig);//overloading the equals 
 	Card(const Card& orig);//copy constructor
 	std::string getCardType();//cardType getter 
-	void play();// adds order of card type to the order list based on the cardType
+	Order* play();// adds order of card type to the order list based on the cardType
 	void printCard();//prints card type
 };
 
@@ -54,7 +54,7 @@ public:
 	Hand(const Hand& orig);//copy constructor
 	void addCard(Card* cardID);//adds a card to the hand
 	void removeCard(Card* cardID);//removes card from the hand
-	std::string play(std::string cardType, Deck& deck);//plays a card (adds to deck, removes from hand, and adds order to the order list)
+	Order* play(std::string cardType, Deck& deck);//plays a card (adds to deck, removes from hand, and adds order to the order list)
 	bool isInHand(std::string cardType);//check if the type of card is in the hand
 	void printHand();//prints the card types in the hand
 private:
