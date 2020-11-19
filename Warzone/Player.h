@@ -82,18 +82,28 @@ public:
 	void executeOrderOfList(Order* o);
 	//Add Order to list of Order
 	void addOrderToList(Order* order);
+	void addOrderToList(Deploy* order);
+	void addOrderToList(Advance* order);
+	void addOrderToList(Bomb* order);
+	void addOrderToList(Blockade* order);
+	void addOrderToList(Airlift* order);
+	void addOrderToList(Negotiate* order);
+	
 	//List plyer Order
 	Orderlist* getOrderlist();
 	void removeOrderOrderList(Order* o);
-	void setContinentBonus(int v);
-	int getContinentBonus();
+	void executeOrderOfList(Deploy* o);
+	void executeOrderOfList(Advance* o);
+	void executeOrderOfList(Bomb* o);
+	void executeOrderOfList(Blockade* o);
+	void executeOrderOfList(Airlift* o);
+	void executeOrderOfList(Negotiate* o);
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
 	list<Territory>* myTerritories;
 	vector<Territory*> territoriesOwn;
-
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory>* targetTerritories;
 	Orderlist* myOrderList;
@@ -107,7 +117,6 @@ private:
 	int reinforcePool;//holds th ammout to be used in the reinforcement
 	int turnNumber;
 	int numberTerritoriesOwn;
-	int continentBonus;
 };
 
 
