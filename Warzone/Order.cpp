@@ -45,7 +45,7 @@ Deploy::Deploy(const Deploy& o) {
 	name = o.name;
 	this->army = o.army;
 	this->player = o.player;
-	this->territory =o.territory;
+	this->territory = o.territory;
 
 };
 
@@ -70,7 +70,7 @@ bool Deploy::validate() {
 bool Deploy::execute() {
 
 	if (validate()) {
-		if(player->getreinforcePool() - army < 0) {
+		if (player->getreinforcePool() - army < 0) {
 			army = player->getreinforcePool();
 		}
 
@@ -148,8 +148,8 @@ bool Advance::execute() {
 
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
-		
-		
+
+
 	}
 	//Source territory is mine, Dest territory is Other
 	else {
@@ -160,7 +160,7 @@ bool Advance::execute() {
 		int defArmy = otherTerritory->getTerritoryArmies();
 
 		while (defArmy != 0 && army != 0) {
-			
+
 			diceroll = (rand() % 10) + 1;
 			if (diceroll < 7)
 				defArmy--;
@@ -179,7 +179,7 @@ bool Advance::execute() {
 		}
 
 
-		
+
 
 	}
 
@@ -443,13 +443,13 @@ list <Order*> Orderlist::getOrderList() {
 	return orderList;
 }
 bool  Orderlist::OrderListIsEmpty() {
-	/*int temp = 0;
-	for (auto& x : orderList) {
-		temp++;
-	}
-	if (temp == 0) { return true; }*/
-	//if (orderList.empty())return true;
-	//if (orderList.size() == 0)return true;
+	if (orderList.empty()) { return true; }
+	cout << "\n returned false\n";
 	return true;
+}
+void Orderlist::printOrderList() {
+	for (auto& x:orderList) {
+		cout << *x;
+	}
 }
 
