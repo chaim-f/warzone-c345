@@ -71,6 +71,7 @@ class MainGameLoop
 {
 	vector<Territory*> territories;
 	vector<Player*> players;
+	Deck* myDeck = new Deck();
 public:
 	MainGameLoop(vector<Territory*> territories, vector<Player*> players);
 	void mainGameLoop();

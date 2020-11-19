@@ -308,6 +308,7 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 {
 	this->territories = territories;
 	this->players = players;
+	Deck* myDeck = new Deck();
 }
 
 void MainGameLoop::mainGameLoop()
@@ -360,19 +361,19 @@ void MainGameLoop::issueOrdersPhase()
 		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
 		int reinforcementPool = players.at(i)->getreinforcePool();
 		int unit = 0;
-		int territoriesOwn = playerTerritories.size();
-		for (int j = 0; j < territoriesOwn; j++) {
-			Deploy* od;
-			unit += floor(reinforcementPool / territoriesOwn);
-			if (unit < 3) { unit = 3; }//put at least three in the first few 
-			if (j == (territoriesOwn - 1)) { // if this is the last territory, take whatever is left
-				od =new Deploy(players.at(i), playerTerritories.at(j), reinforcementPool);
-			}
-			else {
-				od = new Deploy(players.at(i), playerTerritories.at(j), unit);//fill each one equally or with 3 untill it runs out at which point deploy will stop him
-			}
-			players.at(i)->addOrderToList(od);
-		}
+int territoriesOwn = playerTerritories.size();
+for (int j = 0; j < territoriesOwn; j++) {
+	Deploy* od;
+	unit += floor(reinforcementPool / territoriesOwn);
+	if (unit < 3) { unit = 3; }//put at least three in the first few 
+	if (j == (territoriesOwn - 1)) { // if this is the last territory, take whatever is left
+		od = new Deploy(players.at(i), playerTerritories.at(j), reinforcementPool);
+	}
+	else {
+		od = new Deploy(players.at(i), playerTerritories.at(j), unit);//fill each one equally or with 3 untill it runs out at which point deploy will stop him
+	}
+	players.at(i)->addOrderToList(od);
+}
 	}
 
 	for (int i = 0; i < this->players.size(); i++) {
@@ -388,11 +389,10 @@ void MainGameLoop::executeOrdersPhase()
 {
 	for (int i = 0; i < players.size(); i++) {
 		if (!(players.at(i)->getOrderlist() == nullptr)) {
-			players.at(i)->getOrderlist()->printOrderList();
 			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 				for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the deploy orders first
 					if (x->getName().compare("Deploy") == 0) {
-						Deploy* y = (Deploy*) x;
+						Deploy* y = (Deploy*)x;
 						players.at(i)->executeOrderOfList(y);
 					}
 				}
@@ -426,7 +426,7 @@ void MainGameLoop::executeOrdersPhase()
 		}
 	}
 	cout << "\nAll blockade orders are done";
-	bool keepGoing=false;
+	bool keepGoing = false;
 	for (int i = 0; i < players.size(); i++) {
 		if (!(players.at(i)->getOrderlist() == nullptr)) {
 			if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
@@ -434,12 +434,16 @@ void MainGameLoop::executeOrdersPhase()
 			}
 		}
 	}
+	int temp = 0;
+	int other = 0;
 	while (keepGoing) {
 		cout << "started\n";
 		for (int i = 0; i < players.size(); i++) {
 			if (!(players.at(i)->getOrderlist() == nullptr)) {
 				if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 					for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
+						this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+						temp = this->players.at(i)->getNumTerritoriesOwn();
 						if (x->getName().compare("Order") == 0) {
 							players.at(i)->executeOrderOfList(x);
 						}
@@ -455,6 +459,11 @@ void MainGameLoop::executeOrdersPhase()
 							Negotiate* y = (Negotiate*)x;
 							players.at(i)->executeOrderOfList(y);
 						}
+						this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+						other = this->players.at(i)->getNumTerritoriesOwn();
+						if ((temp < other)&&(this->players.at(i)->getConqueredTerratory()==false)){
+							this->players.at(i)->setConqueredTerratory(true);
+						}
 						break;//only runs one loop per player
 					}
 				}
@@ -466,6 +475,17 @@ void MainGameLoop::executeOrdersPhase()
 				if (!(players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 					keepGoing = true;
 				}
+			}
+		}
+	}
+	for (int i = 0; i < players.size(); i++) {
+		if (this->players.at(i)->getConqueredTerratory() == true) {
+			if (!(myDeck->isEmpty())) {
+				myDeck->Draw(*players.at(i)->getHand());
+				cout << "\nplayer " << players.at(i)->getPlayerName() << " got a card";
+			}
+			else {
+				cout << "\nNo cards left in deck cannot draw a card";
 			}
 		}
 	}

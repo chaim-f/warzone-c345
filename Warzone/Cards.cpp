@@ -346,7 +346,7 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 {
 	int temp = 0;
 	for (auto&& x : handCards) {
-		if (x == cardID) { delete x;
+		if (x == cardID) {
 		break; }
 		temp++;
 	}
@@ -417,4 +417,10 @@ void printCommands() {
 	std::cout << "\nList of commands:\n";
 	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\naddCard(): adds a random card to the Deck\naddCard(string cardID);//adds the specified card type to the Deck\n";
 	std::cout << "\nFor Hand: \naddCard(Card* cardID): adds card to hand,\nremoveCard(Card* cardID): removes card from Hand,\nplay(string cardType, Deck deck): plays card type and returns played card to deck,\nisInHand(string cardType): check if card type is in hand returns a boolean value,\n;printHand() prints the contents of the hand\n";
+}
+bool Deck::isEmpty() {
+	if (deckCards.empty()) {
+		return true;
+	}
+	return false;
 }

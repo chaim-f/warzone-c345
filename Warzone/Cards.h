@@ -40,6 +40,7 @@ public:
 	int amountAllow[5];//contains the amount of each card type if the default constructor is called other cards can be added manually
 	void addCard();//adds a random card to the Deck
 	void addCard(std::string cardID);//adds a specific card to the Deck
+	bool isEmpty();
 private:
 	std::vector <Card*> deckCards;//vector of cards in the deck
 };
