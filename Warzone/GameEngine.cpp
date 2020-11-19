@@ -481,8 +481,8 @@ void MainGameLoop::executeOrdersPhase()
 	for (int i = 0; i < players.size(); i++) {
 		if (this->players.at(i)->getConqueredTerratory() == true) {
 			if (!(myDeck->isEmpty())) {
+				cout << "\nplayer " << players.at(i)->getPlayerName() << " got the card ";
 				myDeck->Draw(*players.at(i)->getHand());
-				cout << "\nplayer " << players.at(i)->getPlayerName() << " got a card";
 			}
 			else {
 				cout << "\nNo cards left in deck cannot draw a card";
