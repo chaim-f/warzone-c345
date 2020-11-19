@@ -489,4 +489,11 @@ void MainGameLoop::executeOrdersPhase()
 			}
 		}
 	}
+	cout << "\nIN exacute mode removing player";//just so someone wins
+	for (auto& x : players.at(0)->getTerritoriesOwn()) {
+		players.at(0)->removeTerritory(x);
+	}
+	cout << "\nremoved all territories from " << players.at(0)->getPlayerName();
+	players.at(0)->setNumTerritoriesOwn(players.at(0)->getTerritoriesOwn().size());
+	cout << "\n " << players.at(0)->getTerritoriesOwn().size();
 }
