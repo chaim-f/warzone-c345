@@ -16,6 +16,7 @@ int main() {
 	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
 	sup.startupPhase();
 	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
+	mgl.setContinents(g.getContinents());
 	mgl.mainGameLoop();
 	return 0;
 }
@@ -160,7 +161,7 @@ void GameStart::promptUserToSelectMap()
 	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
 	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
 	this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
-
+	this->setContinents(mapLoaders.at(chosenIndex)->getContinents());
 }
 
 void GameStart::setChosenMap(vector<Territory*> chosenMap)
@@ -171,6 +172,11 @@ void GameStart::setChosenMap(vector<Territory*> chosenMap)
 void GameStart::setTerritories(vector<Territory*> territories)
 {
 	this->territories = territories;
+}
+
+void GameStart::setContinents(vector<Continent*> continents)
+{
+	this->continents = continents;
 }
 
 vector<Territory*> GameStart::getTerritories()
@@ -219,6 +225,11 @@ vector<Player*> GameStart::getPlayersCreated()
 
 vector<Territory*> GameStart::getChosenMap() {
 	return chosenMap;
+}
+
+vector<Continent*> GameStart::getContinents()
+{
+	return continents;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +329,7 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 
 void MainGameLoop::mainGameLoop()
 {
-	bool playOn=true;
+	bool playOn = true;
 	while (playOn) {
 		cout << "\nin main loop";
 		this->issueOrdersPhase();
@@ -340,10 +351,12 @@ void MainGameLoop::mainGameLoop()
 		}
 		this->reinforcementPhase();
 	}
+	//this->getContinentBonus(this->players.at(0));
 }
 
 void MainGameLoop::reinforcementPhase()
 {
+
 	cout << "\nin reinforcement phase";
 }
 
@@ -429,4 +442,13 @@ void MainGameLoop::executeOrdersPhase()
 			}
 		}
 	}
+}
+
+int MainGameLoop::getContinentBonus(Player* p)
+{
+}
+
+void MainGameLoop::setContinents(vector<Continent*> continents)
+{
+	this->continents = continents;
 }

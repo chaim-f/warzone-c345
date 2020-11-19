@@ -375,6 +375,14 @@ void Player::executeOrderOfList(Order* o) {
 void Player::removeOrderOrderList(Order* o) {
 	myOrderList->remove(o);
 }
+void Player::setContinentBonus(int v)
+{
+	this->continentBonus = v;
+}
+int Player::getContinentBonus()
+{
+	return continentBonus;
+}
 //Add Order to list of Order
 void Player::addOrderToList(Order* order) {
 	myOrderList->add(order);

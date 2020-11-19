@@ -85,6 +85,8 @@ public:
 	//List plyer Order
 	Orderlist* getOrderlist();
 	void removeOrderOrderList(Order* o);
+	void setContinentBonus(int v);
+	int getContinentBonus();
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
@@ -105,6 +107,7 @@ private:
 	int reinforcePool;//holds th ammout to be used in the reinforcement
 	int turnNumber;
 	int numberTerritoriesOwn;
+	int continentBonus;
 };
 
 
