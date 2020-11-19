@@ -10,14 +10,13 @@
 #include "Order.h"
 
 Player::Player(string playerName, const char* pid) {
-
+	conqueredTerratory = false;
 	playerID = pid;
-	playerName = playerName;
-
+	this->playerName = playerName;
 	//Allocate memory to Order list.
 	try {
 		myOrder = new list<Order>();
-
+		myOrderList = new Orderlist();
 		cout << "myOrder list dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -63,48 +62,44 @@ Player::Player(string playerName)
 {
 	this->playerName = playerName;
 	cout << "\nCreating: " << playerName << endl;
-	
-	////Allocate memory to Order list.
-	//try {
-	//	myOrder = new list<Order>();
-	//	cout << "Order list dynamically created." << endl;
-	//}
-	//catch (bad_alloc&) {
-	//	cout << "Error allocating memory to player." << endl;
-	//	exit(1);
-	//}
+	conqueredTerratory = false;
+	//Allocate memory to Order list.
+	try {
+		myOrder = new list<Order>();
+		myOrderList = new Orderlist();
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
 
-	////Allocate memory to my territories list.
-	//try {
-	//	myTerritories = new list<Territory>;
-	//	cout << "Territories list dynamically created." << endl;
-	//}
-	//catch (bad_alloc&) {
-	//	cout << "Error allocating memory to player." << endl;
-	//	exit(1);
-	//}
 
-	//
+	//Allocate memory to my territories list.
+	try {
+		myTerritories = new list<Territory>;
+	}
+	catch (bad_alloc&) {
+		exit(1);
+	}
 
-	////Allocate memory to target territories list.
-	//try {
-	//	targetTerritories = new list<Territory>;
-	//	cout << "targetTerritories list dynamically created." << endl;
-	//}
-	//catch (bad_alloc&) {
-	//	cout << "Error allocating memory to player." << endl;
-	//	exit(1);
-	//}
 
-	////Allocate memory to territories list.
-	//try {
-	//	handOfCards = new Hand();
-	//	cout << "Player hand of cards dynamically created." << endl;
-	//}
-	//catch (bad_alloc&) {
-	//	cout << "Error allocating memory to player hand of cards." << endl;
-	//	exit(1);
-	//}
+	//Allocate memory to target territories list.
+	try {
+		targetTerritories = new list<Territory>;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+	//Allocate memory to territories list.
+	try {
+		handOfCards = new Hand();
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player hand of cards." << endl;
+		exit(1);
+	}
 }
 
 //Player copy constructor
@@ -115,7 +110,7 @@ Player::Player(const Player& anotherPlayer) {
 	myOrder = nullptr;
 	myTerritories = nullptr;
 	handOfCards = nullptr;
-
+	conqueredTerratory = anotherPlayer.conqueredTerratory;
 	list<Territory>::iterator ptrTarget;
 	list<Territory>::iterator ptrTerritory;
 	list<Order>::iterator ptrOrder;
@@ -130,6 +125,9 @@ Player::Player(const Player& anotherPlayer) {
 			targetTerritories->push_back(*ptrTarget);
 		}
 	}
+	else {
+		targetTerritories = new list<Territory>;
+	}
 	//Copy territories
 	if (!(anotherPlayer.myTerritories->empty())) {
 		if (myTerritories == nullptr) {
@@ -139,9 +137,17 @@ Player::Player(const Player& anotherPlayer) {
 			myTerritories->push_back(*ptrTerritory);
 		}
 	}
+	else {
+		myTerritories = new list<Territory>;
+	}
 	//Copy cards ( just need to copy the reference to the hand of cards)
 	handOfCards = new Hand(*anotherPlayer.handOfCards);
-
+	if (!(anotherPlayer.myOrderList->getOrderList().empty())) {
+		myOrderList = new Orderlist(*anotherPlayer.myOrderList);
+	}
+	else {
+		myOrderList = new Orderlist();
+	}
 	//Copy Order
 	if (!(anotherPlayer.myOrder->empty())) {
 		if (myOrder == nullptr) {
@@ -151,7 +157,9 @@ Player::Player(const Player& anotherPlayer) {
 			myOrder->push_back(*ptrOrder);
 		}
 	}
-
+	else {
+		myOrder = new list<Order>;
+	}
 }
 
 
@@ -218,7 +226,6 @@ list<Order>* Player::listPlayerOrder() {
 }
 
 void Player::addOrder(Order order) {
-
 	myOrder->push_back(order);
 	return;
 }
@@ -310,6 +317,8 @@ void Player::destroyPlayerObject() {
 		delete x;
 		x = NULL;
 	}
+	delete myOrderList;
+	myOrderList = NULL;
 	myOrder = NULL;
 	myTerritories = NULL;
 	targetTerritories = NULL;
@@ -354,20 +363,81 @@ vector<Territory*> Player::getTerritoriesOwn()
 	return this->territoriesOwn;
 }
 
-void Player::removeTerritory(Territory* aterrytory) {
-	int temp = 0;
-	for (auto&& x : territoriesOwn) {
-		if (x == aterrytory) { delete x; break; }
-		temp++;
-	}
-	territoriesOwn.erase(territoriesOwn.begin() + temp);
+void Player::removeTerritory(Territory* aTerritory) {
+
+	territoriesOwn.erase(std::remove(territoriesOwn.begin(), territoriesOwn.end(), aTerritory), territoriesOwn.end());
 }
-/*void Player::removeMyTerritory(Territory aTerrytory) {
-	myTerritories->remove(aTerrytory);
+
+
+
+void Player::issueOrdertoList(Order* o) {
+	myOrderList->add(o);
 }
-void Player::removeTargetTerritory(Territory aTerrytory) {
-	targetTerritories->remove(aTerrytory);
+//Executes player Order
+void Player::executeOrderOfList(Order* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
 }
-void Player::removeOrder(Order o) {
-	myOrder->remove(o);
-}*/
+void Player::executeOrderOfList(Deploy* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::removeOrderOrderList(Order* o) {
+	myOrderList->remove(o);
+}
+//Add Order to list of Order
+void Player::addOrderToList(Order* order) {
+	myOrderList->add(order);
+}
+//List plyer Order
+Orderlist* Player::getOrderlist() {
+	return myOrderList;
+}
+void Player::addOrderToList(Deploy* order) {
+	myOrderList->add(order);
+}
+
+void Player::addOrderToList(Advance* order) {
+	myOrderList->add(order);
+}
+void Player::addOrderToList(Bomb* order) {
+	myOrderList->add(order);
+}
+void Player::addOrderToList(Blockade* order) {
+	myOrderList->add(order);
+}
+void Player::addOrderToList(Airlift* order) {
+	myOrderList->add(order);
+}
+void Player::addOrderToList(Negotiate* order) {
+	myOrderList->add(order);
+}
+void Player::executeOrderOfList(Advance* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::executeOrderOfList(Bomb* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::executeOrderOfList(Blockade* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::executeOrderOfList(Airlift* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::executeOrderOfList(Negotiate* o) {
+	o->execute();
+	this->removeOrderOrderList(o);
+}
+void Player::setConqueredTerratory(bool set) {
+	conqueredTerratory = set;
+}
+bool Player::getConqueredTerratory() {
+	return conqueredTerratory;
+}
+Hand* Player::getHand() {
+	return handOfCards;
+}

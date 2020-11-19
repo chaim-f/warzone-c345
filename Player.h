@@ -10,7 +10,10 @@
 #include <list>
 #include "Cards.h"
 #include <sstream>
-
+class Order;
+class Orderlist;
+class Card;
+class Hand;
 class Player
 {
 
@@ -74,23 +77,41 @@ public:
 	void addArmiesToTerritory(Territory* territory, int value);
 	vector<Territory*> getTerritoriesOwn();
 	void removeTerritory(Territory* terrytory);
-	/*void removeMyTerritory(Territory aTerrytory);
-	void removeTargetTerritory(Territory aTerrytory);
-	void removeOrder(Order o);*/
-
+	void issueOrdertoList(Order* o);
+	//Executes player Order
+	void executeOrderOfList(Order* o);
+	//Add Order to list of Order
+	void addOrderToList(Order* order);
+	void addOrderToList(Deploy* order);
+	void addOrderToList(Advance* order);
+	void addOrderToList(Bomb* order);
+	void addOrderToList(Blockade* order);
+	void addOrderToList(Airlift* order);
+	void addOrderToList(Negotiate* order);
+	
+	//List plyer Order
+	Orderlist* getOrderlist();
+	void removeOrderOrderList(Order* o);
+	void executeOrderOfList(Deploy* o);
+	void executeOrderOfList(Advance* o);
+	void executeOrderOfList(Bomb* o);
+	void executeOrderOfList(Blockade* o);
+	void executeOrderOfList(Airlift* o);
+	void executeOrderOfList(Negotiate* o);
+	void setConqueredTerratory(bool set);
+	bool getConqueredTerratory();
+	Hand* getHand();
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
 	//Create pointer to a list ofpointers to territories
 	list<Territory>* myTerritories;
 	vector<Territory*> territoriesOwn;
-
 	//targetTerritories contains a list of pointers to territories. Each territory is unique,
 	list<Territory>* targetTerritories;
-
+	Orderlist* myOrderList;
 	//List of Order
 	list<Order>* myOrder;
-
 	//list<Card > * handOfCards;
 	Hand* handOfCards;
 	const char* playerID;
@@ -99,6 +120,7 @@ private:
 	int reinforcePool;//holds th ammout to be used in the reinforcement
 	int turnNumber;
 	int numberTerritoriesOwn;
+	bool conqueredTerratory;
 };
 
 
