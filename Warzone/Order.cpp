@@ -7,6 +7,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <time.h>
 
 
 Order::Order() { setName("Order"); };
@@ -89,11 +90,12 @@ Advance::Advance() {
 	cout << "Created an advance order\n";
 }
 
-Advance::Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army)
+Advance::Advance(Player* player, Player* playerB, Territory* myTerritory, Territory* otherTerritory, int army)
 {
 	this->player = player;
 	this->myTerritory = myTerritory;
 	this->otherTerritory = otherTerritory;
+	this->playerB = playerB;
 	this->army = army;
 }
 ;
@@ -131,11 +133,39 @@ bool Advance::execute() {
 
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 		otherTerritory->setTerritoryArmies((otherTerritory->getTerritoryArmies() + army));
-
+		
+		
 	}
 	//Source territory is mine, Dest territory is Other
 	else {
-		//TODO
+		srand(time(NULL));
+		int diceroll;
+		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
+
+		int defArmy = otherTerritory->getTerritoryArmies();
+
+		while (defArmy != 0 && army != 0) {
+			
+			diceroll = (rand() % 10) + 1;
+			if (diceroll < 7)
+				defArmy--;
+
+			diceroll = (rand() % 10) + 1;
+			if (diceroll < 8)
+				army--;
+
+		}
+		if (defArmy == 0 && army > 0) {
+
+			playerB->removeTerritory(otherTerritory);
+			player->addTerritory(otherTerritory);
+			player->addArmiesToTerritory(otherTerritory, army);
+
+		}
+
+
+		
+
 	}
 
 	return true;
