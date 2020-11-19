@@ -100,6 +100,7 @@ public:
 	void executeOrderOfList(Negotiate* o);
 	void setConqueredTerratory(bool set);
 	bool getConqueredTerratory();
+	Hand* getHand();
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.

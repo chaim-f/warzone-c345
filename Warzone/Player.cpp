@@ -61,7 +61,7 @@ Player::Player(string playerName, const char* pid) {
 Player::Player(string playerName)
 {
 	this->playerName = playerName;
-	cout << "\nCreating: " << playerName << endl;	
+	cout << "\nCreating: " << playerName << endl;
 	conqueredTerratory = false;
 	//Allocate memory to Order list.
 	try {
@@ -364,7 +364,7 @@ vector<Territory*> Player::getTerritoriesOwn()
 }
 
 void Player::removeTerritory(Territory* aTerritory) {
-	
+
 	territoriesOwn.erase(std::remove(territoriesOwn.begin(), territoriesOwn.end(), aTerritory), territoriesOwn.end());
 }
 
@@ -437,4 +437,7 @@ void Player::setConqueredTerratory(bool set) {
 }
 bool Player::getConqueredTerratory() {
 	return conqueredTerratory;
+}
+Hand* Player::getHand() {
+	return handOfCards;
 }
