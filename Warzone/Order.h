@@ -64,7 +64,7 @@ class Advance : public Order {
 
 public:
     Advance();
-    Advance(Player* player, Territory* myTerritory, Territory* otherTerritory, int army);
+    Advance(Player* player,Player* playerB, Territory* myTerritory, Territory* otherTerritory, int army);
     Advance(const Advance& o);
 
     bool validate();
@@ -74,6 +74,7 @@ public:
 
     Territory* myTerritory;
     Territory* otherTerritory;
+    Player* playerB;
     int army;
 };
 
