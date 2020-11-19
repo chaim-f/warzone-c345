@@ -46,14 +46,15 @@ Deploy::Deploy(const Deploy& o) {
 	this->army = o.army;
 	this->player = o.player;
 	this->territory =o.territory;
-	setName("Deploy");
-	cout << "Created a deploy order\n";
+
 };
 
 Deploy::Deploy(Player* player, Territory* territory, int army) {
 	this->army = army;
 	this->player = player;
 	this->territory = territory;
+	setName("Deploy");
+	cout << "Created a deploy order\n";
 };
 
 bool Deploy::validate() {
@@ -248,6 +249,8 @@ Blockade::Blockade(Player* player, Territory* myTerritory)
 {
 	this->player = player;
 	this->myTerritory = myTerritory;
+	setName("Blockade");
+	cout << "Created a blockade order\n";
 }
 ;
 
@@ -255,8 +258,7 @@ Blockade::Blockade(const Blockade& o) {
 	name = o.name;
 	this->player = o.player;
 	this->myTerritory = o.myTerritory;
-	setName("Blockade");
-	cout << "Created a blockade order\n";
+
 };
 
 bool Blockade::validate() {
@@ -300,6 +302,8 @@ Airlift::Airlift(Player* player, Territory* fromTerritory, Territory* toTerritor
 	this->fromTerritory = fromTerritory;
 	this->toTerritory = toTerritory;
 	this->army = army;
+	setName("Airlift");
+	cout << "Created an airlift order\n";
 }
 ;
 
@@ -309,8 +313,7 @@ Airlift::Airlift(const Airlift& o) {
 	this->fromTerritory = o.fromTerritory;
 	this->toTerritory = o.toTerritory;
 	this->army = o.army;
-	setName("Airlift");
-	cout << "Created an airlift order\n";
+
 };
 
 bool Airlift::validate() {
@@ -353,6 +356,8 @@ Negotiate::Negotiate(Player* player, Player* otherPlayer)
 {
 	this->player = player;
 	this->otherPlayer = otherPlayer;
+	setName("Negotiate");
+	cout << "Created a negotiate order\n";
 }
 ;
 
@@ -360,8 +365,7 @@ Negotiate::Negotiate(const Negotiate& o) {
 	name = o.name;
 	this->player = o.player;
 	this->otherPlayer = o.otherPlayer;
-	setName("Negotiate");
-	cout << "Created a negotiate order\n";
+
 };
 
 bool Negotiate::validate() {
