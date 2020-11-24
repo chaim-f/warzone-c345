@@ -10,15 +10,15 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-int main() {
-	GameStart g;
-	g.runAllFunctions();
-	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
-	sup.startupPhase();
-	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
-	mgl.mainGameLoop();
-	return 0;
-}
+//int main() {
+//	GameStart g;
+//	g.runAllFunctions();
+//	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
+//	sup.startupPhase();
+//	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
+//	mgl.mainGameLoop();
+//	return 0;
+//}
 
 const int minPlayer = 2;
 const int maxPlayer = 5;

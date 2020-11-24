@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
+#include "ConquestFileReaderAdapter.h";
 using namespace std;
 
 
@@ -80,42 +81,61 @@ namespace DriverSelector {
 	{
 		//	Valid case
 		// load and store map objects
-		string canadaMapFile = "maps/canada.map";
-		MapLoader canadaMap = MapLoader();
-		canadaMap.setFileName(canadaMapFile);
-		canadaMap.storeContinents();
-		canadaMap.storeTerritories();
-		canadaMap.storeTerritoriesWithBorders();
+		//string canadaMapFile = "maps/canada.map";
+		//MapLoader canadaMap = MapLoader();
+		//canadaMap.setFileName(canadaMapFile);
+		//canadaMap.storeContinents();
+		//canadaMap.storeTerritories();
+		//canadaMap.storeTerritoriesWithBorders();
+
+		//// create map and validate
+		//Map* map;
+		//map = new Map();
+		//map->createMap(canadaMap.getTerritories().size() + 1, true);
+
+		//for (int i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
+		//	map->addEdge(canadaMap.getTerritoriesWithBorders()[i]);
+		//}
+		//map->displayAdjacencyList();
+		//map->validate();
+
+
+		//// Invalid case
+		//string europeFile = "maps/europe.map";
+		//MapLoader europeMap = MapLoader();
+		//europeMap.setFileName(europeFile);
+		//europeMap.storeContinents();
+		//europeMap.storeTerritories();
+		//europeMap.storeTerritoriesWithBorders();
+
+		//Map* map2;
+		//map2 = new Map();
+		//map2->createMap(static_cast<int>(europeMap.getTerritories().size() + 1), true);
+
+		//for (int i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
+		//	map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
+		//}
+		//map2->displayAdjacencyList();
+		//map2->validate();
+
+		ConquestFileReader cfr = ConquestFileReader("maps/quebec.MAP");
+		cfr.check_if_this_is_a_conquest_map();
+		cfr.storeFileContents();
+		cfr.storeContinents();
+		cfr.storeTerritories();
+		cfr.storeTerritoriesWithBorders();
+
 
 		// create map and validate
 		Map* map;
 		map = new Map();
-		map->createMap(canadaMap.getTerritories().size() + 1, true);
+		map->createMap(cfr.getTerritories().size() + 1, true);
 
-		for (int i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
-			map->addEdge(canadaMap.getTerritoriesWithBorders()[i]);
+		for (int i = 0; i < cfr.getTerritoriesWithBorders().size(); i++) {
+			map->addEdge(cfr.getTerritoriesWithBorders()[i]);
 		}
 		map->displayAdjacencyList();
 		map->validate();
-
-
-		// Invalid case
-		string europeFile = "maps/europe.map";
-		MapLoader europeMap = MapLoader();
-		europeMap.setFileName(europeFile);
-		europeMap.storeContinents();
-		europeMap.storeTerritories();
-		europeMap.storeTerritoriesWithBorders();
-
-		Map* map2;
-		map2 = new Map();
-		map2->createMap(static_cast<int>(europeMap.getTerritories().size() + 1), true);
-
-		for (int i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
-			map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
-		}
-		map2->displayAdjacencyList();
-		map2->validate();
 	}
 
 	void runPlayerDriver()
@@ -282,31 +302,31 @@ namespace DriverSelector {
 	}
 }
 
-//int main() {
-//	int driverNum;
-//	enum Driver { GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5 };
-//	cout << "What driver to run?" << endl;
-//	cout << "Enter [GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
-//	cin >> driverNum;
-//	switch (driverNum) {
-//	case GAME_ENGINE:
-//		DriverSelector::runGameEngine();
-//		break;
-//	case MAP:
-//		DriverSelector::runMapDriver();
-//		break;
-//	case MAP_LOADER:
-//		DriverSelector::runMapLoaderDriver();
-//		break;
-//	case PLAYER:
-//		DriverSelector::runPlayerDriver();
-//		break;
-//	case ORDER:
-//		DriverSelector::runOrderDriver();
-//		break;
-//	case CARD:
-//		DriverSelector::runCardDriver();
-//		break;
-//	}
-//	return 0;
-//}
+int main() {
+	int driverNum;
+	enum Driver { GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5 };
+	cout << "What driver to run?" << endl;
+	cout << "Enter [GAME_ENGINE = 0, MAP = 1, MAP_LOADER = 2, PLAYER = 3, ORDER = 4, CARD = 5]" << endl;
+	cin >> driverNum;
+	switch (driverNum) {
+	case GAME_ENGINE:
+		DriverSelector::runGameEngine();
+		break;
+	case MAP:
+		DriverSelector::runMapDriver();
+		break;
+	case MAP_LOADER:
+		DriverSelector::runMapLoaderDriver();
+		break;
+	case PLAYER:
+		DriverSelector::runPlayerDriver();
+		break;
+	case ORDER:
+		DriverSelector::runOrderDriver();
+		break;
+	case CARD:
+		DriverSelector::runCardDriver();
+		break;
+	}
+	return 0;
+}
