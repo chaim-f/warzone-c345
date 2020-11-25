@@ -32,14 +32,11 @@ int getTerritoryIndex(vector<Territory*> territories, string name) {
 
 ConquestFileReader::ConquestFileReader()
 {
-	this->isValidConquestMapFile = false;
 }
 
 ConquestFileReader::ConquestFileReader(string fileName)
 {
-	this->isValidConquestMapFile = false;
 	this->fileName = fileName;
-	this->storeFileContents();
 }
 
 void ConquestFileReader::setFileName(string name)
@@ -47,23 +44,50 @@ void ConquestFileReader::setFileName(string name)
 	this->fileName = name;
 }
 
+ConquestFileReader& ConquestFileReader::operator=(const ConquestFileReader& c)
+{
+	this->fileName = c.fileName;
+	this->fileContents = c.fileContents;
+	this->continentVec = c.continentVec;
+	this->territoryVec = c.territoryVec;
+	this->territoryBordersVec = c.territoryBordersVec;
+	return *this;
+}
+
+ConquestFileReader::ConquestFileReader(const ConquestFileReader& c)
+{
+	this->fileName = c.fileName;
+	this->fileContents = c.fileContents;
+	this->continentVec = c.continentVec;
+	this->territoryVec = c.territoryVec;
+	this->territoryBordersVec = c.territoryBordersVec;
+}
+
 void ConquestFileReader::storeFileContents()
 {
-	fstream conquestMapFile;
-	vector<string> vec;
-	int continentsStart = 0, continentsEnd = 0;
-	conquestMapFile.open(this->fileName, ios::in);
-	if (conquestMapFile.is_open()) {
-		string token;
-		while (getline(conquestMapFile, token, '\n')) {
-			if (token.empty()) {
-				continue;
+	if (this->getIsValidConquestMapFile()) {
+		fstream conquestMapFile;
+		vector<string> vec;
+		int continentsStart = 0, continentsEnd = 0;
+		conquestMapFile.open(this->fileName, ios::in);
+		if (conquestMapFile.is_open()) {
+			string token;
+			while (getline(conquestMapFile, token, '\n')) {
+				if (token.empty()) {
+					continue;
+				}
+				vec.push_back(token);
 			}
-			vec.push_back(token);
+			conquestMapFile.close();
 		}
-		conquestMapFile.close();
+		this->setFileContents(vec);
+		this->storeContinents();
+		this->storeTerritories();
+		this->storeTerritoriesWithBorders();
 	}
-	this->setFileContents(vec);
+	else {
+		cout << "not a valid conquest map file\n";
+	}
 }
 
 void ConquestFileReader::storeContinents()
@@ -196,43 +220,26 @@ vector<string> ConquestFileReader::getFileContents()
 
 bool ConquestFileReader::getIsValidConquestMapFile()
 {
-	return this->isValidConquestMapFile;
-}
-
-void ConquestFileReader::check_if_this_is_a_conquest_map() {
 	fstream mapFile;
-	if (this->fileName != "") {
-		mapFile.open(this->fileName, ios::in);
-		if (mapFile.is_open()) {
-			int countMapWord = 0, countContinentsWord = 0, countTerritoriesWord = 0;
-			string candidate;
-			while (mapFile >> candidate) // for each candidate word read from the file 
-			{
-				if (CONQUEST_MAP_WORD == candidate) ++countMapWord;
-				if (CONQUEST_CONTINENTS_WORD == candidate) ++countContinentsWord;
-				if (CONQUEST_TERRITORIES_WORD == candidate) ++countTerritoriesWord;
-			}
-			// if [Continents] [Map] [Territories] appear exactly one time, then this is a conquest map
-			if (countMapWord == 1 && countContinentsWord == 1 && countTerritoriesWord == 1)
-				this->setIsValidConquestMapFile(true);
-			else
-				this->setIsValidConquestMapFile(false);
+	bool condition = false;
+	mapFile.open(this->fileName, ios::in);
+	if (mapFile.is_open()) {
+		int countMapWord = 0, countContinentsWord = 0, countTerritoriesWord = 0;
+		string candidate;
+		while (mapFile >> candidate) // for each candidate word read from the file 
+		{
+			if (CONQUEST_MAP_WORD == candidate) ++countMapWord;
+			if (CONQUEST_CONTINENTS_WORD == candidate) ++countContinentsWord;
+			if (CONQUEST_TERRITORIES_WORD == candidate) ++countTerritoriesWord;
 		}
+		// if [Continents] [Map] [Territories] appear exactly one time, then this is a conquest map
+		if (countMapWord == 1 && countContinentsWord == 1 && countTerritoriesWord == 1)
+			condition = true;
 	}
-	else {
-
-	}
-}
-
-void ConquestFileReader::setIsValidConquestMapFile(bool validity)
-{
-	this->isValidConquestMapFile = validity;
+	return condition;
 }
 
 void ConquestFileReader::setFileContents(vector<string> strVec)
 {
 	this->fileContents = strVec;
 }
-
-
-

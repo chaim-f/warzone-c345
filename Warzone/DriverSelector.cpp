@@ -119,11 +119,7 @@ namespace DriverSelector {
 		//map2->validate();
 
 		ConquestFileReader cfr = ConquestFileReader("maps/quebec.MAP");
-		cfr.check_if_this_is_a_conquest_map();
 		cfr.storeFileContents();
-		cfr.storeContinents();
-		cfr.storeTerritories();
-		cfr.storeTerritoriesWithBorders();
 
 
 		// create map and validate
