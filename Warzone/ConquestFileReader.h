@@ -36,5 +36,3 @@ public:
 	vector<string> getFileContents();
 	bool getIsValidConquestMapFile();
 };
-
-void NewFunction();
