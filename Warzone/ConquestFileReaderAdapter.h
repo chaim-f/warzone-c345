@@ -6,12 +6,17 @@ class ConquestFileReaderAdapter :
     public MapLoader
 {
 private:
-    ConquestFileReader conquestFileReader;
+    ConquestFileReader* conquestFileReader;
 public:
     ConquestFileReaderAdapter();
-    ConquestFileReaderAdapter(ConquestFileReader cfr);
+    ConquestFileReaderAdapter(ConquestFileReader* cfr);
     void storeContinents();
     void storeTerritories();
     void storeTerritoriesWithBorders();
+    void storeAllContents();
+    vector<Continent*> getContinents();
+    vector<Territory*> getTerritories();
+    vector<Territory*> getTerritoriesWithBorders();
+    string getFileName();
 };
 

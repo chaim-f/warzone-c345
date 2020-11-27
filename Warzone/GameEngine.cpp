@@ -10,15 +10,15 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-//int main() {
-//	GameStart g;
-//	g.runAllFunctions();
-//	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
-//	sup.startupPhase();
-//	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
-//	mgl.mainGameLoop();
-//	return 0;
-//}
+int main() {
+	GameStart g;
+	g.runAllFunctions();
+	StartUpPhase sup(g.getTerritories(), g.getNumPlayers(), g.getPlayersCreated());
+	sup.startupPhase();
+	MainGameLoop mgl(g.getTerritories(), sup.getPlayers());
+	mgl.mainGameLoop();
+	return 0;
+}
 
 const int minPlayer = 2;
 const int maxPlayer = 5;
@@ -52,6 +52,7 @@ void GameStart::runAllFunctions()
 	this->loadMaps();
 	this->storeMaps();
 	this->validatingMaps();
+	this->validateConquestMaps();
 	this->promptUserToSelectMap();
 	this->promptUserToSelectNumberOfPlayers();
 	this->createPlayers();
@@ -63,13 +64,24 @@ void GameStart::readMapDirectory()
 	int i = 0;
 	for (const auto& p : fs::directory_iterator("maps")) {
 		const auto path = p.path();
-		if (p.is_regular_file() && path.filename().extension() == ".map") {
+		const auto extension = path.filename().extension();
+		const auto fileName = path.filename().string();
+		if (p.is_regular_file() && (extension == ".map" || extension == ".MAP")) {
 			i++;
-			cout << "> map " << i << ": maps/" + path.filename().string() << endl; // e.g. "maps/canada.map"
-			mapFiles.push_back("maps/" + path.filename().string());
+			if (extension == ".map") {
+				mapFiles.push_back("maps/" + fileName);
+				cout << ">" << i << ": maps/" + fileName + " (domination map)" << endl;
+			}
+			if (extension == ".MAP") {
+				cout << ">" << i << ": maps/" + fileName + " (conquest map)" << endl;
+				const auto conquestMap = "maps/" + fileName;
+				ConquestFileReader c(conquestMap);
+				if (c.getIsValidConquestMapFile()) {
+					conquestMapFiles.push_back(conquestMap);
+				}
+			}
 		}
 	}
-	cout << "done..." << endl;
 }
 
 void GameStart::loadMaps()
@@ -77,10 +89,15 @@ void GameStart::loadMaps()
 	cout << "Loading maps..." << endl;
 	list<string>::iterator it;
 	for (it = mapFiles.begin(); it != mapFiles.end(); ++it) {
-		string filename = (*it);
 		mapLoaders.push_back(new MapLoader((*it)));
 	}
-	cout << "done..." << endl;
+	list<string>::iterator it2;
+	for (it2 = conquestMapFiles.begin(); it2 != conquestMapFiles.end(); ++it2) {
+		string filename = (*it2);
+		ConquestFileReader* cfr = new ConquestFileReader(filename);
+		ConquestFileReaderAdapter* cfra = new ConquestFileReaderAdapter(cfr);
+		conquestMapLoaders.push_back(cfra);
+	}
 }
 
 void GameStart::storeMaps()
@@ -92,12 +109,15 @@ void GameStart::storeMaps()
 		(*iter)->storeTerritories();
 		(*iter)->storeTerritoriesWithBorders();
 	}
-	cout << "done..." << endl;
+	vector<ConquestFileReaderAdapter*>::iterator iter2;
+	for (iter2 = conquestMapLoaders.begin(); iter2 != conquestMapLoaders.end(); ++iter2) {
+		(*iter2)->storeAllContents();
+	}
 }
 
 void GameStart::validatingMaps()
 {
-	cout << "Validating maps..." << endl;
+	cout << "Validating Domination maps..." << endl;
 	int invalidMapIndex = NULL;
 	for (int i = 0; i < mapLoaders.size(); i++) {
 		Map* map;
@@ -112,10 +132,34 @@ void GameStart::validatingMaps()
 			invalidMapIndex = i; // store index of invalid map
 		}
 	}
-	cout << "done..." << endl;
 	if (invalidMapIndex != NULL) {
 		cout << "Gracefully rejecting " << mapLoaders.at(invalidMapIndex)->getFileName() << endl;
 		mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
+		cout << "done..." << endl;
+	}
+}
+
+void GameStart::validateConquestMaps()
+{
+	cout << "Validating Conquest maps..." << endl;
+	int invalidMapIndex = NULL;
+	for (int i = 0; i < conquestMapLoaders.size(); i++) {
+		Map* map;
+		map = new Map();
+		map->createMap(conquestMapLoaders.at(i)->getTerritories().size() + 1, true);
+		for (int j = 0; j < conquestMapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
+			map->addEdge(conquestMapLoaders.at(i)->getTerritoriesWithBorders()[j]);
+		}
+		cout << "> validating " << conquestMapLoaders.at(i)->getFileName() << endl;
+		map->validate();
+		if (map->getIsValidMapFile() == 0) {
+			invalidMapIndex = i; // store index of invalid map
+		}
+	}
+	cout << "done..." << endl;
+	if (invalidMapIndex != NULL) {
+		cout << "Gracefully rejecting " << conquestMapLoaders.at(invalidMapIndex)->getFileName() << endl;
+		conquestMapLoaders.erase(conquestMapLoaders.begin() + invalidMapIndex);
 		cout << "done..." << endl;
 	}
 }
@@ -135,26 +179,59 @@ void GameStart::promptUserToSelectNumberOfPlayers()
 	this->setNumPlayers(num);
 }
 
-void GameStart::promptUserToSelectMap()
-{
-	cout << endl << "Please choose a map..." << endl;
-	int chosenMapIndex;
-	for (unsigned k = 0; k < mapLoaders.size(); ++k) {
-		cout << "Enter number " << (k + 1) << " to choose " << mapLoaders.at(k)->getFileName() << endl;
-	}
-	cin >> chosenMapIndex;
-	while (chosenMapIndex <= 0 || chosenMapIndex > mapLoaders.size())
+int promptUserToSelectMapType() {
+	int chosenMapType;
+	cout << "Enter map type: (0 = Domination, 1 = Conquest)" << endl;
+	cin >> chosenMapType;
+	while (chosenMapType < 0 || chosenMapType > 1)
 	{
 		cinFail();
-		cout << "Invalid input! Must be a value between 1-" << mapLoaders.size() << endl;
+		cout << "Invalid input! Must be a value between 0-1" << endl;
 		cout << "Please enter a number again." << endl;
-		cin >> chosenMapIndex;
+		cin >> chosenMapType;
 	}
-	int chosenIndex = chosenMapIndex - 1;
-	cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
-	this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
-	this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
+	return chosenMapType;
+}
 
+void GameStart::promptUserToSelectMap()
+{
+	int type = promptUserToSelectMapType();
+	if (type == 0) {
+		int chosenMapIndex;
+		for (unsigned k = 0; k < mapLoaders.size(); ++k) {
+			cout << "Enter number " << (k + 1) << " to choose " << mapLoaders.at(k)->getFileName() << endl;
+		}
+		cin >> chosenMapIndex;
+		while (chosenMapIndex <= 0 || chosenMapIndex > mapLoaders.size())
+		{
+			cinFail();
+			cout << "Invalid input! Must be a value between 1-" << mapLoaders.size() << endl;
+			cout << "Please enter a number again." << endl;
+			cin >> chosenMapIndex;
+		}
+		int chosenIndex = chosenMapIndex - 1;
+		cout << mapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
+		this->setChosenMap(mapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
+		this->setTerritories(mapLoaders.at(chosenIndex)->getTerritories());
+	}
+	else {
+		int chosenConquestMapIndex;
+		for (unsigned k = 0; k < conquestMapLoaders.size(); ++k) {
+			cout << "Enter number " << (k + 1) << " to choose " << conquestMapLoaders.at(k)->getFileName() << endl;
+		}
+		cin >> chosenConquestMapIndex;
+		while (chosenConquestMapIndex <= 0 || chosenConquestMapIndex > conquestMapLoaders.size())
+		{
+			cinFail();
+			cout << "Invalid input! Must be a value between 1-" << conquestMapLoaders.size() << endl;
+			cout << "Please enter a number again." << endl;
+			cin >> chosenConquestMapIndex;
+		}
+		int chosenIndex = chosenConquestMapIndex - 1;
+		cout << conquestMapLoaders.at(chosenIndex)->getFileName() << " was chosen" << endl;
+		this->setChosenMap(conquestMapLoaders.at(chosenIndex)->getTerritoriesWithBorders());
+		this->setTerritories(conquestMapLoaders.at(chosenIndex)->getTerritories());
+	}
 }
 
 void GameStart::setChosenMap(vector<Territory*> chosenMap)
@@ -313,7 +390,7 @@ MainGameLoop::MainGameLoop(vector<Territory*> territories, vector<Player*> playe
 
 void MainGameLoop::mainGameLoop()
 {
-	bool playOn=true;
+	bool playOn = true;
 	while (playOn) {
 		cout << "\nin main loop";
 		this->issueOrdersPhase();
@@ -341,7 +418,7 @@ void MainGameLoop::reinforcementPhase()
 {
 	cout << "\nreinforcement phase";
 	for (auto& x : players) {
-		int reinfocement =x->getNumTerritoriesOwn()/3;
+		int reinfocement = x->getNumTerritoriesOwn() / 3;
 		//need to add the continent bonus if a player owns all the territories in the continent
 		if (reinfocement < 3) {
 			reinfocement = 3;
@@ -361,19 +438,19 @@ void MainGameLoop::issueOrdersPhase()
 		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
 		int reinforcementPool = players.at(i)->getreinforcePool();
 		int unit = 0;
-int territoriesOwn = playerTerritories.size();
-for (int j = 0; j < territoriesOwn; j++) {
-	Deploy* od;
-	unit += floor(reinforcementPool / territoriesOwn);
-	if (unit < 3) { unit = 3; }//put at least three in the first few 
-	if (j == (territoriesOwn - 1)) { // if this is the last territory, take whatever is left
-		od = new Deploy(players.at(i), playerTerritories.at(j), reinforcementPool);
-	}
-	else {
-		od = new Deploy(players.at(i), playerTerritories.at(j), unit);//fill each one equally or with 3 untill it runs out at which point deploy will stop him
-	}
-	players.at(i)->addOrderToList(od);
-}
+		int territoriesOwn = playerTerritories.size();
+		for (int j = 0; j < territoriesOwn; j++) {
+			Deploy* od;
+			unit += floor(reinforcementPool / territoriesOwn);
+			if (unit < 3) { unit = 3; }//put at least three in the first few 
+			if (j == (territoriesOwn - 1)) { // if this is the last territory, take whatever is left
+				od = new Deploy(players.at(i), playerTerritories.at(j), reinforcementPool);
+			}
+			else {
+				od = new Deploy(players.at(i), playerTerritories.at(j), unit);//fill each one equally or with 3 untill it runs out at which point deploy will stop him
+			}
+			players.at(i)->addOrderToList(od);
+		}
 	}
 
 	for (int i = 0; i < this->players.size(); i++) {
@@ -461,7 +538,7 @@ void MainGameLoop::executeOrdersPhase()
 						}
 						this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
 						other = this->players.at(i)->getNumTerritoriesOwn();
-						if ((temp < other)&&(this->players.at(i)->getConqueredTerratory()==false)){
+						if ((temp < other) && (this->players.at(i)->getConqueredTerratory() == false)) {
 							this->players.at(i)->setConqueredTerratory(true);
 						}
 						break;//only runs one loop per player

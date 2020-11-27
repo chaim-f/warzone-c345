@@ -17,7 +17,7 @@ Continent getTerritoryContinentObject(vector<Continent*> continents, string name
 		if (name == continents.at(i)->getContinentName())
 		{
 			return *continents.at(i);
-		};
+		}
 	}
 }
 // will return Territory given a territory name
@@ -26,7 +26,20 @@ int getTerritoryIndex(vector<Territory*> territories, string name) {
 		if (name == territories.at(i)->getTerritoryName())
 		{
 			return territories.at(i)->getTerritoryIndex();
-		};
+		}
+	}
+}
+
+void DisplayContinents(vector<Continent*> continentVec)
+{
+	for (int i = 0; i < continentVec.size(); i++) {
+		continentVec.at(i)->displayContinents();
+	}
+}
+
+void DisplayTerritories(vector<Territory*> territoryVec) {
+	for (int i = 0; i < territoryVec.size(); i++) {
+		territoryVec.at(i)->displayTerritories();
 	}
 }
 
@@ -37,6 +50,7 @@ ConquestFileReader::ConquestFileReader()
 ConquestFileReader::ConquestFileReader(string fileName)
 {
 	this->fileName = fileName;
+	this->storeFileContents();
 }
 
 void ConquestFileReader::setFileName(string name)
@@ -81,9 +95,6 @@ void ConquestFileReader::storeFileContents()
 			conquestMapFile.close();
 		}
 		this->setFileContents(vec);
-		this->storeContinents();
-		this->storeTerritories();
-		this->storeTerritoriesWithBorders();
 	}
 	else {
 		cout << "not a valid conquest map file\n";
@@ -111,10 +122,10 @@ void ConquestFileReader::storeContinents()
 		Continent* c = new Continent(j, continentName, continentBonus);
 		this->continentVec.push_back(c);
 	}
-	for (int i = 0; i < this->continentVec.size(); i++) {
-		this->continentVec.at(i)->displayContinents();
-	}
+	//DisplayContinents(this->continentVec);
 }
+
+
 
 void ConquestFileReader::storeTerritories()
 {
@@ -150,9 +161,7 @@ void ConquestFileReader::storeTerritories()
 		Territory* t = new Territory(j, territoryName, c);
 		territoryVec.push_back(t);
 	}
-	for (int i = 0; i < this->territoryVec.size(); i++) {
-		this->territoryVec.at(i)->displayTerritories();
-	}
+	//DisplayTerritories(this->territoryVec);
 }
 
 void ConquestFileReader::storeTerritoriesWithBorders()
@@ -187,10 +196,14 @@ void ConquestFileReader::storeTerritoriesWithBorders()
 			territoryBordersVec.push_back(t);
 		}
 	}
+	//DisplayTerritories(this->territoryBordersVec);
+}
 
-	for (int i = 0; i < this->territoryBordersVec.size(); i++) {
-		this->territoryBordersVec.at(i)->displayTerritories();
-	}
+void ConquestFileReader::storeAllContents()
+{
+	this->storeContinents();
+	this->storeTerritories();
+	this->storeTerritoriesWithBorders();
 }
 
 string ConquestFileReader::getFileName()
@@ -243,3 +256,4 @@ void ConquestFileReader::setFileContents(vector<string> strVec)
 {
 	this->fileContents = strVec;
 }
+

@@ -26,6 +26,7 @@ public:
 	void storeContinents();
 	void storeTerritories();
 	void storeTerritoriesWithBorders();
+	void storeAllContents();
 	void setFileContents(vector<string> strVec);
 	
 	string getFileName();
@@ -36,4 +37,4 @@ public:
 	bool getIsValidConquestMapFile();
 };
 
-
+void NewFunction();
