@@ -3,7 +3,7 @@
 #include <list>
 #include <vector>
 #include "MapLoader.h"
-#include "ConquestFileReaderAdapter.h"
+//#include "ConquestFileReaderAdapter.h"
 #include "Player.h"
 using namespace std;
 

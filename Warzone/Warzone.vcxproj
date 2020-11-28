@@ -140,8 +140,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConquestFileReader.h" />
-    <ClInclude Include="ConquestFileReaderAdapter.h" />
     <ClInclude Include="DriverSelector.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Map.h" />
@@ -151,8 +149,6 @@
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConquestFileReader.cpp" />
-    <ClCompile Include="ConquestFileReaderAdapter.cpp" />
     <ClCompile Include="DriverSelector.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="Map.cpp" />

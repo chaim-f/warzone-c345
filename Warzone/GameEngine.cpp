@@ -72,6 +72,7 @@ void GameStart::readMapDirectory()
 				mapFiles.push_back("maps/" + fileName);
 				cout << ">" << i << ": maps/" + fileName + " (domination map)" << endl;
 			}
+			// [x] 2.2.1 The GameEngine can now read either Domination or Conquest map files and play a game using either of the map files. 
 			if (extension == ".MAP") {
 				cout << ">" << i << ": maps/" + fileName + " (conquest map)" << endl;
 				const auto conquestMap = "maps/" + fileName;
@@ -94,6 +95,7 @@ void GameStart::loadMaps()
 	list<string>::iterator it2;
 	for (it2 = conquestMapFiles.begin(); it2 != conquestMapFiles.end(); ++it2) {
 		string filename = (*it2);
+		// [x] 2.2.2 The solution to implement the reading of Conquest files is using the structure and behavior of the Adapter pattern. 
 		ConquestFileReader* cfr = new ConquestFileReader(filename);
 		ConquestFileReaderAdapter* cfra = new ConquestFileReaderAdapter(cfr);
 		conquestMapLoaders.push_back(cfra);

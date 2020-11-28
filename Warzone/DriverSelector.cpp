@@ -5,7 +5,6 @@
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
-#include "ConquestFileReaderAdapter.h";
 using namespace std;
 
 
@@ -132,6 +131,10 @@ namespace DriverSelector {
 		}
 		conquestMap->displayAdjacencyList();
 		conquestMap->validate();
+
+		delete cfr;
+		delete cfra;
+		delete conquestMap;
 	}
 
 	void runPlayerDriver()
