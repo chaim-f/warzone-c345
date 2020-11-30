@@ -80,42 +80,61 @@ namespace DriverSelector {
 	{
 		//	Valid case
 		// load and store map objects
-		string canadaMapFile = "maps/canada.map";
-		MapLoader canadaMap = MapLoader();
-		canadaMap.setFileName(canadaMapFile);
-		canadaMap.storeContinents();
-		canadaMap.storeTerritories();
-		canadaMap.storeTerritoriesWithBorders();
+		//string canadaMapFile = "maps/canada.map";
+		//MapLoader canadaMap = MapLoader();
+		//canadaMap.setFileName(canadaMapFile);
+		//canadaMap.storeContinents();
+		//canadaMap.storeTerritories();
+		//canadaMap.storeTerritoriesWithBorders();
+
+		//// create map and validate
+		//Map* map;
+		//map = new Map();
+		//map->createMap(canadaMap.getTerritories().size() + 1, true);
+
+		//for (int i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
+		//	map->addEdge(canadaMap.getTerritoriesWithBorders()[i]);
+		//}
+		//map->displayAdjacencyList();
+		//map->validate();
+
+
+		//// Invalid case
+		//string europeFile = "maps/europe.map";
+		//MapLoader europeMap = MapLoader();
+		//europeMap.setFileName(europeFile);
+		//europeMap.storeContinents();
+		//europeMap.storeTerritories();
+		//europeMap.storeTerritoriesWithBorders();
+
+		//Map* map2;
+		//map2 = new Map();
+		//map2->createMap(static_cast<int>(europeMap.getTerritories().size() + 1), true);
+
+		//for (int i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
+		//	map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
+		//}
+		//map2->displayAdjacencyList();
+		//map2->validate();
+
+		ConquestFileReader* cfr = new ConquestFileReader("maps/quebec.MAP");
+		ConquestFileReaderAdapter* cfra = new ConquestFileReaderAdapter(cfr);
+		cfra->storeAllContents();
 
 		// create map and validate
-		Map* map;
-		map = new Map();
-		map->createMap(canadaMap.getTerritories().size() + 1, true);
+		Map* conquestMap;
+		conquestMap = new Map();
+		conquestMap->createMap(cfra->getTerritories().size() + 1, true);
 
-		for (int i = 0; i < canadaMap.getTerritoriesWithBorders().size(); i++) {
-			map->addEdge(canadaMap.getTerritoriesWithBorders()[i]);
+		for (int i = 0; i < cfra->getTerritoriesWithBorders().size(); i++) {
+			conquestMap->addEdge(cfra->getTerritoriesWithBorders()[i]);
 		}
-		map->displayAdjacencyList();
-		map->validate();
+		conquestMap->displayAdjacencyList();
+		conquestMap->validate();
 
-
-		// Invalid case
-		string europeFile = "maps/europe.map";
-		MapLoader europeMap = MapLoader();
-		europeMap.setFileName(europeFile);
-		europeMap.storeContinents();
-		europeMap.storeTerritories();
-		europeMap.storeTerritoriesWithBorders();
-
-		Map* map2;
-		map2 = new Map();
-		map2->createMap(static_cast<int>(europeMap.getTerritories().size() + 1), true);
-
-		for (int i = 0; i < europeMap.getTerritoriesWithBorders().size(); i++) {
-			map2->addEdge(europeMap.getTerritoriesWithBorders()[i]);
-		}
-		map2->displayAdjacencyList();
-		map2->validate();
+		delete cfr;
+		delete cfra;
+		delete conquestMap;
 	}
 
 	void runPlayerDriver()

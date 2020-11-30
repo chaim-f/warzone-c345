@@ -17,6 +17,7 @@ public:
 	Continent(int src, string name, int bunos);
 	void displayContinents();
 	int getSource();
+	string getContinentName();
 	friend class Map;
 	friend int getSource(Continent c);
 	friend int getDestination(Continent d);

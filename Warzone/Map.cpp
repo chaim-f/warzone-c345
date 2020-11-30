@@ -207,6 +207,11 @@ int Continent::getSource()
 	return source;
 }
 
+string Continent::getContinentName()
+{
+	return this->continentName;
+}
+
 
 /**************  Continent definition  **************************/
 Continent::Continent() {

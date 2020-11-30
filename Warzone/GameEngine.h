@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include "MapLoader.h"
+//#include "ConquestFileReaderAdapter.h"
 #include "Player.h"
 using namespace std;
 
@@ -15,6 +16,7 @@ class GameStart
 	// [x] 1.3.2 game is initiated in the main() function that is in  GameEngine.cpp file
 	vector<Territory*> chosenMap;
 	vector<MapLoader*> mapLoaders;
+	vector<ConquestFileReaderAdapter*> conquestMapLoaders;
 	vector<Player*> playersCreated;
 	vector<Territory*> territories;
 	int numPlayers;
@@ -26,11 +28,16 @@ public:
 	void loadMaps();
 	void storeMaps();
 	void validatingMaps();
+	void validateConquestMaps();
 	void setChosenMap(vector<Territory*> chosenMap);
 	void setTerritories(vector<Territory*> territories);
 	vector<Territory*> getTerritories();
 	vector<Territory*> getChosenMap(); // will return the chosen map by the user
+	
+	// map files
 	list<string> mapFiles;
+	list<string> conquestMapFiles;
+
 
 	// user input
 	void promptUserToSelectNumberOfPlayers();
