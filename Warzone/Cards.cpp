@@ -92,38 +92,45 @@ void Card::setCardType(std::string s)//setter
 	}
 }
 
-void Card::play()//to do fill it in such that it fills the order list
+Order* Card::play()
 {
-	
-	
-	
+		
 	std::string cardType = getCardType();
-	Order myOrder;
-
-	//myOrder = new Order();
-
-
-	if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
-	{
-		std::cout << "played a bomb card\n";
+	Order* TempCard = new Order();;
+	if (true) {
+		delete TempCard;
+		if (cardType.compare(CardsAllow[0]) == 0)//it is a bomb card
+		{
+			Bomb* cardT = new Bomb();
+			TempCard = cardT;
+		}
+		else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
+		{
+			Deploy* cardT = new Deploy();
+			TempCard = cardT;
+		}
+		else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
+		{
+			Blockade* cardT = new Blockade();
+			TempCard = cardT;
+		}
+		else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
+		{
+			Airlift* carT = new Airlift();
+			TempCard = carT;
+		}
+		else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
+		{
+			Negotiate* carT = new Negotiate();
+			TempCard = carT;
+		}
+		else {
+			std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n";
+			Order* carT = new Order();
+			TempCard = carT;
+		}
 	}
-	else if (cardType.compare(CardsAllow[1]) == 0)//it is a reinforcement card
-	{
-		std::cout << "played a reinforcement card\n";
-	}
-	else if (cardType.compare(CardsAllow[2]) == 0)//it is a blockade card
-	{
-		std::cout << "played a blockade card\n";
-	}
-	else if (cardType.compare(CardsAllow[3]) == 0)//it is a airlift card
-	{
-		std::cout << "played a airlift card\n";
-	}
-	else if (cardType.compare(CardsAllow[4]) == 0)//it is a diplomacy card
-	{
-		std::cout << "played a diplomacy card\n";
-	}
-	else { std::cout << "error there should be no other type of card, it is of type: " << cardType << "\n"; }
+	return TempCard;
 }
 
 void Card::printCard()
@@ -251,6 +258,7 @@ void Deck::Draw(Hand& handID)//draws a random card
 	srand((unsigned)time(NULL));
 	int temp = (int)rand() % currentDeckSize;
 	handID.addCard(deckCards.at(temp));
+	deckCards.at(temp)->printCard();
 	deckCards.erase(deckCards.begin() + temp);
 }
 
@@ -346,14 +354,16 @@ void Hand::removeCard(Card* cardID)//removes a card to the hands card vector
 {
 	int temp = 0;
 	for (auto&& x : handCards) {
-		if (x == cardID) { break; }
+		if (x == cardID) {
+		break; }
 		temp++;
 	}
 	handCards.erase(handCards.begin() + temp);
 }
 
-std::string Hand::play(std::string cardType, Deck& deckId)
+Order* Hand::play(std::string cardType, Deck& deckId)
 {
+	Order* order = new Order();
 	if (isInHand(cardType))//check if the type card is in hand  
 	{
 		Card* tempCardP = nullptr;
@@ -361,7 +371,8 @@ std::string Hand::play(std::string cardType, Deck& deckId)
 			if (x->getCardType().compare(cardType) == 0) { tempCardP = x; break; }
 		}
 		if (tempCardP != nullptr) {
-			tempCardP->play();
+			delete order;
+			order = tempCardP->play();
 			deckId.returnCard(tempCardP);
 			removeCard(tempCardP);
 		}
@@ -370,7 +381,7 @@ std::string Hand::play(std::string cardType, Deck& deckId)
 		std::cout << cardType << " is not in this hand to play\n";
 	}
 
-	return cardType;
+	return order;
 }
 bool Hand::isInHand(std::string cardType)
 {
@@ -416,4 +427,10 @@ void printCommands() {
 	std::cout << "\nList of commands:\n";
 	std::cout << "For Deck: \nDraw(Hand handID): draws a card and adds it to the Hand HandID,\nreturnCard(Card* cardId): returns a card to the deck, \nprintDeck(): prints the types of cards in the deck\naddCard(): adds a random card to the Deck\naddCard(string cardID);//adds the specified card type to the Deck\n";
 	std::cout << "\nFor Hand: \naddCard(Card* cardID): adds card to hand,\nremoveCard(Card* cardID): removes card from Hand,\nplay(string cardType, Deck deck): plays card type and returns played card to deck,\nisInHand(string cardType): check if card type is in hand returns a boolean value,\n;printHand() prints the contents of the hand\n";
+}
+bool Deck::isEmpty() {
+	if (deckCards.empty()) {
+		return true;
+	}
+	return false;
 }
