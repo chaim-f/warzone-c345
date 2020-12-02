@@ -268,7 +268,13 @@ void GameStart::createPlayers()
 	vector<Player*> players;
 	vector<int> randomSequence = createRandomSequence(maxPlayer);
 	for (int i = 0; i < this->getNumPlayers(); i++) {
-		players.push_back(new Player(names.at(randomSequence.at(i))));
+		Player* p = new Player(names.at(randomSequence.at(i)));
+		
+		// setting strategies randomly
+		vector<PlayerStrategies*> playerStrategies { new AggressivePlayerStrategy(), new HumanPlayerStrategy(), new BenevolentPlayerStrategy(), new NeutralPlayerStrategy() };
+		vector<int> randStrategies = createRandomSequence(playerStrategies.size());
+		p->setStrategy(playerStrategies.at(randStrategies.at(i)));
+		players.push_back(p);
 	}
 	// if the random sequence is [2,4,3,1,0]
 	// and number of player chosen was 4
