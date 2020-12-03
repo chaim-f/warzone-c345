@@ -36,6 +36,9 @@
     <ClInclude Include="GameEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerStrategies.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Map.cpp">
@@ -74,32 +77,24 @@
     <ClCompile Include="GameEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerStrategies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="map\canada_pic.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="map\canada_map.gif">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="maps\europe_map.gif">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="maps\europe_pic.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="map\canada.cards">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="map\canada.map">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="maps\europe.cards">
+    <None Include="maps\europe.map">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="maps\europe.map">
+    <None Include="maps\invalid.map">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="maps\quebec.MAP">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="maps\test.map">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

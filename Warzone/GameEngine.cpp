@@ -68,19 +68,18 @@ void GameStart::readMapDirectory()
 		const auto fileName = path.filename().string();
 		if (p.is_regular_file() && (extension == ".map" || extension == ".MAP")) {
 			i++;
-			if (extension == ".map") {
-				mapFiles.push_back("maps/" + fileName);
-				cout << ">" << i << ": maps/" + fileName + " (domination map)" << endl;
-			}
 			// [x] 2.2.1 The GameEngine can now read either Domination or Conquest map files and play a game using either of the map files. 
-			if (extension == ".MAP") {
-				cout << ">" << i << ": maps/" + fileName + " (conquest map)" << endl;
-				const auto conquestMap = "maps/" + fileName;
-				ConquestFileReader c(conquestMap);
-				if (c.getIsValidConquestMapFile()) {
-					conquestMapFiles.push_back(conquestMap);
-				}
+			const auto conquestMap = "maps/" + fileName;
+			ConquestFileReader c(conquestMap);
+			if (c.getIsValidConquestMapFile()) {
+				cout << i << ": maps/" + fileName + " (conquest map)" << endl;
+				conquestMapFiles.push_back(conquestMap);
 			}
+			else {
+				cout << i << ": maps/" + fileName + " (domination map)" << endl;
+				mapFiles.push_back("maps/" + fileName);
+			}
+
 		}
 	}
 }
@@ -124,11 +123,11 @@ void GameStart::validatingMaps()
 	for (int i = 0; i < mapLoaders.size(); i++) {
 		Map* map;
 		map = new Map();
-		map->createMap(mapLoaders.at(i)->getTerritories().size() + 1, true);
-		for (int j = 0; j < mapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
+		map->createMap(static_cast<int>(mapLoaders.at(i)->getTerritories().size()) + 1, true);
+		for (int j = 0; j < static_cast<int>(mapLoaders.at(i)->getTerritoriesWithBorders().size()); j++) {
 			map->addEdge(mapLoaders.at(i)->getTerritoriesWithBorders()[j]);
 		}
-		cout << "> validating " << mapLoaders.at(i)->getFileName() << endl;
+		cout << "> validating " << mapLoaders.at(i)->getFileName() << " = ";
 		map->validate();
 		if (map->getIsValidMapFile() == 0) {
 			invalidMapIndex = i; // store index of invalid map
@@ -137,7 +136,6 @@ void GameStart::validatingMaps()
 	if (invalidMapIndex != NULL) {
 		cout << "Gracefully rejecting " << mapLoaders.at(invalidMapIndex)->getFileName() << endl;
 		mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
-		cout << "done..." << endl;
 	}
 }
 
@@ -148,21 +146,19 @@ void GameStart::validateConquestMaps()
 	for (int i = 0; i < conquestMapLoaders.size(); i++) {
 		Map* map;
 		map = new Map();
-		map->createMap(conquestMapLoaders.at(i)->getTerritories().size() + 1, true);
-		for (int j = 0; j < conquestMapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
+		map->createMap(static_cast<int>(conquestMapLoaders.at(i)->getTerritories().size()) + 1, true);
+		for (int j = 0; j < static_cast<int>(conquestMapLoaders.at(i)->getTerritoriesWithBorders().size()); j++) {
 			map->addEdge(conquestMapLoaders.at(i)->getTerritoriesWithBorders()[j]);
 		}
-		cout << "> validating " << conquestMapLoaders.at(i)->getFileName() << endl;
+		cout << "> validating " << conquestMapLoaders.at(i)->getFileName() << " = ";
 		map->validate();
 		if (map->getIsValidMapFile() == 0) {
 			invalidMapIndex = i; // store index of invalid map
 		}
 	}
-	cout << "done..." << endl;
 	if (invalidMapIndex != NULL) {
 		cout << "Gracefully rejecting " << conquestMapLoaders.at(invalidMapIndex)->getFileName() << endl;
 		conquestMapLoaders.erase(conquestMapLoaders.begin() + invalidMapIndex);
-		cout << "done..." << endl;
 	}
 }
 
@@ -183,7 +179,7 @@ void GameStart::promptUserToSelectNumberOfPlayers()
 
 int promptUserToSelectMapType() {
 	int chosenMapType;
-	cout << "Enter map type: (0 = Domination, 1 = Conquest)" << endl;
+	cout << "\nEnter map type: (0 = Domination, 1 = Conquest)" << endl;
 	cin >> chosenMapType;
 	while (chosenMapType < 0 || chosenMapType > 1)
 	{
@@ -267,8 +263,15 @@ void GameStart::createPlayers()
 	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
 	vector<Player*> players;
 	vector<int> randomSequence = createRandomSequence(maxPlayer);
+
+	vector<PlayerStrategies*> playerStrategies{ new AggressivePlayerStrategy(), new HumanPlayerStrategy(), new BenevolentPlayerStrategy(), new NeutralPlayerStrategy(), new AggressivePlayerStrategy() };
+	vector<int> randStrategies = createRandomSequence(static_cast<int>(playerStrategies.size()));
 	for (int i = 0; i < this->getNumPlayers(); i++) {
-		players.push_back(new Player(names.at(randomSequence.at(i))));
+		Player* p = new Player(names.at(randomSequence.at(i)));
+		
+		// setting strategies randomly
+		p->setStrategy(playerStrategies.at(randStrategies.at(i)));
+		players.push_back(p);
 	}
 	// if the random sequence is [2,4,3,1,0]
 	// and number of player chosen was 4
@@ -314,7 +317,7 @@ void StartUpPhase::startupPhase()
 
 void StartUpPhase::createOrderOfPlay()
 {
-	int numPlayers = this->getPlayers().size();
+	int numPlayers = static_cast<int>(this->getPlayers().size());
 	vector<int> randomSequence = createRandomSequence(numPlayers);
 	for (int i = 0; i < this->getPlayers().size(); i++) {
 		this->players.at(i)->setTurnNumber(randomSequence.at(i));
@@ -326,12 +329,15 @@ void StartUpPhase::createOrderOfPlay()
 }
 
 void StartUpPhase::distrubuiteTerritories() {
-	int numberOfTerritories = this->territories.size();
+	int numberOfTerritories = static_cast<int>(this->territories.size());
 	vector<int> randomSequence = createRandomSequence(numberOfTerritories); // create a random sequence of [0-numberOfTerritories]
 	// e.g. numberOfTerritories = 24, a random sequence would be something like [23,1,4,6,1,2,0,8,5,...]
 
 	cout << "\nditributing territories...\n";
 	for (int i = 0; i < numberOfTerritories; i++) {
+		
+		Territory* tempErr = this->territories.at(randomSequence.at(i));
+		tempErr->setTerritoryArmies(0);
 		this->players.at(i % this->numOfPlayers)->addTerritory(this->territories.at(randomSequence.at(i)));
 	}
 
@@ -400,7 +406,7 @@ void MainGameLoop::mainGameLoop()
 		int temp;
 		temp = 0;
 		for (auto& x : players) {
-			players.at(temp)->setNumTerritoriesOwn(players.at(temp)->getTerritoriesOwn().size());
+			players.at(temp)->setNumTerritoriesOwn(static_cast<int>(players.at(temp)->getTerritoriesOwn().size()));
 			if (x->getNumTerritoriesOwn() == 0) {
 				cout << "\nremoving " << players.at(temp)->getPlayerName() << " as he has no territories\n";
 				players.erase(players.begin() + temp);//remove the player if he owns no territories
@@ -435,12 +441,12 @@ void MainGameLoop::issueOrdersPhase()
 {
 	cout << "\nissuing Orders\n";
 	for (int i = 0; i < this->players.size(); i++) {
-		this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+		this->players.at(i)->setNumTerritoriesOwn(static_cast<int>(this->players.at(i)->getTerritoriesOwn().size()));
 		vector<Player*> players = this->players;
 		vector<Territory*> playerTerritories = players.at(i)->getTerritoriesOwn();
 		int reinforcementPool = players.at(i)->getreinforcePool();
 		int unit = 0;
-		int territoriesOwn = playerTerritories.size();
+		int territoriesOwn = static_cast<int>(playerTerritories.size());
 		for (int j = 0; j < territoriesOwn; j++) {
 			Deploy* od;
 			unit += floor(reinforcementPool / territoriesOwn);
@@ -521,7 +527,7 @@ void MainGameLoop::executeOrdersPhase()
 			if (!(players.at(i)->getOrderlist() == nullptr)) {
 				if ((players.at(i)->getOrderlist()->OrderListIsEmpty())) {
 					for (auto& x : players.at(i)->getOrderlist()->getOrderList()) {//doing all the airlift orders next
-						this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+						this->players.at(i)->setNumTerritoriesOwn(static_cast<int>(this->players.at(i)->getTerritoriesOwn().size()));
 						temp = this->players.at(i)->getNumTerritoriesOwn();
 						if (x->getName().compare("Order") == 0) {
 							players.at(i)->executeOrderOfList(x);
@@ -538,7 +544,7 @@ void MainGameLoop::executeOrdersPhase()
 							Negotiate* y = (Negotiate*)x;
 							players.at(i)->executeOrderOfList(y);
 						}
-						this->players.at(i)->setNumTerritoriesOwn(this->players.at(i)->getTerritoriesOwn().size());
+						this->players.at(i)->setNumTerritoriesOwn(static_cast<int>(this->players.at(i)->getTerritoriesOwn().size()));
 						other = this->players.at(i)->getNumTerritoriesOwn();
 						if ((temp < other) && (this->players.at(i)->getConqueredTerratory() == false)) {
 							this->players.at(i)->setConqueredTerratory(true);
@@ -568,11 +574,11 @@ void MainGameLoop::executeOrdersPhase()
 			}
 		}
 	}
-	cout << "\nIN exacute mode removing player";//just so someone wins
+	cout << "\nIN exacute mode removing player";
 	for (auto& x : players.at(0)->getTerritoriesOwn()) {
 		players.at(0)->removeTerritory(x);
 	}
 	cout << "\nremoved all territories from " << players.at(0)->getPlayerName();
-	players.at(0)->setNumTerritoriesOwn(players.at(0)->getTerritoriesOwn().size());
+	players.at(0)->setNumTerritoriesOwn(static_cast<int>(players.at(0)->getTerritoriesOwn().size()));
 	cout << "\n " << players.at(0)->getTerritoriesOwn().size();
 }

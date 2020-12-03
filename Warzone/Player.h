@@ -1,6 +1,6 @@
 /***********************************************************************
-	Assignment 1 - TEAM 21
-	Part 4
+	Assignment 3 - TEAM 21
+	 
 ***********************************************************************/
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <list>
 #include "Cards.h"
 #include <sstream>
+#include "PlayerStrategies.h"
 class Order;
 class Orderlist;
 class Card;
@@ -20,6 +21,7 @@ class Player
 public:
 
 	Player(string playerName);
+	Player(string playerName, PlayerStrategies* strategy);
 	Player(string playerName, const char* pid);
 
 	//Copy constructor
@@ -102,6 +104,8 @@ public:
 	bool getConqueredTerratory();
 	Hand* getHand();
 	void Play(string cd, Deck adeck);
+
+	void setStrategy(PlayerStrategies* newStrategy);
 private:
 
 	//myTerritories contains a list of pointers to territories. Each territory is unique and can be owned by one player at the time and we will manipulate the pointer to that territory.
@@ -122,7 +126,9 @@ private:
 	int turnNumber;
 	int numberTerritoriesOwn;
 	bool conqueredTerratory;
+
+	PlayerStrategies* strategy;
 };
 
 
-Player* playerFactory(string pid);
+Player* playerFactory(string pid, PlayerStrategies * strategy);

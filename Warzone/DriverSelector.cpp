@@ -124,7 +124,7 @@ namespace DriverSelector {
 		// create map and validate
 		Map* conquestMap;
 		conquestMap = new Map();
-		conquestMap->createMap(cfra->getTerritories().size() + 1, true);
+		conquestMap->createMap(static_cast<int>(cfra->getTerritories().size()) + 1, true);
 
 		for (int i = 0; i < cfra->getTerritoriesWithBorders().size(); i++) {
 			conquestMap->addEdge(cfra->getTerritoriesWithBorders()[i]);
@@ -147,8 +147,8 @@ namespace DriverSelector {
 		//Player* p1 = new Player(player1);
 		//Player* p2 = new Player(player2);
 
-		Player* p1 = playerFactory(player1);
-		Player* p2 = playerFactory(player2);
+		Player* p1 = playerFactory(player1, new HumanPlayerStrategy());
+		Player* p2 = playerFactory(player2, new AggressivePlayerStrategy());
 		Player* p3 = p2;
 
 		Territory* t1 = nullptr;

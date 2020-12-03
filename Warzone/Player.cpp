@@ -1,7 +1,9 @@
 /***********************************************************************
-	Assignment 1 - TEAM 21
-	Part 4
+	Assignment 3 - TEAM 21
+	 
 ***********************************************************************/
+
+
 #include "Player.h"
 #include <list>
 #include "Map.h"
@@ -57,10 +59,59 @@ Player::Player(string playerName, const char* pid) {
 	}
 
 }
+/*******************************************************************/
 
 Player::Player(string playerName)
 {
 	this->playerName = playerName;
+	 
+	cout << "\nCreating: " << playerName << endl;
+	conqueredTerratory = false;
+	//Allocate memory to Order list.
+	try {
+		myOrder = new list<Order>();
+		myOrderList = new Orderlist();
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+
+	//Allocate memory to my territories list.
+	try {
+		myTerritories = new list<Territory>;
+	}
+	catch (bad_alloc&) {
+		exit(1);
+	}
+
+
+	//Allocate memory to target territories list.
+	try {
+		targetTerritories = new list<Territory>;
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player." << endl;
+		exit(1);
+	}
+
+	//Allocate memory to territories list.
+	try {
+		handOfCards = new Hand();
+	}
+	catch (bad_alloc&) {
+		cout << "Error allocating memory to player hand of cards." << endl;
+		exit(1);
+	}
+}
+
+
+/***************************************************************/
+Player::Player(string playerName, PlayerStrategies* strategy)
+{
+	this->playerName = playerName;
+	this->strategy = strategy;
 	cout << "\nCreating: " << playerName << endl;
 	conqueredTerratory = false;
 	//Allocate memory to Order list.
@@ -173,7 +224,7 @@ Player& Player::operator= (const Player& t)
 
 list<Territory >* Player::toAttack() {
 
-	list<Territory >::iterator ptr;
+	/*list<Territory >::iterator ptr;
 	int i = 0;
 
 	std::cout << "Lit of territories to attack: \n";
@@ -185,11 +236,15 @@ list<Territory >* Player::toAttack() {
 	std::cout << std::endl;
 
 
-	return targetTerritories;
+	return targetTerritories;*/
+
+
+	return this->strategy->toDefend(targetTerritories);
+
 }
 list<Territory >* Player::toDefend() {
 
-	list<Territory >::iterator ptr;
+	/*list<Territory >::iterator ptr;
 	int i = 0;
 	std::cout << "Lit of territories to defend: \n";
 	for (ptr = myTerritories->begin(); ptr != myTerritories->end(); ++ptr) {
@@ -197,13 +252,15 @@ list<Territory >* Player::toDefend() {
 	}
 	std::cout << std::endl;
 
-	return myTerritories;
+	return myTerritories;*/
+
+	return this->strategy->toDefend(myTerritories);
 }
 void Player::issueOrder(Order o) {
 
-	myOrder->push_back(o);
+	 
 
-	return;
+	return this->strategy->issueOrder(o, myOrder);
 }
 
 void Player::executeOrder() {
@@ -271,13 +328,13 @@ string Player::getPlayerName()
 	return playerName;
 }
 
-Player* playerFactory(string pid) {
+Player* playerFactory(string pid, PlayerStrategies* strategy) {
 
 	Player* myPlayer = nullptr;
 
 	//Allocate memory to player.
 	try {
-		myPlayer = new Player(pid);
+		myPlayer = new Player(pid, strategy);
 		cout << "Player " << pid << " dynamically created.\n" << endl;
 	}
 	catch (bad_alloc&) {
@@ -443,4 +500,9 @@ Hand* Player::getHand() {
 }
 void Player::Play(string cd, Deck adeck) {
 	addOrderToList(handOfCards->play(cd, adeck));
+}
+
+void Player::setStrategy(PlayerStrategies* newStrategy) {
+	this->strategy = newStrategy;
+	cout << "Setting Strategy " << newStrategy->getStrategyName() << " for player " << this->getPlayerName() << ".\n";
 }

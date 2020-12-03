@@ -147,6 +147,7 @@
     <ClInclude Include="Order.h" />
     <ClInclude Include="Cards.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerStrategies.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DriverSelector.cpp" />
@@ -161,17 +162,13 @@
     <ClCompile Include="CardDriver.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerDriver.cpp" />
+    <ClCompile Include="PlayerStrategies.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="maps\europe_map.gif" />
-    <Image Include="maps\europe_pic.jpg" />
-    <Image Include="map\canada_map.gif" />
-    <Image Include="map\canada_pic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="maps\europe.cards" />
     <None Include="maps\europe.map" />
-    <None Include="map\canada.cards" />
+    <None Include="maps\invalid.map" />
+    <None Include="maps\quebec.MAP" />
+    <None Include="maps\test.map" />
     <None Include="map\canada.map" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
