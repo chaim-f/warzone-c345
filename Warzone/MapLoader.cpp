@@ -328,9 +328,6 @@ void ConquestFileReader::storeFileContents()
 		}
 		this->setFileContents(vec);
 	}
-	else {
-		cout << "not a valid conquest map file\n";
-	}
 }
 
 void ConquestFileReader::storeContinents()

@@ -68,19 +68,18 @@ void GameStart::readMapDirectory()
 		const auto fileName = path.filename().string();
 		if (p.is_regular_file() && (extension == ".map" || extension == ".MAP")) {
 			i++;
-			if (extension == ".map") {
-				mapFiles.push_back("maps/" + fileName);
-				cout << ">" << i << ": maps/" + fileName + " (domination map)" << endl;
-			}
 			// [x] 2.2.1 The GameEngine can now read either Domination or Conquest map files and play a game using either of the map files. 
-			if (extension == ".MAP") {
-				cout << ">" << i << ": maps/" + fileName + " (conquest map)" << endl;
-				const auto conquestMap = "maps/" + fileName;
-				ConquestFileReader c(conquestMap);
-				if (c.getIsValidConquestMapFile()) {
-					conquestMapFiles.push_back(conquestMap);
-				}
+			const auto conquestMap = "maps/" + fileName;
+			ConquestFileReader c(conquestMap);
+			if (c.getIsValidConquestMapFile()) {
+				cout << i << ": maps/" + fileName + " (conquest map)" << endl;
+				conquestMapFiles.push_back(conquestMap);
 			}
+			else {
+				cout << i << ": maps/" + fileName + " (domination map)" << endl;
+				mapFiles.push_back("maps/" + fileName);
+			}
+
 		}
 	}
 }
@@ -128,7 +127,7 @@ void GameStart::validatingMaps()
 		for (int j = 0; j < mapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
 			map->addEdge(mapLoaders.at(i)->getTerritoriesWithBorders()[j]);
 		}
-		cout << "> validating " << mapLoaders.at(i)->getFileName() << endl;
+		cout << "> validating " << mapLoaders.at(i)->getFileName() << " = ";
 		map->validate();
 		if (map->getIsValidMapFile() == 0) {
 			invalidMapIndex = i; // store index of invalid map
@@ -137,7 +136,6 @@ void GameStart::validatingMaps()
 	if (invalidMapIndex != NULL) {
 		cout << "Gracefully rejecting " << mapLoaders.at(invalidMapIndex)->getFileName() << endl;
 		mapLoaders.erase(mapLoaders.begin() + invalidMapIndex);
-		cout << "done..." << endl;
 	}
 }
 
@@ -152,17 +150,15 @@ void GameStart::validateConquestMaps()
 		for (int j = 0; j < conquestMapLoaders.at(i)->getTerritoriesWithBorders().size(); j++) {
 			map->addEdge(conquestMapLoaders.at(i)->getTerritoriesWithBorders()[j]);
 		}
-		cout << "> validating " << conquestMapLoaders.at(i)->getFileName() << endl;
+		cout << "> validating " << conquestMapLoaders.at(i)->getFileName() << " = ";
 		map->validate();
 		if (map->getIsValidMapFile() == 0) {
 			invalidMapIndex = i; // store index of invalid map
 		}
 	}
-	cout << "done..." << endl;
 	if (invalidMapIndex != NULL) {
 		cout << "Gracefully rejecting " << conquestMapLoaders.at(invalidMapIndex)->getFileName() << endl;
 		conquestMapLoaders.erase(conquestMapLoaders.begin() + invalidMapIndex);
-		cout << "done..." << endl;
 	}
 }
 
@@ -183,7 +179,7 @@ void GameStart::promptUserToSelectNumberOfPlayers()
 
 int promptUserToSelectMapType() {
 	int chosenMapType;
-	cout << "Enter map type: (0 = Domination, 1 = Conquest)" << endl;
+	cout << "\nEnter map type: (0 = Domination, 1 = Conquest)" << endl;
 	cin >> chosenMapType;
 	while (chosenMapType < 0 || chosenMapType > 1)
 	{
@@ -267,12 +263,13 @@ void GameStart::createPlayers()
 	vector<string> names{ "Ben", "Tom", "Jerry", "Batman", "Robin" };
 	vector<Player*> players;
 	vector<int> randomSequence = createRandomSequence(maxPlayer);
+
+	vector<PlayerStrategies*> playerStrategies{ new AggressivePlayerStrategy(), new HumanPlayerStrategy(), new BenevolentPlayerStrategy(), new NeutralPlayerStrategy(), new AggressivePlayerStrategy() };
+	vector<int> randStrategies = createRandomSequence(playerStrategies.size());
 	for (int i = 0; i < this->getNumPlayers(); i++) {
 		Player* p = new Player(names.at(randomSequence.at(i)));
 		
 		// setting strategies randomly
-		vector<PlayerStrategies*> playerStrategies { new AggressivePlayerStrategy(), new HumanPlayerStrategy(), new BenevolentPlayerStrategy(), new NeutralPlayerStrategy() };
-		vector<int> randStrategies = createRandomSequence(playerStrategies.size());
 		p->setStrategy(playerStrategies.at(randStrategies.at(i)));
 		players.push_back(p);
 	}

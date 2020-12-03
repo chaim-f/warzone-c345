@@ -1,3 +1,8 @@
+/***********************************************************************
+	Assignment 3 - TEAM 21
+
+***********************************************************************/
+
 #include "PlayerStrategies.h"
 #include <sstream>
 
@@ -10,7 +15,7 @@
 PlayerStrategies::PlayerStrategies() {
 
 }
- 
+
 
 PlayerStrategies::~PlayerStrategies() {
 
@@ -23,6 +28,7 @@ PlayerStrategies::~PlayerStrategies() {
 
 HumanPlayerStrategy::HumanPlayerStrategy() {
 
+	strategyName = "HumanPlayer";
 }
 
 HumanPlayerStrategy::~HumanPlayerStrategy() {
@@ -79,7 +85,7 @@ void HumanPlayerStrategy::issueOrder(Order o, list<Order>* myOrder) {
 
 AggressivePlayerStrategy::AggressivePlayerStrategy() {
 
-
+	strategyName = "AggressivePlayer";
 }
 
 
@@ -88,7 +94,7 @@ AggressivePlayerStrategy::~AggressivePlayerStrategy() {
 
 
 }
- 
+
 //Returns a list of territories to attack
 list<Territory>* AggressivePlayerStrategy::toAttack(list<Territory>* targetTerritories) {
 
@@ -132,7 +138,7 @@ void AggressivePlayerStrategy::issueOrder(Order o, list<Order>* myOrder) {
 /*************************************BenevolentPlayerStrategy **************************************/
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy() {
-
+	strategyName = "BenevolentPlayer";
 }
 
 
@@ -183,14 +189,15 @@ void BenevolentPlayerStrategy::issueOrder(Order o, list<Order>* myOrder) {
 }
 
 
- 
+
 /*************************************NeutralPlayerStrategy **************************************/
 
 NeutralPlayerStrategy::NeutralPlayerStrategy() {
 
+	strategyName = "NeuralPlayer";
 
 }
- 
+
 
 NeutralPlayerStrategy::~NeutralPlayerStrategy() {
 
@@ -234,4 +241,20 @@ void NeutralPlayerStrategy::issueOrder(Order o, list<Order>* myOrder) {
 
 	std::cout << "Order issued by NeutralPlayer: \n";
 	myOrder->push_back(o);
+}
+
+string NeutralPlayerStrategy::getStrategyName() {
+	return strategyName;
+}
+
+string HumanPlayerStrategy::getStrategyName() {
+	return strategyName;
+}
+
+string AggressivePlayerStrategy::getStrategyName() {
+	return strategyName;
+}
+
+string BenevolentPlayerStrategy::getStrategyName() {
+	return strategyName;
 }

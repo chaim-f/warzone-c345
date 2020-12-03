@@ -1,7 +1,9 @@
 /***********************************************************************
-	Assignment 1 - TEAM 21
-	Part 4
+	Assignment 3 - TEAM 21
+	 
 ***********************************************************************/
+
+
 #include "Player.h"
 #include <list>
 #include "Map.h"
@@ -256,9 +258,7 @@ list<Territory >* Player::toDefend() {
 }
 void Player::issueOrder(Order o) {
 
-	//myOrder->push_back(o);
-
-	//return;
+	 
 
 	return this->strategy->issueOrder(o, myOrder);
 }
@@ -504,7 +504,5 @@ void Player::Play(string cd, Deck adeck) {
 
 void Player::setStrategy(PlayerStrategies* newStrategy) {
 	this->strategy = newStrategy;
-	// TODO: need getStrategyName()
-	// so that I can do newStrategy->getStrategyName();
-	cout << "\nsetting " << "{strategy name here}" << " for " << this->playerName << "\n";
+	cout << "Setting Strategy " << newStrategy->getStrategyName() << " for player " << this->getPlayerName() << ".\n";
 }

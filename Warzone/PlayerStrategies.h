@@ -1,3 +1,8 @@
+/***********************************************************************
+	Assignment 3 - TEAM 21
+
+***********************************************************************/
+
 #pragma once
 #include <list>
 #include "Map.h"
@@ -23,6 +28,8 @@ public:
 	//Creates an object containing this player's list of Order
 	virtual void issueOrder(Order o, list<Order>* myOrder) = 0;
 
+	virtual string getStrategyName() = 0;
+
 private:
 
 
@@ -46,9 +53,9 @@ public:
 
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o, list<Order>* myOrder);
-
+	string getStrategyName();
 private:
-
+	string strategyName;
 };
 
 
@@ -71,9 +78,9 @@ public:
 
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o, list<Order>* myOrder);
-
+	string getStrategyName();
 private:
-
+	string strategyName;
 };
 
 
@@ -95,9 +102,9 @@ public:
 
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o, list<Order>* myOrder);
-
+	string getStrategyName();
 private:
-
+	string strategyName;
 };
 
 
@@ -118,7 +125,9 @@ public:
 	//Creates an object containing this player's list of Order
 	void issueOrder(Order o, list<Order>* myOrder);
 
-private:
+	string getStrategyName();
 
+private:
+	string strategyName;
 };
 
