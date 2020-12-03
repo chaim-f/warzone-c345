@@ -254,7 +254,7 @@ Deck::Deck(const Deck& orig) {//copy constructor
 
 void Deck::Draw(Hand& handID)//draws a random card
 {
-	int currentDeckSize = deckCards.size();
+	int currentDeckSize = static_cast<int>(deckCards.size());
 	srand((unsigned)time(NULL));
 	int temp = (int)rand() % currentDeckSize;
 	handID.addCard(deckCards.at(temp));

@@ -156,7 +156,7 @@ bool Advance::execute() {
 	//Source territory is mine, Dest territory is Other
 	else {
 		
-		srand(time(NULL));
+		srand(static_cast<unsigned int>(time(NULL)));
 		int diceroll;
 		myTerritory->setTerritoryArmies((myTerritory->getTerritoryArmies() - army));
 

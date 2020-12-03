@@ -124,7 +124,7 @@ namespace DriverSelector {
 		// create map and validate
 		Map* conquestMap;
 		conquestMap = new Map();
-		conquestMap->createMap(cfra->getTerritories().size() + 1, true);
+		conquestMap->createMap(static_cast<int>(cfra->getTerritories().size()) + 1, true);
 
 		for (int i = 0; i < cfra->getTerritoriesWithBorders().size(); i++) {
 			conquestMap->addEdge(cfra->getTerritoriesWithBorders()[i]);
